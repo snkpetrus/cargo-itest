@@ -16,7 +16,7 @@
 			</map>
 		</property>
 		<property name="containerPort" value="8890" />
-		<property name="remoteLocation" value="http://development/jboss-test/" />
+		<property name="remoteLocation" value="http://development/" />
 		<property name="containerFile" value="jboss.zip" />
 		<property name="containerConfigurationFile" value="test-app.zip" />
 	</bean>
