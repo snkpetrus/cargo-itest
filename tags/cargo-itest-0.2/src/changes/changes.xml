@@ -1,0 +1,18 @@
+<document>
+	<properties>
+		<title>Changes Cargo integration test</title>
+		<author email="salomo.petrus@gmail.com">Salomo Petrus</author>
+	</properties>
+	<body>
+		<release version="1.0.0" date="16-01-2009" description="First release">
+			<action dev="sape" type="add">
+				Added the functionality to enable you
+				to deploy multiple WAR, EAR or EJB files for a integration test.
+			</action>
+			<action dev="sape" type="add">
+				Added the basic functionality to
+				create a integration test in an easy way that actually works.
+			</action>
+		</release>
+	</body>
+</document>
