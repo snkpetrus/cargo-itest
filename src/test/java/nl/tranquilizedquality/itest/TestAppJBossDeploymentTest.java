@@ -41,7 +41,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  * 
  */
 @RunWith(JUnit4ClassRunner.class)
-public class TestAppDeploymentTest extends AbstractDefaultDeploymentTest {
+public class TestAppJBossDeploymentTest extends AbstractDefaultDeploymentTest {
 	
     @Test
     public void testHelloWorld() throws Exception {

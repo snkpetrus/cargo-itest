@@ -7,17 +7,33 @@
        http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
 
-	<bean id="containerUtil" class="nl.tranquilizedquality.itest.cargo.AppContainerUtil" parent="abstractContainerUtil">
-		<property name="configurationName" value="test-app" />
-		<property name="configResourcesPath" value="src/test/resources/" />
-		<property name="deployableLocations">
-			<map>
+	<!-- To switch to Tomcat you can uncomment the following bean configuration and comment out the JBoss container utilty bean configuration. -->
+
+		<bean id="containerUtil" class="nl.tranquilizedquality.itest.cargo.AppJbossContainerUtil" parent="abstractContainerUtil">
+			<property name="configurationName" value="test-app" />
+			<property name="configResourcesPath" value="src/test/resources/" />
+			<property name="deployableLocations">
+				<map>
 				<entry key="src/test/resources/test-app.war" value="WAR" />
-			</map>
-		</property>
-		<property name="containerPort" value="8890" />
-		<property name="remoteLocation" value="http://development/" />
-		<property name="containerFile" value="jboss.zip" />
-		<property name="containerConfigurationFile" value="test-app.zip" />
-	</bean>
+				</map>
+			</property>
+			<property name="containerPort" value="8890" />
+			<property name="jnpPort" value="1299" />
+			<property name="remoteLocation" value="http://development/" />
+			<property name="containerFile" value="jboss.zip" />
+			<property name="containerConfigurationFile" value="test-app.zip" />
+		</bean>
+		
+<!--	<bean id="containerUtil" class="nl.tranquilizedquality.itest.cargo.AppTomcatContainerUtil" parent="abstractContainerUtil">-->
+<!--		<property name="configurationName" value="test-app" />-->
+<!--		<property name="configResourcesPath" value="src/test/resources/" />-->
+<!--		<property name="deployableLocations">-->
+<!--			<map>-->
+<!--				<entry key="src/test/resources/test-app.war" value="WAR" />-->
+<!--			</map>-->
+<!--		</property>-->
+<!--		<property name="containerPort" value="8890" />-->
+<!--		<property name="remoteLocation" value="http://development/" />-->
+<!--		<property name="containerFile" value="tomcat.zip" />-->
+<!--	</bean>-->
 </beans>

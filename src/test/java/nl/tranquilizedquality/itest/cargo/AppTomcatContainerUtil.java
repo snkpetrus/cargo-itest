@@ -15,65 +15,45 @@
  */
 package nl.tranquilizedquality.itest.cargo;
 
-import java.io.File;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
- * This is a simple example of how the {@link AbstractJBossContainerUtil} could
- * be used. This test tests a simple test application called 'test-app'
- * configuring application specific log4j.xml and jndi.properties.
+ * This is a simple example of how the {@link AbstractTomcatContainerUtil} could
+ * be used. This test tests a simple test application called 'test-app'.
  * 
  * As you can see you don't have to do much to get it to work. You only need to
  * do the following steps:
  * <ol>
- * <li>Extend from {@link AbstractJBossContainerUtil}.</li>
+ * <li>Extend from {@link AbstractTomcatContainerUtil}.</li>
  * <li>Create a context file called <i>itest-context.xml</i> in the root of the
  * classpath.</li>
  * <li>Configure the container utility in the <i>itest-context.xml</i>. <b>Make
  * sure you give your bean the name 'containerUtil'.</b></li>
- * <li>Create your own JBoss configuration ZIP file by using the test-app.zip as
- * template since this one already contains certain variables that are used by
- * the {@link AbstractJBossContainerUtil} and put it on a server so the
- * container utility can download it.</li>
+ * <li>Create your own Tomcat ZIP file replacing the port number with the system
+ * property ${cargo.server.port}</li>
  * </ol>
  * 
  * After these steps you container utility should be setup correctly and all is
  * left is to create a unit test that uses the container.
  * 
- * @author Salomo Petrus (sape)
- * @since 11 dec 2008
+ * @author Salomo Petrus
  * 
  */
-public class AppContainerUtil extends AbstractJBossContainerUtil {
+public class AppTomcatContainerUtil extends AbstractTomcatContainerUtil {
+
 	/** Logger for this class */
-	private static final Log log = LogFactory.getLog(AppContainerUtil.class);
+	private static final Log log = LogFactory.getLog(AppTomcatContainerUtil.class);
 
 	/** The path where all configuration resource files are */
 	private String configResourcesPath;
 
 	@Override
 	protected void setupConfiguration() throws Exception {
-		final String confDir = containerHome + "server/" + configurationName + "/conf/";
-
 		if (log.isInfoEnabled()) {
-			log.info("Setting up the configuration from conf dir: " + confDir);
+			log.info("No configuration to do in " + configResourcesPath);
 		}
-
-		// copy JNDI property file
-		File dest = new File(confDir + "jndi.properties");
-		dest.delete();
-		dest.createNewFile();
-		FileUtils.copyFile(new File(configResourcesPath + "jndi.properties"), dest);
-
-		// copy Log4j configuration file
-		dest = new File(confDir + "log4j.xml");
-		dest.delete();
-		dest.createNewFile();
-		FileUtils.copyFile(new File(configResourcesPath + "log4j.xml"), dest);
 	}
 
 	/**

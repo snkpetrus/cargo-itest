@@ -13,7 +13,6 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
 package nl.tranquilizedquality.itest.cargo;
 
 import java.io.File;
@@ -48,17 +47,16 @@ import org.codehaus.cargo.util.log.Logger;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
- * This is a base utility class that can be used to use Cargo with an installed
- * installedLocalContainer. It can configure, start and stop the
- * installedLocalContainer.
+ * AbstractTomcatContainerUtil
  * 
- * @author Salomo Petrus (sape)
- * @since 11/12/2008
+ * @author Salomo Petrus
+ * 
  * 
  */
-public abstract class AbstractJBossContainerUtil implements ContainerUtil {
+public abstract class AbstractTomcatContainerUtil implements ContainerUtil {
+
 	/** Logger for this class */
-	private static final Log log = LogFactory.getLog(AbstractJBossContainerUtil.class);
+	private static final Log log = LogFactory.getLog(AbstractTomcatContainerUtil.class);
 
 	/**
 	 * The installedLocalContainer where the server application will be run in.
@@ -81,14 +79,6 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
 	protected Integer containerPort;
 
 	/**
-	 * The port where the JNP service will run on. This service is used to be
-	 * able to stop JBoss in a graceful way. Use the property ${cargo.jnp.port}
-	 * to set the port dynamically and set the system properties with this
-	 * value. Cargo seems to search for this service on port 1299.
-	 */
-	protected Integer jnpPort;
-
-	/**
 	 * The path where the Cargo log files will be written to.
 	 */
 	protected String cargoLogFilePath;
@@ -99,35 +89,32 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
 	/** The URL where the container and configuration ZIP files are. */
 	private String remoteLocation;
 
-	/** The ZIP file of the container to use i.e. jboss-4.0.4.GA.zip. */
+	/** The ZIP file of the container to use i.e. tomcat-6.zip. */
 	private String containerFile;
-
-	/** The ZIP file containing the JBoss configuration. */
-	private String containerConfigurationFile;
-
-	/** The name of the JBOSS configuration to use. */
-	protected String configurationName;
 
 	/** The deployable locations that will be used in the integration tests. */
 	private Map<String, String> deployableLocations;
+
+	/** The name of the Tomcat configuration to use. */
+	protected String configurationName;
 
 	/**
 	 * Default constructor that will detect which OS is used to make sure the
 	 * JBOSS will be downloaded in the correct location.
 	 */
-	public AbstractJBossContainerUtil() {
+	public AbstractTomcatContainerUtil() {
 		String operatingSystem = System.getProperty("os.name");
 		if (operatingSystem != null && operatingSystem.startsWith("Windows")) {
-			containerHome = "C:/WINDOWS/Temp/jboss/";
+			containerHome = "C:/WINDOWS/Temp/tomcat/";
 		}
 		else {
-			containerHome = "/tmp/jboss/";
+			containerHome = "/tmp/tomcat/";
 		}
 
 		if (log.isInfoEnabled()) {
 			log.info("Container HOME: " + containerHome);
 		}
-		
+
 		systemProperties = new HashMap<String, String>();
 		deployableLocations = new HashMap<String, String>();
 	}
@@ -163,34 +150,23 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
 	 */
 	protected void setupContainer() throws Exception {
 		if (log.isInfoEnabled()) {
-			log.info("Cleaning up JBoss...");
+			log.info("Cleaning up Tomcat...");
 		}
 
 		FileUtils.deleteDirectory(new File(containerHome));
 		new File(containerHome).mkdir();
 
 		if (log.isInfoEnabled()) {
-			log.info("Installing JBoss...");
-			log.info("Downloading JBoss & configuration from: " + remoteLocation);
+			log.info("Installing Tomcat...");
+			log.info("Downloading Tomcat from: " + remoteLocation);
 			log.info("Container file: " + containerFile);
-			log.info("Container configuration file: " + containerConfigurationFile);
 		}
 		URL remoteLocation = new URL(this.remoteLocation + containerFile);
 		String installDir = containerHome + "..//";
 		ZipURLInstaller installer = new ZipURLInstaller(remoteLocation, installDir);
 		installer.install();
 
-		if (log.isInfoEnabled()) {
-			log.info("Installing [" + configurationName + "] configuration...");
-		}
-		remoteLocation = new URL(this.remoteLocation + containerConfigurationFile);
-		installDir = containerHome + "server/";
-		installer = new ZipURLInstaller(remoteLocation, installDir);
-		installer.install();
-
-		systemProperties.put("jboss.server.lib.url:lib", "file:lib/");
 		systemProperties.put("cargo.server.port", containerPort.toString());
-		systemProperties.put("cargo.jnp.port", jnpPort.toString());
 
 		setupConfiguration();
 	}
@@ -203,8 +179,7 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
 		ConfigurationFactory configurationFactory = new DefaultConfigurationFactory();
 
 		// create JBoss configuration
-		LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("jboss4x", ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome
-				+ "server/" + configurationName);
+		LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("tomcat5x", ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome);
 
 		// setup configuration
 		StringBuilder args = new StringBuilder();
@@ -241,14 +216,14 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
 			}
 
 			// retrieve deployable file
-			Deployable deployable = new DefaultDeployableFactory().createDeployable(configurationName, entry.getKey(), deployableType);
+			Deployable deployable = new DefaultDeployableFactory().createDeployable("tomcat5x", entry.getKey(), deployableType);
 
 			// add deployable
 			configuration.addDeployable(deployable);
 		}
 
 		// create installedLocalContainer
-		installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("jboss4x", ContainerType.INSTALLED, configuration);
+		installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("tomcat5x", ContainerType.INSTALLED, configuration);
 
 		// configure installedLocalContainer
 		installedLocalContainer.setHome(containerHome);
@@ -261,7 +236,7 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
 		installedLocalContainer.setSystemProperties(systemProperties);
 
 		if (log.isInfoEnabled()) {
-			log.info("Starting JBoss [" + configurationName + "]...");
+			log.info("Starting Tomcat ...");
 		}
 
 		// startup installedLocalContainer
@@ -269,7 +244,7 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
 
 		// Here you are assured the container is started.
 		if (log.isInfoEnabled()) {
-			log.info("JBoss up and running!");
+			log.info("Tomcat up and running!");
 		}
 	}
 
@@ -324,12 +299,12 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
 	}
 
 	/**
-	 * @param containerConfigurationFile
-	 *            the containerConfigurationFile to set
+	 * @param configurationName
+	 *            the configurationName to set
 	 */
 	@Required
-	public void setContainerConfigurationFile(String containerConfigurationFile) {
-		this.containerConfigurationFile = containerConfigurationFile;
+	public void setConfigurationName(String configurationName) {
+		this.configurationName = configurationName;
 	}
 
 	/**
@@ -338,15 +313,6 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
 	 */
 	public void setSystemProperties(Map<String, String> systemProperties) {
 		this.systemProperties = systemProperties;
-	}
-
-	/**
-	 * @param configurationName
-	 *            the configurationName to set
-	 */
-	@Required
-	public void setConfigurationName(String configurationName) {
-		this.configurationName = configurationName;
 	}
 
 	/**
@@ -371,14 +337,6 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
 
 	public Integer getContainerPort() {
 		return containerPort;
-	}
-
-	/**
-	 * @param jnpPort the jnpPort to set
-	 */
-	@Required
-	public void setJnpPort(Integer jnpPort) {
-		this.jnpPort = jnpPort;
 	}
 
 }
