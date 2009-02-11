@@ -4,7 +4,17 @@
 		<author email="salomo.petrus@gmail.com">Salomo Petrus</author>
 	</properties>
 	<body>
-		<release version="1.0.0" date="16-01-2009" description="First release">
+		<release version="0.3" date="30-01-2009" description="Subsequent release">
+			<action dev="sape" type="add">
+				Added Apache tomcat container support.
+			</action>
+		</release>	
+		<release version="0.2" date="27-01-2009" description="Bug fix release">
+			<action dev="sape" type="fix">
+				Some bug fixing.
+			</action>
+		</release>	
+		<release version="0.1" date="18-01-2009" description="First release">
 			<action dev="sape" type="add">
 				Added the functionality to enable you
 				to deploy multiple WAR, EAR or EJB files for a integration test.
