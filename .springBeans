@@ -10,6 +10,9 @@
 		<config>src/main/resources/common-itest-context.xml</config>
 		<config>src/test/resources/itest-context.xml</config>
 		<config>src/test/resources/tomcat-itest-context.xml</config>
+		<config>src/test/resources/itest-annotated-classes-context.xml</config>
+		<config>src/main/resources/common-db-context.xml</config>
+		<config>src/main/resources/common-hibernate-db-context.xml</config>
 	</configs>
 	<configSets>
 		<configSet>
@@ -19,6 +22,10 @@
 			<configs>
 				<config>src/main/resources/common-itest-context.xml</config>
 				<config>src/test/resources/itest-context.xml</config>
+				<config>src/main/resources/common-db-context.xml</config>
+				<config>src/main/resources/common-hibernate-db-context.xml</config>
+				<config>src/test/resources/itest-annotated-classes-context.xml</config>
+				<config>src/test/resources/tomcat-itest-context.xml</config>
 			</configs>
 		</configSet>
 	</configSets>
