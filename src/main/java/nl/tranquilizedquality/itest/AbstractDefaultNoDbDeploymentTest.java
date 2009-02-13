@@ -15,9 +15,6 @@
  */
 package nl.tranquilizedquality.itest;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import nl.tranquilizedquality.itest.cargo.ContainerUtil;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,40 +22,31 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
-import org.springframework.test.context.transaction.AfterTransaction;
-import org.springframework.test.context.transaction.BeforeTransaction;
 
 /**
  * This is the base class of a simple integration test. Extending from this
- * class will safe you some work and gets you up and running pretty quick.
+ * class will safe you some work and gets you up and running pretty quick. This
+ * default test is mainly used for applications that don't use any database at
+ * all.
  * 
  * @author Salomo Petrus (sape)
- * @since 11 dec 2008
+ * @since 13 feb 2009
  * 
  */
-public abstract class AbstractDefaultDeploymentTest extends
-        AbstractTransactionalJUnit4SpringContextTests {
+public class AbstractDefaultNoDbDeploymentTest {
     /** Logger for this class */
     private static final Log log =
-            LogFactory.getLog(AbstractDefaultDeploymentTest.class);
+            LogFactory.getLog(AbstractDefaultNoDbDeploymentTest.class);
 
     /** The container utility for starting up a container. */
     protected static ContainerUtil CONTAINER_UTIL;
 
-    /** List of SQL scripts that will be executed before every test. */
-    protected static List<String> SQL_SCRIPTS;
-
-    /** List of SQL scripts that will be executed after every test. */
-    protected static List<String> SQL_CLEAN_UP_SCRIPTS;
-
     /**
-     * The host to test.
+     * The safety cameras host to test.
      */
-    protected static String host = "localhost:8890";
+    protected static String host = "localhost";
 
     /**
      * Loads the application context of the container utility.
@@ -72,7 +60,6 @@ public abstract class AbstractDefaultDeploymentTest extends
         return new ClassPathXmlApplicationContext(locations);
     }
 
-    @SuppressWarnings("unchecked")
     @BeforeClass
     public static void runOnce() throws Exception {
         // The application server need to be locally started only if the
@@ -88,51 +75,16 @@ public abstract class AbstractDefaultDeploymentTest extends
                             "common-itest-context.xml" });
             CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
             CONTAINER_UTIL.start();
-
-            try {
-                SQL_SCRIPTS = (List<String>) context.getBean("sqlScripts");
-            } catch (NoSuchBeanDefinitionException e) {
-                SQL_SCRIPTS = new ArrayList<String>(0);
-            }
-
-            try {
-                SQL_CLEAN_UP_SCRIPTS =
-                        (List<String>) context.getBean("sqlCleanUpScripts");
-            } catch (NoSuchBeanDefinitionException e) {
-                SQL_CLEAN_UP_SCRIPTS = new ArrayList<String>(0);
-            }
         }
     }
 
     @AfterClass
-    public static void stop() throws Exception {
-        if (StringUtils.contains(host, "localhost")
-                || StringUtils.contains(host, "127.0.0.")) {
+    public static void stop() {
+        if (CONTAINER_UTIL != null) {
             if (log.isInfoEnabled()) {
                 log.info("Stopping the container utility...");
             }
-
             CONTAINER_UTIL.stop();
-        }
-    }
-
-    @BeforeTransaction
-    public void executeSQLScripts() throws Exception {
-        for (String script : SQL_SCRIPTS) {
-            if (log.isInfoEnabled()) {
-                log.info("Executing script: " + script);
-            }
-            executeSqlScript(script, false);
-        }
-    }
-
-    @AfterTransaction
-    public void executeSQLCleanUpScripts() throws Exception {
-        for (String script : SQL_CLEAN_UP_SCRIPTS) {
-            if (log.isInfoEnabled()) {
-                log.info("Executing clean up script: " + script);
-            }
-            executeSqlScript(script, false);
         }
     }
 

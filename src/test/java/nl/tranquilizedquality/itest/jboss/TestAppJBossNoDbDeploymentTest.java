@@ -13,20 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package nl.tranquilizedquality.itest;
+package nl.tranquilizedquality.itest.jboss;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
-import nl.tranquilizedquality.itest.AbstractDefaultDeploymentTest;
-
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
-import org.junit.internal.runners.JUnit4ClassRunner;
-import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
+import nl.tranquilizedquality.itest.AbstractDefaultDeploymentTest;
+import nl.tranquilizedquality.itest.AbstractDefaultNoDbDeploymentTest;
 
 /**
  * This is a simple example how you could create an integration test with the
@@ -37,12 +36,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  * in JBoss for you with your customized container utility.
  * 
  * @author Salomo Petrus (sape)
- * @since 11 dec 2008
+ * @since 13 feb 2009
  * 
  */
-@RunWith(JUnit4ClassRunner.class)
-public class TestAppJBossDeploymentTest extends AbstractDefaultDeploymentTest {
-	
+public class TestAppJBossNoDbDeploymentTest extends
+        AbstractDefaultNoDbDeploymentTest {
+
     @Test
     public void testHelloWorld() throws Exception {
         final WebClient webClient = new WebClient();
