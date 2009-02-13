@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+
+	<!--
+		To switch to Tomcat you can uncomment the following bean configuration
+		and comment out the JBoss container utilty bean configuration.
+	-->
+
+	<bean id="containerUtil"
+		class="nl.tranquilizedquality.itest.cargo.AppJbossContainerUtil"
+		parent="abstractContainerUtil">
+		<property name="configurationName" value="test-app" />
+		<property name="configResourcesPath" value="src/test/resources/" />
+		<property name="deployableLocations">
+			<map>
+				<entry key="src/test/resources/test-app.war" value="WAR" />
+			</map>
+		</property>
+		<property name="containerPort" value="8890" />
+		<property name="jnpPort" value="1299" />
+		<property name="remoteLocation" value="http://development/" />
+		<property name="containerFile" value="jboss.zip" />
+		<property name="containerConfigurationFile" value="test-app.zip" />
+	</bean>
+
+</beans>

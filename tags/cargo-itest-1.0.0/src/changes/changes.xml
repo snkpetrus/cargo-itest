@@ -1,0 +1,52 @@
+<document>
+	<properties>
+		<title>Changes Cargo integration test</title>
+		<author email="salomo.petrus@gmail.com">Salomo Petrus</author>
+	</properties>
+	<body>
+		<release version="1.0" date="13-02-2009" description="Subsequent release">
+			<action dev="salomo.petrus" type="add">
+				Added the ability to easily
+				create an integration test for applications that don't use a
+				database at all.
+			</action>
+			<action dev="salomo.petrus" type="add">
+				Added SQL execution before
+				transaction and after transaction so it's directly available for the
+				web application itself.
+			</action>
+			<action dev="salomo.petrus" type="add">
+				Added database generation by
+				Hibernate session factory so you can use your annotated classes to
+				generate your database.
+			</action>
+			<action dev="salomo.petrus" type="fix">
+				Fixed the stopping of the
+				JBoss container by changing the JNP port to 1299 since cargo is
+				trying to stop it on that port.
+			</action>
+		</release>
+		<release version="0.3" date="30-01-2009" description="Subsequent release">
+			<action dev="salomo.petrus" type="add">
+				Added Apache tomcat container
+				support.
+			</action>
+		</release>
+		<release version="0.2" date="27-01-2009" description="Bug fix release">
+			<action dev="salomo.petrus" type="fix">
+				Some bug fixing.
+			</action>
+		</release>
+		<release version="0.1" date="18-01-2009" description="First release">
+			<action dev="salomo.petrus" type="add">
+				Added the functionality to
+				enable you to deploy multiple WAR, EAR or EJB files for a
+				integration test.
+			</action>
+			<action dev="salomo.petrus" type="add">
+				Added the basic functionality
+				to create a integration test in an easy way that actually works.
+			</action>
+		</release>
+	</body>
+</document>
