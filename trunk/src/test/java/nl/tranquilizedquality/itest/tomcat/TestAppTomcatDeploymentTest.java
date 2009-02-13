@@ -13,11 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package nl.tranquilizedquality.itest;
+package nl.tranquilizedquality.itest.tomcat;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
+import nl.tranquilizedquality.itest.AbstractDefaultDeploymentTest;
 import nl.tranquilizedquality.itest.cargo.ContainerUtil;
 
 import org.apache.commons.lang.StringUtils;
