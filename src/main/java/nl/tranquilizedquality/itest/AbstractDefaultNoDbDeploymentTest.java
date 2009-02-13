@@ -46,7 +46,7 @@ public class AbstractDefaultNoDbDeploymentTest {
     /**
      * The safety cameras host to test.
      */
-    protected static String host = "localhost";
+    protected static String host = "localhost:8890";
 
     /**
      * Loads the application context of the container utility.
