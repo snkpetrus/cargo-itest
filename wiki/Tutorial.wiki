@@ -2,6 +2,18 @@
 
 = Introduction =
 
-To enable you to quickly get started with the cargo-itest utility there are some default JUnit tests available which you could extend from. In this tutorial the AbstractDefaultDeploymentTest will be used to show you how easy it is to start creating integration tests.
+To enable you to quickly get started with the cargo-itest utility there are some default JUnit tests available which you could extend from. In this tutorial the AbstractDefaultDeploymentTest will be used to show you how easy it is to start creating integration tests with a Tomcat server.
 
 = Details =
+
+When using maven2 you can simply start by adding the following dependency to your POM file:
+{{{
+<dependency>
+	<groupId>nl.tranquilizedquality</groupId>
+	<artifactId>cargo-itest</artifactId>
+	<version>1.0.0</version>
+</dependency>
+}}}
+
+After that you need to do the following things:
+# Extend from [http://cargo-itest.googlecode.com/svn/trunk/src/main/java/nl/tranquilizedquality/itest/cargo/AbstractTomcatContainerUtil.java AbstractTomcatContainerUtil] class. Check the sample [http://cargo-itest.googlecode.com/svn/trunk/src/test/java/nl/tranquilizedquality/itest/cargo/AppTomcatContainerUtil.java here].
