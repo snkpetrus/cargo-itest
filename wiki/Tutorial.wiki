@@ -16,4 +16,4 @@ When using maven2 you can simply start by adding the following dependency to you
 }}}
 
 After that you need to do the following things:
-# Extend from [http://cargo-itest.googlecode.com/svn/trunk/src/main/java/nl/tranquilizedquality/itest/cargo/AbstractTomcatContainerUtil.java AbstractTomcatContainerUtil] class. Check the sample [http://cargo-itest.googlecode.com/svn/trunk/src/test/java/nl/tranquilizedquality/itest/cargo/AppTomcatContainerUtil.java here].
+#  Extend from [http://cargo-itest.googlecode.com/svn/trunk/src/main/java/nl/tranquilizedquality/itest/cargo/AbstractTomcatContainerUtil.java AbstractTomcatContainerUtil] class. Check the sample [http://cargo-itest.googlecode.com/svn/trunk/src/test/java/nl/tranquilizedquality/itest/cargo/AppTomcatContainerUtil.java here].
