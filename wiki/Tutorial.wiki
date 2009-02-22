@@ -1,0 +1,7 @@
+#summary 5 Minute Tutorial
+
+= Introduction =
+
+To enable you to quickly get started with the cargo-itest utility there are some default JUnit tests available which you could extend from. In this tutorial the AbstractDefaultDeploymentTest will be used to show you how easy it is to start creating integration tests.
+
+= Details =
