@@ -4,6 +4,14 @@
 		<author email="salomo.petrus@gmail.com">Salomo Petrus</author>
 	</properties>
 	<body>
+		<release version="1.1" date="1-04-2009" description="Subsequent release">
+			<action dev="salomo.petrus" type="add">
+				Added the ability to specify the context name of a WAR that will be deployed.
+			</action>
+			<action dev="salomo.petrus" type="fix">
+				Did some refactoring to avoid null pointer exceptions.
+			</action>
+		</release>
 		<release version="1.0" date="13-02-2009" description="Subsequent release">
 			<action dev="salomo.petrus" type="add">
 				Added the ability to easily
