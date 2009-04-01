@@ -38,6 +38,10 @@
 			<name>Inhouse Snapshot Repository</name>
 			<url>http://development/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
+		<site>
+			<id>local</id>
+			<url>file:target/fullsite/</url>
+		</site>
 	</distributionManagement>
 
 	<!-- Plugin repositories to use.-->
