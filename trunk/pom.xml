@@ -3,7 +3,7 @@
 	<groupId>nl.tranquilizedquality</groupId>
 	<artifactId>cargo-itest</artifactId>
 	<name>Integration test utility project</name>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1.0</version>
 	<description>Utility classes that can be used easily create integration tests using cargo.</description>
 	<organization>
 		<name>Tranquilized Quality</name>
