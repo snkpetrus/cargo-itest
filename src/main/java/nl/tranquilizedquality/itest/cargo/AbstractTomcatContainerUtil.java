@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import nl.tranquilizedquality.itest.cargo.exception.DeployException;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -202,17 +204,17 @@ public abstract class AbstractTomcatContainerUtil implements ContainerUtil {
 			 * Check what kind of deployable it is.
 			 */
 			if (value.equals("EAR")) {
-				deployableType = DeployableType.EAR;
+				throw new DeployException("Tomcat doesn't support EAR files.");
 			}
 			else if (value.equals("WAR")) {
 				deployableType = DeployableType.WAR;
 			}
 			else if (value.equals("EJB")) {
-				deployableType = DeployableType.EJB;
+			    throw new DeployException("Tomcat doesn't support EAR files.");
 			}
 			else {
-				// Default value is EAR file
-				deployableType = DeployableType.EAR;
+				// Default value is WAR file
+			    deployableType = DeployableType.WAR;
 			}
 
 			// retrieve deployable file
