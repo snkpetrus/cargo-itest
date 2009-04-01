@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="containerUtil" class="nl.tranquilizedquality.itest.cargo.AppTomcatContainerUtil" parent="abstractContainerUtil">
+		<property name="configurationName" value="test-app" />
+		<property name="configResourcesPath" value="src/test/resources/" />
+		<property name="deployableLocations">
+			<map>
+				<entry key="src/test/resources/test-app.war" value="WAR" />
+			</map>
+		</property>
+		<property name="containerPort" value="8890" />
+		<property name="remoteLocation" value="http://development/" />
+		<property name="containerFile" value="tomcat.zip" />
+	</bean>
+</beans>
