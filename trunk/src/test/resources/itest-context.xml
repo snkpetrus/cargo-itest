@@ -19,16 +19,27 @@
 		parent="abstractContainerUtil">
 		<property name="configurationName" value="test-app" />
 		<property name="configResourcesPath" value="src/test/resources/" />
+		<!--		<property name="deployableLocations">-->
+		<!--			<map>-->
+<!--				<entry key="src/test/resources/test-app.war" value="WAR" />-->
+		<!--			</map>-->
+		<!--		</property>-->
 		<property name="deployableLocations">
-			<map>
-				<entry key="src/test/resources/test-app.war" value="WAR" />
-			</map>
+			<list>
+				<ref bean="testApp" />
+			</list>
 		</property>
 		<property name="containerPort" value="8890" />
 		<property name="jnpPort" value="1299" />
 		<property name="remoteLocation" value="http://development/" />
 		<property name="containerFile" value="jboss.zip" />
 		<property name="containerConfigurationFile" value="test-app.zip" />
+	</bean>
+
+	<bean id="testApp" class="nl.tranquilizedquality.itest.domain.DeployableLocationConfiguration">
+		<property name="contextName" value="test-app" />
+		<property name="path" value="src/test/resources/test-app.war" />
+		<property name="type" value="WAR" />
 	</bean>
 
 </beans>
