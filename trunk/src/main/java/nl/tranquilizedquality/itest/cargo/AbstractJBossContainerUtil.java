@@ -263,7 +263,7 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
 			 * Determine deployable type.
 			 */
 			DeployableType deployableType = null;
-			if (contextName != null && !contextName.isEmpty()) {
+			if (contextName != null && contextName.length() > 0) {
 				deployableType = determineDeployableType(type);
 
 				if (DeployableType.WAR.equals(deployableType)) {
