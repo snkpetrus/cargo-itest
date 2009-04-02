@@ -4,7 +4,7 @@
 		<author email="salomo.petrus@gmail.com">Salomo Petrus</author>
 	</properties>
 	<body>
-		<release version="1.2.0" date="2-04-2009" description="Subsequent release">
+		<release version="1.1.1" date="2-04-2009" description="Subsequent release">
 			<action dev="salomo.petrus" type="fix">
 				Removed Java 6 API calls to be compatible with Java 5. 
 				The isEmpty() call from the String class is new in Java 6.
