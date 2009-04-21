@@ -39,7 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
         "classpath:itest-annotated-classes-context.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class AbstractDefaultHibernateDeploymentTest extends
+public abstract class AbstractDefaultHibernateDeploymentTest extends
         AbstractDefaultDeploymentTest {
 
 }

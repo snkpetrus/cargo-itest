@@ -35,7 +35,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @since 13 feb 2009
  * 
  */
-public class AbstractDefaultNoDbDeploymentTest {
+public abstract class AbstractDefaultNoDbDeploymentTest {
     /** Logger for this class */
     private static final Log log =
             LogFactory.getLog(AbstractDefaultNoDbDeploymentTest.class);
