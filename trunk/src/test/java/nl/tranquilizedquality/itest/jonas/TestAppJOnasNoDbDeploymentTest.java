@@ -13,29 +13,32 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package nl.tranquilizedquality.itest;
+package nl.tranquilizedquality.itest.jonas;
 
-import nl.tranquilizedquality.itest.cargo.ContainerUtil;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
+import nl.tranquilizedquality.itest.AbstractDefaultNoDbDeploymentTest;
+import nl.tranquilizedquality.itest.cargo.ContainerUtil;
+
 /**
- * This is the base class of a simple integration test. Extending from this
- * class will safe you some work and gets you up and running pretty quick. This
- * default test is mainly used for applications that don't use any database at
- * all.
- * 
  * @author Salomo Petrus (sape)
- * @since 13 feb 2009
+ * @since 22 apr 2009
  * 
  */
-public abstract class AbstractDefaultNoDbDeploymentTest {
+public class TestAppJOnasNoDbDeploymentTest {
     /** Logger for this class */
     private static final Log log =
             LogFactory.getLog(AbstractDefaultNoDbDeploymentTest.class);
@@ -46,9 +49,7 @@ public abstract class AbstractDefaultNoDbDeploymentTest {
     /**
      * The safety cameras host to test.
      */
-    protected static String host = "localhost:8890";
-
-    protected static String ITEST_CONTEXT_FILENAME = "itest-context.xml";
+    protected static String host = "localhost";
 
     /**
      * Loads the application context of the container utility.
@@ -73,7 +74,7 @@ public abstract class AbstractDefaultNoDbDeploymentTest {
             }
 
             ConfigurableApplicationContext context =
-                    loadContext(new String[] { ITEST_CONTEXT_FILENAME,
+                    loadContext(new String[] { "jonas-itest-context.xml",
                             "common-itest-context.xml" });
             CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
             CONTAINER_UTIL.start();
@@ -90,4 +91,17 @@ public abstract class AbstractDefaultNoDbDeploymentTest {
         }
     }
 
+    @Test
+    public void testHelloWorld() throws Exception {
+        final WebClient webClient = new WebClient();
+        webClient.setJavaScriptEnabled(false);
+
+        // Get the first page
+        final HtmlPage index =
+                (HtmlPage) webClient.getPage("http://" + host + ":"
+                        + CONTAINER_UTIL.getContainerPort() + "/test-app/");
+
+        assertNotNull(index);
+        assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
+    }
 }
