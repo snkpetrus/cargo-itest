@@ -16,16 +16,20 @@
 package nl.tranquilizedquality.itest.cargo;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
 import nl.tranquilizedquality.itest.cargo.exception.DeployException;
+import nl.tranquilizedquality.itest.domain.DeployableLocationConfiguration;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -49,18 +53,16 @@ import org.codehaus.cargo.util.log.Logger;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
- * AbstractTomcatContainerUtil is an implementation of {@link ContainerUtil}
- * which managaes a Tomcat servlet container. It can configure, start and stop
- * the Tomcat servlet container.
+ * Implementation of a {@link ContainerUtil} for the JOnas application server.
  * 
- * @author Salomo Petrus
+ * @author Salomo Petrus (sape)
+ * @since 22 apr 2009
  * 
  */
-public abstract class AbstractTomcatContainerUtil implements ContainerUtil {
-
+public abstract class AbstractJOnasContainerUtil implements ContainerUtil {
     /** Logger for this class */
     private static final Log log =
-            LogFactory.getLog(AbstractTomcatContainerUtil.class);
+            LogFactory.getLog(AbstractJOnasContainerUtil.class);
 
     /**
      * The installedLocalContainer where the server application will be run in.
@@ -93,25 +95,31 @@ public abstract class AbstractTomcatContainerUtil implements ContainerUtil {
     /** The URL where the container and configuration ZIP files are. */
     private String remoteLocation;
 
-    /** The ZIP file of the container to use i.e. tomcat-6.zip. */
+    /** The ZIP file of the container to use i.e. JOnas.zip. */
     private String containerFile;
+
+    /** The name of the JOnas configuration to use. */
+    protected String configurationName;
 
     /** The deployable locations that will be used in the integration tests. */
     private Map<String, String> deployableLocations;
 
-    /** The name of the Tomcat configuration to use. */
-    protected String configurationName;
+    /**
+     * The deployable location configurations that will be used in the
+     * integration tests.
+     */
+    private List<DeployableLocationConfiguration> deployableLocationConfigurations;
 
     /**
      * Default constructor that will detect which OS is used to make sure the
-     * Tomcat will be downloaded in the correct location.
+     * JOnas will be downloaded in the correct location.
      */
-    public AbstractTomcatContainerUtil() {
+    public AbstractJOnasContainerUtil() {
         String operatingSystem = System.getProperty("os.name");
         if (operatingSystem != null && operatingSystem.startsWith("Windows")) {
-            containerHome = "C:/WINDOWS/Temp/tomcat/";
+            containerHome = "C:/WINDOWS/Temp/JOnas/";
         } else {
-            containerHome = "/tmp/tomcat/";
+            containerHome = "/tmp/JOnas/";
         }
 
         if (log.isInfoEnabled()) {
@@ -119,7 +127,9 @@ public abstract class AbstractTomcatContainerUtil implements ContainerUtil {
         }
 
         systemProperties = new HashMap<String, String>();
-        deployableLocations = new HashMap<String, String>();
+        deployableLocations = new LinkedHashMap<String, String>();
+        deployableLocationConfigurations =
+                new ArrayList<DeployableLocationConfiguration>();
     }
 
     /**
@@ -144,22 +154,22 @@ public abstract class AbstractTomcatContainerUtil implements ContainerUtil {
     /**
      * Installs the container and the application configuration. It also sets
      * some system properties so the container can startup properly. Finally it
-     * sets up additional configuration like jndi.proprties files etc.
+     * sets up additional configuration like jndi.properties files etc.
      * 
      * @throws Exception Is thrown when something goes wrong during the setup of
      *         the container.
      */
     protected void setupContainer() throws Exception {
         if (log.isInfoEnabled()) {
-            log.info("Cleaning up Tomcat...");
+            log.info("Cleaning up JOnas...");
         }
 
         FileUtils.deleteDirectory(new File(containerHome));
         new File(containerHome).mkdir();
 
         if (log.isInfoEnabled()) {
-            log.info("Installing Tomcat...");
-            log.info("Downloading Tomcat from: " + remoteLocation);
+            log.info("Installing JOnas...");
+            log.info("Downloading JOnas from: " + remoteLocation);
             log.info("Container file: " + containerFile);
         }
         URL remoteLocation = new URL(this.remoteLocation + containerFile);
@@ -178,17 +188,17 @@ public abstract class AbstractTomcatContainerUtil implements ContainerUtil {
      */
     protected void deploy() {
         // create configuration factory
-        ConfigurationFactory configurationFactory =
+        final ConfigurationFactory configurationFactory =
                 new DefaultConfigurationFactory();
 
-        // create JBoss configuration
-        LocalConfiguration configuration =
+        // create JOnas configuration
+        final LocalConfiguration configuration =
                 (LocalConfiguration) configurationFactory.createConfiguration(
-                        "tomcat5x", ContainerType.INSTALLED,
+                        "jonas4x", ContainerType.INSTALLED,
                         ConfigurationType.EXISTING, containerHome);
 
         // setup configuration
-        StringBuilder args = new StringBuilder();
+        final StringBuilder args = new StringBuilder();
         for (String arg : jvmArguments) {
             args.append(arg);
             args.append(" ");
@@ -201,42 +211,73 @@ public abstract class AbstractTomcatContainerUtil implements ContainerUtil {
          * Iterate over all available deployable locations.
          */
         Set<Entry<String, String>> entrySet = deployableLocations.entrySet();
-        for (Entry<String, String> entry : entrySet) {
+        Iterator<Entry<String, String>> iterator = entrySet.iterator();
+
+        while (iterator.hasNext()) {
+            Entry<String, String> entry = iterator.next();
+            String key = entry.getKey();
             String value = entry.getValue();
             DeployableType deployableType = null;
 
             /*
-             * Check what kind of deployable it is.
+             * Determine the deployable type.
              */
-            if (value.equals("EAR")) {
-                throw new DeployException("Tomcat doesn't support EAR files.");
-            } else if (value.equals("WAR")) {
-                deployableType = DeployableType.WAR;
-            } else if (value.equals("EJB")) {
-                throw new DeployException("Tomcat doesn't support EAR files.");
+            deployableType = determineDeployableType(value);
+
+            /*
+             * Add the deployable.
+             */
+            addDeployable(configuration, key, deployableType);
+        }
+
+        /*
+         * Iterate over all available deployable location configurations.
+         */
+        for (DeployableLocationConfiguration config : deployableLocationConfigurations) {
+            final String contextName = config.getContextName();
+            final String type = config.getType();
+            String path = config.getPath();
+
+            /*
+             * Determine deployable type.
+             */
+            DeployableType deployableType = null;
+            if (contextName != null && contextName.length() > 0) {
+                deployableType = determineDeployableType(type);
+
+                if (DeployableType.WAR.equals(deployableType)) {
+                    final File srcFile = new File(path);
+                    final File destFile =
+                            new File("target/" + contextName + ".war");
+
+                    try {
+                        FileUtils.copyFile(srcFile, destFile);
+                    } catch (IOException e) {
+                        throw new DeployException("Failed to copy WAR file: "
+                                + path, e);
+                    }
+
+                    path = destFile.getPath();
+                }
             } else {
-                // Default value is WAR file
-                deployableType = DeployableType.WAR;
+                deployableType = determineDeployableType(type);
             }
 
-            // retrieve deployable file
-            Deployable deployable =
-                    new DefaultDeployableFactory().createDeployable("tomcat5x",
-                            entry.getKey(), deployableType);
-
-            // add deployable
-            configuration.addDeployable(deployable);
+            /*
+             * Add the deployable
+             */
+            addDeployable(configuration, path, deployableType);
         }
 
         // create installedLocalContainer
         installedLocalContainer =
                 (InstalledLocalContainer) new DefaultContainerFactory()
-                        .createContainer("tomcat5x", ContainerType.INSTALLED,
+                        .createContainer("jonas4x", ContainerType.INSTALLED,
                                 configuration);
 
         // configure installedLocalContainer
         installedLocalContainer.setHome(containerHome);
-        Logger fileLogger =
+        final Logger fileLogger =
                 new FileLogger(new File(cargoLogFilePath + "cargo.log"), true);
         fileLogger.setLevel(LogLevel.DEBUG);
         installedLocalContainer.setLogger(fileLogger);
@@ -246,7 +287,7 @@ public abstract class AbstractTomcatContainerUtil implements ContainerUtil {
         installedLocalContainer.setSystemProperties(systemProperties);
 
         if (log.isInfoEnabled()) {
-            log.info("Starting Tomcat ...");
+            log.info("Starting JOnas [" + configurationName + "]...");
         }
 
         // startup installedLocalContainer
@@ -254,8 +295,55 @@ public abstract class AbstractTomcatContainerUtil implements ContainerUtil {
 
         // Here you are assured the container is started.
         if (log.isInfoEnabled()) {
-            log.info("Tomcat up and running!");
+            log.info("JOnas up and running!");
         }
+    }
+
+    /**
+     * Determines the type of deployable.
+     * 
+     * @param type A string representation of the deployable type.
+     * @return Returns a {@link DeployableType} that corresponds to the string
+     *         representation or if none could be found the default value (EAR)
+     *         will be returned.
+     */
+    private DeployableType determineDeployableType(final String type) {
+        DeployableType deployableType;
+
+        /*
+         * Check what kind of deployable it is.
+         */
+        if ("EAR".equals(type)) {
+            deployableType = DeployableType.EAR;
+        } else if ("WAR".equals(type)) {
+            deployableType = DeployableType.WAR;
+        } else if ("EJB".equals(type)) {
+            deployableType = DeployableType.EJB;
+        } else {
+            // Default value is EAR file
+            deployableType = DeployableType.EAR;
+        }
+
+        return deployableType;
+    }
+
+    /**
+     * Adds a deployable to the {@link LocalConfiguration}.
+     * 
+     * @param configuration The configuration where a deployable can be added
+     *        to.
+     * @param path The path where the deployable can be found.
+     * @param deployableType The type of deployable.
+     */
+    private void addDeployable(LocalConfiguration configuration, String path,
+            DeployableType deployableType) {
+        // retrieve deployable file
+        Deployable deployable =
+                new DefaultDeployableFactory().createDeployable(
+                        configurationName, path, deployableType);
+
+        // add deployable
+        configuration.addDeployable(deployable);
     }
 
     /**
@@ -305,6 +393,13 @@ public abstract class AbstractTomcatContainerUtil implements ContainerUtil {
     }
 
     /**
+     * @param systemProperties the systemProperties to set
+     */
+    public void setSystemProperties(Map<String, String> systemProperties) {
+        this.systemProperties = systemProperties;
+    }
+
+    /**
      * @param configurationName the configurationName to set
      */
     @Required
@@ -313,25 +408,19 @@ public abstract class AbstractTomcatContainerUtil implements ContainerUtil {
     }
 
     /**
-     * @param systemProperties the systemProperties to set
-     */
-    public void setSystemProperties(Map<String, String> systemProperties) {
-        this.systemProperties = systemProperties;
-    }
-
-    /**
-     * @return the deployableLocations
-     */
-    public Map<String, String> getDeployableLocations() {
-        return deployableLocations;
-    }
-
-    /**
      * @param deployableLocations the deployableLocations to set
      */
-    @Required
     public void setDeployableLocations(Map<String, String> deployableLocations) {
         this.deployableLocations = deployableLocations;
+    }
+
+    /**
+     * @param locations the deployable configuration locations that will be set.
+     */
+    public void setDeployableLocationConfigurations(
+            List<DeployableLocationConfiguration> deployableLocationConfigurations) {
+        this.deployableLocationConfigurations =
+                deployableLocationConfigurations;
     }
 
     public void addDeployableLocation(final String location, final String type) {

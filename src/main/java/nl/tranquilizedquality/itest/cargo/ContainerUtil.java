@@ -17,14 +17,15 @@
 package nl.tranquilizedquality.itest.cargo;
 
 /**
- * Inteface for a container utility.
+ * Inteface for a container utility. It can configure, start and stop a specific
+ * container.
  * 
  * @author Salomo Petrus (sape)
  * 
  */
 public interface ContainerUtil {
 
-	/**
+    /**
      * Starts up the installedLocalContainer and its deployed applications
      * 
      * @throws Exception Is thrown when something went wrong during start up.
