@@ -9,7 +9,6 @@
 
 	<bean id="containerUtil" class="nl.tranquilizedquality.itest.cargo.AppJOnasCantainerUtil" parent="abstractContainerUtil">
 		<property name="configurationName" value="test-app" />
-<!--		<property name="configResourcesPath" value="src/test/resources/" />-->
 		<property name="deployableLocationConfigurations">
 			<list>
 				<ref bean="testApp" />

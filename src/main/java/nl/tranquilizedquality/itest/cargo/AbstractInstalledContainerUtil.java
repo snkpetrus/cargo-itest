@@ -148,7 +148,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
         }
 
         /*
-         * Delete JBoss directory.
+         * Delete container directory.
          */
         FileUtils.deleteDirectory(new File(containerHome));
         new File(containerHome).mkdir();
