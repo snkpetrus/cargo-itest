@@ -57,7 +57,7 @@ public class AppJbossContainerUtil extends AbstractJBossContainerUtil {
 
 	@Override
 	protected void setupConfiguration() throws Exception {
-		final String confDir = containerHome + "server/" + configurationName + "/conf/";
+		final String confDir = getConfDirectory();
 
 		if (log.isInfoEnabled()) {
 			log.info("Setting up the configuration from conf dir: " + confDir);

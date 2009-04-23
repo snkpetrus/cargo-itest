@@ -59,4 +59,21 @@ public interface ContainerUtil {
      */
     Integer getContainerPort();
 
+    /**
+     * Retrieves the directory where shared libraries can be copied to.
+     * 
+     * @return Returns a String representation of the full path to the
+     *         directory.
+     */
+    String getSharedLibDirectory();
+
+    /**
+     * Retrieves the directory where the configuration files are located from
+     * the specific container.
+     * 
+     * @return Returns a String representation of the full path to the
+     *         directory.
+     */
+    String getConfDirectory();
+
 }
