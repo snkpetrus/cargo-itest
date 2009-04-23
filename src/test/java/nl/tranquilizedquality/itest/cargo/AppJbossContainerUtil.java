@@ -20,7 +20,6 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Required;
 
 /**
  * This is a simple example of how the {@link AbstractJBossContainerUtil} could
@@ -52,9 +51,6 @@ public class AppJbossContainerUtil extends AbstractJBossContainerUtil {
 	/** Logger for this class */
 	private static final Log log = LogFactory.getLog(AppJbossContainerUtil.class);
 
-	/** The path where all configuration resource files are */
-	private String configResourcesPath;
-
 	@Override
 	protected void setupConfiguration() throws Exception {
 		final String confDir = getConfDirectory();
@@ -74,15 +70,6 @@ public class AppJbossContainerUtil extends AbstractJBossContainerUtil {
 		dest.delete();
 		dest.createNewFile();
 		FileUtils.copyFile(new File(configResourcesPath + "log4j.xml"), dest);
-	}
-
-	/**
-	 * @param configResourcesPath
-	 *            the configResourcesPath to set
-	 */
-	@Required
-	public void setConfigResourcesPath(String configResourcesPath) {
-		this.configResourcesPath = configResourcesPath;
 	}
 
 }
