@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import nl.tranquilizedquality.itest.cargo.exception.ConfigurationException;
 import nl.tranquilizedquality.itest.cargo.exception.DeployException;
 import nl.tranquilizedquality.itest.domain.DeployableLocationConfiguration;
 
@@ -474,6 +475,43 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
     @Required
     public void setJnpPort(Integer jnpPort) {
         this.jnpPort = jnpPort;
+    }
+
+    /**
+     * Constructs the full path to a specific directory from the configuration.
+     * 
+     * @param dir The directory name.
+     * @return Returns a String representation of the full path.
+     */
+    private String getContainerDirectory(final String dir) {
+        final StringBuilder fullPath = new StringBuilder();
+        fullPath.append(this.containerHome);
+        fullPath.append("server/");
+        fullPath.append(this.configurationName);
+        fullPath.append("/");
+        fullPath.append(dir);
+
+        final String path = fullPath.toString();
+
+        final File directory = new File(path);
+        if (!directory.exists()) {
+            final String msg = dir + " directory does not excist! : " + path;
+            if (log.isErrorEnabled()) {
+                log.error(msg);
+            }
+
+            throw new ConfigurationException(msg);
+        }
+
+        return path;
+    }
+
+    public String getSharedLibDirectory() {
+        return getContainerDirectory("lib/");
+    }
+
+    public String getConfDirectory() {
+        return getContainerDirectory("conf/");
     }
 
 }
