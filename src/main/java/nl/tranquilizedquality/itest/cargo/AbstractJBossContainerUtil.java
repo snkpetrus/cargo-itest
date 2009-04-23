@@ -19,7 +19,9 @@ package nl.tranquilizedquality.itest.cargo;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -64,6 +66,28 @@ public abstract class AbstractJBossContainerUtil extends
             LogFactory.getLog(AbstractJBossContainerUtil.class);
 
     /**
+     * The suffix of properties files that will be picked up when they are
+     * located in the configuration resource directory which by default is
+     * src/test/resources/.
+     */
+    private static final String PROPERTIES_FILES_SUFFIX = ".properties";
+
+    /**
+     * The JBoss log4j XML file for logging configuration that will be picked up
+     * automatically by this container utility if it exists in the configuration
+     * resource directory which by default is src/test/resources. So if there is
+     * a log4j.xml file in there this will be used.
+     */
+    private static final String LOG4J_XML = "log4j.xml";
+
+    /**
+     * The suffix of JBoss data source files that will be picked up when they
+     * are located in the configuration resource directory which by default is
+     * src/test/resources/.
+     */
+    private static final String DATA_SOURCE_FILES_SUFFIX = "-ds.xml";
+
+    /**
      * The port where the JNP service will run on. This service is used to be
      * able to stop JBoss in a graceful way. Use the property ${cargo.jnp.port}
      * to set the port dynamically and set the system properties with this
@@ -74,6 +98,12 @@ public abstract class AbstractJBossContainerUtil extends
     /** The ZIP file containing the JBoss configuration. */
     private String containerConfigurationFile;
 
+    /**
+     * Determines if the auto detection of configuration files is enabled or
+     * not.
+     */
+    private boolean autoDetect;
+
     /** The name of the JBOSS configuration to use. */
     protected String configurationName;
 
@@ -82,8 +112,10 @@ public abstract class AbstractJBossContainerUtil extends
      * JBOSS will be downloaded in the correct location.
      */
     public AbstractJBossContainerUtil() {
+        autoDetect = true;
+
         setContainerName("JBoss");
-        
+
         cleanUpContainer();
     }
 
@@ -116,10 +148,10 @@ public abstract class AbstractJBossContainerUtil extends
         if (log.isInfoEnabled()) {
             log.info("Installing [" + configurationName + "] configuration...");
         }
-        URL remoteLocation =
+        final URL remoteLocation =
                 new URL(this.remoteLocation + containerConfigurationFile);
-        String installDir = containerHome + "server/";
-        ZipURLInstaller installer =
+        final String installDir = containerHome + "server/";
+        final ZipURLInstaller installer =
                 new ZipURLInstaller(remoteLocation, installDir);
         installer.install();
 
@@ -130,14 +162,90 @@ public abstract class AbstractJBossContainerUtil extends
         systemProperties.put("cargo.jnp.port", jnpPort.toString());
 
         /*
-         * TODO: Setup JBoss specific configuration like JNDI properties, JNDI data
+         * Setup JBoss specific configuration like JNDI properties, JNDI data
          * source files etc.
          */
+        if (autoDetect) {
+            copyResourceFileToConfDir(LOG4J_XML);
+
+            final List<String> dataSourceFiles =
+                    findConfigurationFiles(DATA_SOURCE_FILES_SUFFIX);
+            for (final String fileName : dataSourceFiles) {
+                final String deployDirectory = getContainerDirectory("deploy/");
+                copyResourceFile(fileName, deployDirectory);
+            }
+
+            final List<String> propertiesFiles =
+                    findConfigurationFiles(PROPERTIES_FILES_SUFFIX);
+            for (final String fileName : propertiesFiles) {
+                copyResourceFileToConfDir(fileName);
+            }
+        }
 
         /*
          * Do custom configuration.
          */
         setupConfiguration();
+    }
+
+    /**
+     * Searches for configuration files with the specified suffix.
+     * 
+     * @param suffix The file suffix.
+     * @return Returns a list of file names that end with the specified suffix.
+     */
+    protected List<String> findConfigurationFiles(final String suffix) {
+        final List<String> files = new ArrayList<String>();
+
+        final File directory = new File(configResourcesPath);
+        final File[] listFiles = directory.listFiles();
+
+        for (File file : listFiles) {
+            final String name = file.getName();
+
+            if (org.springframework.util.StringUtils.endsWithIgnoreCase(name,
+                    suffix)) {
+                files.add(name);
+
+                if (log.isInfoEnabled()) {
+                    log.info("Added configuration file called: " + name);
+                }
+            }
+        }
+
+        return files;
+    }
+
+    /**
+     * Copies the specified resource file to the configuration directory of
+     * JBoss.
+     * 
+     * @param fileName The file name that needs to be copied.
+     */
+    protected void copyResourceFileToConfDir(final String fileName) {
+        copyResourceFile(fileName, getConfDirectory());
+    }
+
+    protected void copyResourceFile(final String fileName,
+            final String destinationDirectory) {
+        final String originalFile = configResourcesPath + fileName;
+        final File srcFile = new File(originalFile);
+
+        final String newFile = destinationDirectory + fileName;
+        final File destFile = new File(newFile);
+
+        try {
+            FileUtils.copyFile(srcFile, destFile);
+
+            if (log.isInfoEnabled()) {
+                log.info("Copied file " + fileName + " to "
+                        + destFile.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            if (log.isWarnEnabled()) {
+                log.warn("Failed to copy resource file: " + fileName);
+            }
+        }
     }
 
     protected void deploy() {
@@ -360,6 +468,13 @@ public abstract class AbstractJBossContainerUtil extends
 
     public String getConfDirectory() {
         return getContainerDirectory("conf/");
+    }
+
+    /**
+     * @param autoDetect the autoDetect to set
+     */
+    public void setAutoDetect(boolean autoDetect) {
+        this.autoDetect = autoDetect;
     }
 
 }

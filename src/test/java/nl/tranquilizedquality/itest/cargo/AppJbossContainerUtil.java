@@ -15,9 +15,6 @@
  */
 package nl.tranquilizedquality.itest.cargo;
 
-import java.io.File;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -48,28 +45,17 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class AppJbossContainerUtil extends AbstractJBossContainerUtil {
-	/** Logger for this class */
-	private static final Log log = LogFactory.getLog(AppJbossContainerUtil.class);
+    /** Logger for this class */
+    private static final Log log =
+            LogFactory.getLog(AppJbossContainerUtil.class);
 
-	@Override
-	protected void setupConfiguration() throws Exception {
-		final String confDir = getConfDirectory();
+    @Override
+    protected void setupConfiguration() throws Exception {
 
-		if (log.isInfoEnabled()) {
-			log.info("Setting up the configuration from conf dir: " + confDir);
-		}
+        if (log.isInfoEnabled()) {
+            log.info("No custom configuration!");
+        }
 
-		// copy JNDI property file
-		File dest = new File(confDir + "jndi.properties");
-		dest.delete();
-		dest.createNewFile();
-		FileUtils.copyFile(new File(configResourcesPath + "jndi.properties"), dest);
-
-		// copy Log4j configuration file
-		dest = new File(confDir + "log4j.xml");
-		dest.delete();
-		dest.createNewFile();
-		FileUtils.copyFile(new File(configResourcesPath + "log4j.xml"), dest);
-	}
+    }
 
 }
