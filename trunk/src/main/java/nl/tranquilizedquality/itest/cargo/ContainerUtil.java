@@ -17,7 +17,7 @@
 package nl.tranquilizedquality.itest.cargo;
 
 /**
- * Inteface for a container utility. It can configure, start and stop a specific
+ * Interface for a container utility. It can configure, start and stop a specific
  * container.
  * 
  * @author Salomo Petrus (sape)
