@@ -19,13 +19,7 @@ package nl.tranquilizedquality.itest.cargo;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -63,30 +57,11 @@ import org.springframework.beans.factory.annotation.Required;
  * @since 11/12/2008
  * 
  */
-public abstract class AbstractJBossContainerUtil implements ContainerUtil {
+public abstract class AbstractJBossContainerUtil extends
+        AbstractInstalledContainerUtil {
     /** Logger for this class */
     private static final Log log =
             LogFactory.getLog(AbstractJBossContainerUtil.class);
-
-    /**
-     * The installedLocalContainer where the server application will be run in.
-     */
-    protected InstalledLocalContainer installedLocalContainer;
-
-    /** The JVM arguments to use when starting up the installedLocalContainer */
-    protected List<String> jvmArguments = new ArrayList<String>();
-
-    /**
-     * The path where the installedLocalContainer server is installed.
-     */
-    protected String containerHome;
-
-    /**
-     * The port where the container will run on. Use the property
-     * ${cargo.server.port} to set the port dynamically and set the system
-     * properties with this value.
-     */
-    protected Integer containerPort;
 
     /**
      * The port where the JNP service will run on. This service is used to be
@@ -94,21 +69,7 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
      * to set the port dynamically and set the system properties with this
      * value. Cargo seems to search for this service on port 1299.
      */
-    protected Integer jnpPort;
-
-    /**
-     * The path where the Cargo log files will be written to.
-     */
-    protected String cargoLogFilePath;
-
-    /** The system property that can be set to be used in the JVM. */
-    protected Map<String, String> systemProperties;
-
-    /** The URL where the container and configuration ZIP files are. */
-    private String remoteLocation;
-
-    /** The ZIP file of the container to use i.e. jboss-4.0.4.GA.zip. */
-    private String containerFile;
+    private Integer jnpPort;
 
     /** The ZIP file containing the JBoss configuration. */
     private String containerConfigurationFile;
@@ -116,54 +77,14 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
     /** The name of the JBOSS configuration to use. */
     protected String configurationName;
 
-    /** The deployable locations that will be used in the integration tests. */
-    private Map<String, String> deployableLocations;
-
-    /**
-     * The deployable location configurations that will be used in the
-     * integration tests.
-     */
-    private List<DeployableLocationConfiguration> deployableLocationConfigurations;
-
     /**
      * Default constructor that will detect which OS is used to make sure the
      * JBOSS will be downloaded in the correct location.
      */
     public AbstractJBossContainerUtil() {
-        String operatingSystem = System.getProperty("os.name");
-        if (operatingSystem != null && operatingSystem.startsWith("Windows")) {
-            containerHome = "C:/WINDOWS/Temp/jboss/";
-        } else {
-            containerHome = "/tmp/jboss/";
-        }
-
-        if (log.isInfoEnabled()) {
-            log.info("Container HOME: " + containerHome);
-        }
-
-        systemProperties = new HashMap<String, String>();
-        deployableLocations = new LinkedHashMap<String, String>();
-        deployableLocationConfigurations =
-                new ArrayList<DeployableLocationConfiguration>();
-    }
-
-    /**
-     * Sets up the configuration needed for the deployable to be able to run
-     * correctly.
-     * 
-     * @throws Exception Is thrown when something went wrong if the
-     *         configuration setup fails.
-     */
-    protected abstract void setupConfiguration() throws Exception;
-
-    public void start() throws Exception {
-        setupContainer();
-
-        deploy();
-    }
-
-    public void stop() {
-        installedLocalContainer.stop();
+        setContainerName("JBoss");
+        
+        cleanUpContainer();
     }
 
     /**
@@ -175,46 +96,50 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
      *         the container.
      */
     protected void setupContainer() throws Exception {
-        if (log.isInfoEnabled()) {
-            log.info("Cleaning up JBoss...");
-        }
+        /*
+         * Execute default setup behavior.
+         */
+        super.setupContainer();
 
-        FileUtils.deleteDirectory(new File(containerHome));
-        new File(containerHome).mkdir();
-
+        /*
+         * Provide configuration information.
+         */
         if (log.isInfoEnabled()) {
-            log.info("Installing JBoss...");
-            log.info("Downloading JBoss & configuration from: "
-                    + remoteLocation);
-            log.info("Container file: " + containerFile);
+            log.info("Downloading configuration from: " + remoteLocation);
             log.info("Container configuration file: "
                     + containerConfigurationFile);
         }
-        URL remoteLocation = new URL(this.remoteLocation + containerFile);
-        String installDir = containerHome + "..//";
+
+        /*
+         * Download and configure the JBoss configuration.
+         */
+        if (log.isInfoEnabled()) {
+            log.info("Installing [" + configurationName + "] configuration...");
+        }
+        URL remoteLocation =
+                new URL(this.remoteLocation + containerConfigurationFile);
+        String installDir = containerHome + "server/";
         ZipURLInstaller installer =
                 new ZipURLInstaller(remoteLocation, installDir);
         installer.install();
 
-        if (log.isInfoEnabled()) {
-            log.info("Installing [" + configurationName + "] configuration...");
-        }
-        remoteLocation =
-                new URL(this.remoteLocation + containerConfigurationFile);
-        installDir = containerHome + "server/";
-        installer = new ZipURLInstaller(remoteLocation, installDir);
-        installer.install();
-
+        /*
+         * Setup the system properties.
+         */
         systemProperties.put("jboss.server.lib.url:lib", "file:lib/");
-        systemProperties.put("cargo.server.port", containerPort.toString());
         systemProperties.put("cargo.jnp.port", jnpPort.toString());
 
+        /*
+         * TODO: Setup JBoss specific configuration like JNDI properties, JNDI data
+         * source files etc.
+         */
+
+        /*
+         * Do custom configuration.
+         */
         setupConfiguration();
     }
 
-    /**
-     * Deploys the application to the correct
-     */
     protected void deploy() {
         // create configuration factory
         final ConfigurationFactory configurationFactory =
@@ -377,52 +302,6 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
     }
 
     /**
-     * Retrieves the JVM arguments
-     * 
-     * @return Returns a unmodifiable list containing the current JVM arguments.
-     */
-    public List<String> getJvmArguments() {
-        return Collections.unmodifiableList(jvmArguments);
-    }
-
-    /**
-     * @param jvmArguments the jvmArguments to set
-     */
-    @Required
-    public void setJvmArguments(List<String> jvmArguments) {
-        this.jvmArguments = new ArrayList<String>(jvmArguments);
-    }
-
-    @Required
-    public void setCargoLogFilePath(String cargoLogFilePath) {
-        this.cargoLogFilePath = cargoLogFilePath;
-    }
-
-    /**
-     * @param containerPort the containerPort to set
-     */
-    @Required
-    public void setContainerPort(Integer containerPort) {
-        this.containerPort = containerPort;
-    }
-
-    /**
-     * @param remoteLocation the remoteLocation to set
-     */
-    @Required
-    public void setRemoteLocation(String remoteLocation) {
-        this.remoteLocation = remoteLocation;
-    }
-
-    /**
-     * @param containerFile the containerFile to set
-     */
-    @Required
-    public void setContainerFile(String containerFile) {
-        this.containerFile = containerFile;
-    }
-
-    /**
      * @param containerConfigurationFile the containerConfigurationFile to set
      */
     @Required
@@ -431,42 +310,11 @@ public abstract class AbstractJBossContainerUtil implements ContainerUtil {
     }
 
     /**
-     * @param systemProperties the systemProperties to set
-     */
-    public void setSystemProperties(Map<String, String> systemProperties) {
-        this.systemProperties = systemProperties;
-    }
-
-    /**
      * @param configurationName the configurationName to set
      */
     @Required
     public void setConfigurationName(String configurationName) {
         this.configurationName = configurationName;
-    }
-
-    /**
-     * @param deployableLocations the deployableLocations to set
-     */
-    public void setDeployableLocations(Map<String, String> deployableLocations) {
-        this.deployableLocations = deployableLocations;
-    }
-
-    /**
-     * @param locations the deployable configuration locations that will be set.
-     */
-    public void setDeployableLocationConfigurations(
-            List<DeployableLocationConfiguration> deployableLocationConfigurations) {
-        this.deployableLocationConfigurations =
-                deployableLocationConfigurations;
-    }
-
-    public void addDeployableLocation(final String location, final String type) {
-        this.deployableLocations.put(type, location);
-    }
-
-    public Integer getContainerPort() {
-        return containerPort;
     }
 
     /**
