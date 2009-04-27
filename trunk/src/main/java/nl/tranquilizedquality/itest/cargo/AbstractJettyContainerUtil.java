@@ -18,7 +18,6 @@ package nl.tranquilizedquality.itest.cargo;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -46,26 +45,28 @@ import org.codehaus.cargo.util.log.LogLevel;
 import org.codehaus.cargo.util.log.Logger;
 
 /**
- * AbstractTomcatContainerUtil is an implementation of {@link ContainerUtil}
- * which managaes a Tomcat servlet container. It can configure, start and stop
- * the Tomcat servlet container.
+ * Implementation of a {@link ContainerUtil} for the Jetty servlet container.
  * 
- * @author Salomo Petrus
+ * @author Salomo Petrus (sape)
+ * @since 27 apr 2009
  * 
  */
-public abstract class AbstractTomcatContainerUtil extends
+public abstract class AbstractJettyContainerUtil extends
         AbstractInstalledContainerUtil {
 
     /** Logger for this class */
     private static final Log log =
-            LogFactory.getLog(AbstractTomcatContainerUtil.class);
+            LogFactory.getLog(AbstractJettyContainerUtil.class);
+
+    /** The name of the JOnas configuration to use. */
+    protected String configurationName;
 
     /**
      * Default constructor that will detect which OS is used to make sure the
-     * Tomcat will be downloaded in the correct location.
+     * JOnas will be downloaded in the correct location.
      */
-    public AbstractTomcatContainerUtil() {
-        setContainerName("Tomcat");
+    public AbstractJettyContainerUtil() {
+        setContainerName("Jetty");
 
         cleanUpContainer();
     }
@@ -73,11 +74,12 @@ public abstract class AbstractTomcatContainerUtil extends
     /**
      * Installs the container and the application configuration. It also sets
      * some system properties so the container can startup properly. Finally it
-     * sets up additional configuration like jndi.proprties files etc.
+     * sets up additional configuration like jndi.properties files etc.
      * 
      * @throws Exception Is thrown when something goes wrong during the setup of
      *         the container.
      */
+    @Override
     protected void setupContainer() throws Exception {
         /*
          * Execute default setup behavior.
@@ -91,25 +93,38 @@ public abstract class AbstractTomcatContainerUtil extends
      * Deploys the application to the correct
      */
     protected void deploy() {
+        if (log.isInfoEnabled()) {
+            log.info("Creating configuration..");
+        }
+
         // create configuration factory
-        ConfigurationFactory configurationFactory =
+        final ConfigurationFactory configurationFactory =
                 new DefaultConfigurationFactory();
 
         // create JBoss configuration
-        LocalConfiguration configuration =
+        final LocalConfiguration configuration =
                 (LocalConfiguration) configurationFactory.createConfiguration(
-                        "tomcat5x", ContainerType.INSTALLED,
-                        ConfigurationType.EXISTING, containerHome);
+                        "jetty6x", ContainerType.INSTALLED,
+                        ConfigurationType.STANDALONE, containerHome
+                                + "cargo-conf/");
 
         // setup configuration
-        StringBuilder args = new StringBuilder();
+        final StringBuilder args = new StringBuilder();
         for (String arg : jvmArguments) {
             args.append(arg);
             args.append(" ");
+
+            if (log.isInfoEnabled()) {
+                log.info("Added JVM argument: " + arg);
+            }
         }
         configuration.setProperty(GeneralPropertySet.JVMARGS, args.toString());
         configuration.setProperty(ServletPropertySet.PORT, containerPort
                 .toString());
+
+        if (log.isInfoEnabled()) {
+            log.info("Adding deployables..");
+        }
 
         /*
          * Iterate over all available deployable locations.
@@ -174,15 +189,19 @@ public abstract class AbstractTomcatContainerUtil extends
             addDeployable(configuration, path, deployableType);
         }
 
+        if (log.isInfoEnabled()) {
+            log.info("Setup the container..");
+        }
+
         // create installedLocalContainer
         installedLocalContainer =
                 (InstalledLocalContainer) new DefaultContainerFactory()
-                        .createContainer("tomcat5x", ContainerType.INSTALLED,
+                        .createContainer("jetty6x", ContainerType.INSTALLED,
                                 configuration);
 
         // configure installedLocalContainer
         installedLocalContainer.setHome(containerHome);
-        Logger fileLogger =
+        final Logger fileLogger =
                 new FileLogger(new File(cargoLogFilePath + "cargo.log"), true);
         fileLogger.setLevel(LogLevel.DEBUG);
         installedLocalContainer.setLogger(fileLogger);
@@ -192,7 +211,7 @@ public abstract class AbstractTomcatContainerUtil extends
         installedLocalContainer.setSystemProperties(systemProperties);
 
         if (log.isInfoEnabled()) {
-            log.info("Starting Tomcat ...");
+            log.info("Starting Jetty ...");
         }
 
         // startup installedLocalContainer
@@ -200,17 +219,10 @@ public abstract class AbstractTomcatContainerUtil extends
 
         // Here you are assured the container is started.
         if (log.isInfoEnabled()) {
-            log.info("Tomcat up and running!");
+            log.info("Jetty up and running!");
         }
     }
 
-    /**
-     * @return the deployableLocations
-     */
-    public Map<String, String> getDeployableLocations() {
-        return deployableLocations;
-    }
-    
     /**
      * Determines the type of deployable.
      * 
@@ -289,6 +301,20 @@ public abstract class AbstractTomcatContainerUtil extends
     }
 
     public String getConfDirectory() {
-        return getContainerDirectory("conf/");
+        return getContainerDirectory("etc/");
+    }
+
+    /**
+     * @return the configurationName
+     */
+    public String getConfigurationName() {
+        return configurationName;
+    }
+
+    /**
+     * @param configurationName the configurationName to set
+     */
+    public void setConfigurationName(String configurationName) {
+        this.configurationName = configurationName;
     }
 }
