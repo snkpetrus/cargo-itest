@@ -162,9 +162,9 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
         /*
          * Download and configure the container.
          */
-        URL remoteLocation = new URL(this.remoteLocation + containerFile);
-        String installDir = containerHome + "..//";
-        ZipURLInstaller installer =
+        final URL remoteLocation = new URL(this.remoteLocation + containerFile);
+        final String installDir = containerHome + "..//";
+        final ZipURLInstaller installer =
                 new ZipURLInstaller(remoteLocation, installDir);
         installer.install();
 
