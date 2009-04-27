@@ -107,6 +107,10 @@ public abstract class AbstractJOnasContainerUtil extends
         for (String arg : jvmArguments) {
             args.append(arg);
             args.append(" ");
+            
+            if (log.isInfoEnabled()) {
+                log.info("Added JVM argument: " + arg);
+            }
         }
         configuration.setProperty(GeneralPropertySet.JVMARGS, args.toString());
         configuration.setProperty(ServletPropertySet.PORT, containerPort
@@ -119,9 +123,9 @@ public abstract class AbstractJOnasContainerUtil extends
         Iterator<Entry<String, String>> iterator = entrySet.iterator();
 
         while (iterator.hasNext()) {
-            Entry<String, String> entry = iterator.next();
-            String key = entry.getKey();
-            String value = entry.getValue();
+            final Entry<String, String> entry = iterator.next();
+            final String key = entry.getKey();
+            final String value = entry.getValue();
             DeployableType deployableType = null;
 
             /*

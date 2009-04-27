@@ -15,6 +15,7 @@
  */
 package nl.tranquilizedquality.itest;
 
+import static junit.framework.Assert.fail;
 import nl.tranquilizedquality.itest.cargo.ContainerUtil;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -48,6 +50,9 @@ public abstract class AbstractDefaultNoDbDeploymentTest {
      */
     protected static String host = "localhost:8890";
 
+    /**
+     * The name of the context file for the itest beans.
+     */
     protected static String ITEST_CONTEXT_FILENAME = "itest-context.xml";
 
     /**
@@ -72,11 +77,21 @@ public abstract class AbstractDefaultNoDbDeploymentTest {
                 log.info("Starting up the container utility...");
             }
 
-            ConfigurableApplicationContext context =
-                    loadContext(new String[] { ITEST_CONTEXT_FILENAME,
-                            "common-itest-context.xml" });
-            CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
-            CONTAINER_UTIL.start();
+            try {
+                final ConfigurableApplicationContext context =
+                        loadContext(new String[] { ITEST_CONTEXT_FILENAME,
+                                "common-itest-context.xml" });
+
+                CONTAINER_UTIL =
+                        (ContainerUtil) context.getBean("containerUtil");
+                CONTAINER_UTIL.start();
+            } catch (BeansException e) {
+                final String msg = "Failed to start up the container utility! - " + e.getMessage();
+                if (log.isErrorEnabled()) {
+                    log.error(msg);
+                }
+                fail(msg);
+            }
         }
     }
 

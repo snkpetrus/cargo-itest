@@ -134,9 +134,9 @@ public abstract class AbstractJettyContainerUtil extends
         final Iterator<Entry<String, String>> iterator = entrySet.iterator();
 
         while (iterator.hasNext()) {
-            Entry<String, String> entry = iterator.next();
-            String key = entry.getKey();
-            String value = entry.getValue();
+            final Entry<String, String> entry = iterator.next();
+            final String key = entry.getKey();
+            final String value = entry.getValue();
             DeployableType deployableType = null;
 
             /*
@@ -259,10 +259,10 @@ public abstract class AbstractJettyContainerUtil extends
      * @param path The path where the deployable can be found.
      * @param deployableType The type of deployable.
      */
-    private void addDeployable(LocalConfiguration configuration, String path,
-            DeployableType deployableType) {
+    private void addDeployable(final LocalConfiguration configuration,
+            final String path, final DeployableType deployableType) {
         // retrieve deployable file
-        Deployable deployable =
+        final Deployable deployable =
                 new DefaultDeployableFactory().createDeployable("jetty", path,
                         deployableType);
 
