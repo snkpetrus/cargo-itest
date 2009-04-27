@@ -1,0 +1,290 @@
+/*
+ * Copyright 2009 Salomo Petrus
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package nl.tranquilizedquality.itest.cargo;
+
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import nl.tranquilizedquality.itest.domain.DeployableLocationConfiguration;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.codehaus.cargo.container.InstalledLocalContainer;
+import org.codehaus.cargo.container.installer.ZipURLInstaller;
+import org.springframework.beans.factory.annotation.Required;
+
+/**
+ * Base container class where every container should extend from. It contains
+ * all the basic stuff which every container utility should have like cleaning
+ * up the container before doing a fresh run.
+ * 
+ * @author Salomo Petrus (sape)
+ * @since 23 apr 2009
+ * 
+ */
+public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
+    /** Logger for this class */
+    private static final Log log =
+            LogFactory.getLog(AbstractInstalledContainerUtil.class);
+
+    /** The name of the container. */
+    private String containerName;
+
+    /** The path where all configuration resource files are */
+    protected String configResourcesPath;
+
+    /**
+     * The installedLocalContainer where the server application will be run in.
+     */
+    protected InstalledLocalContainer installedLocalContainer;
+
+    /** The JVM arguments to use when starting up the installedLocalContainer */
+    protected List<String> jvmArguments = new ArrayList<String>();
+
+    /**
+     * The path where the installedLocalContainer server is installed.
+     */
+    protected String containerHome;
+
+    /**
+     * The port where the container will run on. Use the property
+     * ${cargo.server.port} to set the port dynamically and set the system
+     * properties with this value.
+     */
+    protected Integer containerPort;
+
+    /**
+     * The path where the Cargo log files will be written to.
+     */
+    protected String cargoLogFilePath;
+
+    /** The system property that can be set to be used in the JVM. */
+    protected Map<String, String> systemProperties;
+
+    /** The URL where the container and configuration ZIP files are. */
+    protected String remoteLocation;
+
+    /** The ZIP file of the container to use i.e. jboss-4.0.4.GA.zip. */
+    protected String containerFile;
+
+    /** The deployable locations that will be used in the integration tests. */
+    protected Map<String, String> deployableLocations;
+
+    /**
+     * The deployable location configurations that will be used in the
+     * integration tests.
+     */
+    protected List<DeployableLocationConfiguration> deployableLocationConfigurations;
+
+    /**
+     * Default constructor.
+     */
+    public AbstractInstalledContainerUtil() {
+        configResourcesPath = "src/test/resources/";
+
+        systemProperties = new HashMap<String, String>();
+        deployableLocations = new LinkedHashMap<String, String>();
+        deployableLocationConfigurations =
+                new ArrayList<DeployableLocationConfiguration>();
+    }
+
+    /**
+     * Cleans up the container if there is any to make sure we start with a
+     * fresh container.
+     */
+    protected void cleanUpContainer() {
+        final String operatingSystem = System.getProperty("os.name");
+        if (operatingSystem != null && operatingSystem.startsWith("Windows")) {
+            containerHome = "C:/WINDOWS/Temp/" + containerName + "/";
+        } else {
+            containerHome = "/tmp/" + containerName + "/";
+        }
+
+        if (log.isInfoEnabled()) {
+            log.info("Container HOME: " + containerHome);
+        }
+    }
+
+    /**
+     * Sets up the configuration needed for the deployable to be able to run
+     * correctly.
+     * 
+     * @throws Exception Is thrown when something went wrong if the
+     *         configuration setup fails.
+     */
+    protected abstract void setupConfiguration() throws Exception;
+
+    /**
+     * Installs the container and the application configuration. It also sets
+     * some system properties so the container can startup properly. Finally it
+     * sets up additional configuration like jndi.proprties files etc.
+     * 
+     * @throws Exception Is thrown when something goes wrong during the setup of
+     *         the container.
+     */
+    protected void setupContainer() throws Exception {
+        if (log.isInfoEnabled()) {
+            log.info("Cleaning up " + containerName + "...");
+        }
+
+        /*
+         * Delete container directory.
+         */
+        FileUtils.deleteDirectory(new File(containerHome));
+        new File(containerHome).mkdir();
+
+        if (log.isInfoEnabled()) {
+            log.info("Installing " + containerName + "...");
+            log.info("Downloading container from: " + remoteLocation);
+            log.info("Container file: " + containerFile);
+        }
+
+        /*
+         * Download and configure the container.
+         */
+        final URL remoteLocation = new URL(this.remoteLocation + containerFile);
+        final String installDir = containerHome + "..//";
+        final ZipURLInstaller installer =
+                new ZipURLInstaller(remoteLocation, installDir);
+        installer.install();
+
+        /*
+         * Setup the system properties.
+         */
+        systemProperties.put("cargo.server.port", containerPort.toString());
+
+    }
+
+    /**
+     * Deploys the application to the correct
+     */
+    protected abstract void deploy();
+
+    public void start() throws Exception {
+        setupContainer();
+
+        deploy();
+    }
+
+    public void stop() {
+        installedLocalContainer.stop();
+    }
+
+    /**
+     * @param configResourcesPath the configResourcesPath to set
+     */
+    public void setConfigResourcesPath(String configResourcesPath) {
+        this.configResourcesPath = configResourcesPath;
+    }
+
+    /**
+     * @return the configResourcesPath
+     */
+    public String getConfigResourcesPath() {
+        return configResourcesPath;
+    }
+
+    /**
+     * @param deployableLocations the deployableLocations to set
+     */
+    public void setDeployableLocations(Map<String, String> deployableLocations) {
+        this.deployableLocations = deployableLocations;
+    }
+
+    /**
+     * @param locations the deployable configuration locations that will be set.
+     */
+    public void setDeployableLocationConfigurations(
+            List<DeployableLocationConfiguration> deployableLocationConfigurations) {
+        this.deployableLocationConfigurations =
+                deployableLocationConfigurations;
+    }
+
+    public void addDeployableLocation(final String location, final String type) {
+        this.deployableLocations.put(type, location);
+    }
+
+    public Integer getContainerPort() {
+        return containerPort;
+    }
+
+    /**
+     * @param systemProperties the systemProperties to set
+     */
+    public void setSystemProperties(Map<String, String> systemProperties) {
+        this.systemProperties = systemProperties;
+    }
+
+    /**
+     * Retrieves the JVM arguments
+     * 
+     * @return Returns a unmodifiable list containing the current JVM arguments.
+     */
+    public List<String> getJvmArguments() {
+        return Collections.unmodifiableList(jvmArguments);
+    }
+
+    /**
+     * @param jvmArguments the jvmArguments to set
+     */
+    @Required
+    public void setJvmArguments(List<String> jvmArguments) {
+        this.jvmArguments = new ArrayList<String>(jvmArguments);
+    }
+
+    @Required
+    public void setCargoLogFilePath(String cargoLogFilePath) {
+        this.cargoLogFilePath = cargoLogFilePath;
+    }
+
+    /**
+     * @param containerPort the containerPort to set
+     */
+    @Required
+    public void setContainerPort(Integer containerPort) {
+        this.containerPort = containerPort;
+    }
+
+    /**
+     * @param remoteLocation the remoteLocation to set
+     */
+    @Required
+    public void setRemoteLocation(String remoteLocation) {
+        this.remoteLocation = remoteLocation;
+    }
+
+    /**
+     * @param containerFile the containerFile to set
+     */
+    @Required
+    public void setContainerFile(String containerFile) {
+        this.containerFile = containerFile;
+    }
+
+    /**
+     * @param containerName the containerName to set
+     */
+    protected void setContainerName(String containerName) {
+        this.containerName = containerName;
+    }
+}
