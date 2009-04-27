@@ -265,6 +265,10 @@ public abstract class AbstractJBossContainerUtil extends
         for (String arg : jvmArguments) {
             args.append(arg);
             args.append(" ");
+            
+            if (log.isInfoEnabled()) {
+                log.info("Added JVM argument: " + arg);
+            }
         }
         configuration.setProperty(GeneralPropertySet.JVMARGS, args.toString());
         configuration.setProperty(ServletPropertySet.PORT, containerPort

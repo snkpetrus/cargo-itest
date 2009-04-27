@@ -92,11 +92,11 @@ public abstract class AbstractTomcatContainerUtil extends
      */
     protected void deploy() {
         // create configuration factory
-        ConfigurationFactory configurationFactory =
+        final ConfigurationFactory configurationFactory =
                 new DefaultConfigurationFactory();
 
         // create JBoss configuration
-        LocalConfiguration configuration =
+        final LocalConfiguration configuration =
                 (LocalConfiguration) configurationFactory.createConfiguration(
                         "tomcat5x", ContainerType.INSTALLED,
                         ConfigurationType.EXISTING, containerHome);
@@ -106,6 +106,10 @@ public abstract class AbstractTomcatContainerUtil extends
         for (String arg : jvmArguments) {
             args.append(arg);
             args.append(" ");
+
+            if (log.isInfoEnabled()) {
+                log.info("Added JVM argument: " + arg);
+            }
         }
         configuration.setProperty(GeneralPropertySet.JVMARGS, args.toString());
         configuration.setProperty(ServletPropertySet.PORT, containerPort
@@ -119,9 +123,9 @@ public abstract class AbstractTomcatContainerUtil extends
         final Iterator<Entry<String, String>> iterator = entrySet.iterator();
 
         while (iterator.hasNext()) {
-            Entry<String, String> entry = iterator.next();
-            String key = entry.getKey();
-            String value = entry.getValue();
+            final Entry<String, String> entry = iterator.next();
+            final String key = entry.getKey();
+            final String value = entry.getValue();
             DeployableType deployableType = null;
 
             /*
@@ -182,7 +186,7 @@ public abstract class AbstractTomcatContainerUtil extends
 
         // configure installedLocalContainer
         installedLocalContainer.setHome(containerHome);
-        Logger fileLogger =
+        final Logger fileLogger =
                 new FileLogger(new File(cargoLogFilePath + "cargo.log"), true);
         fileLogger.setLevel(LogLevel.DEBUG);
         installedLocalContainer.setLogger(fileLogger);
@@ -210,7 +214,7 @@ public abstract class AbstractTomcatContainerUtil extends
     public Map<String, String> getDeployableLocations() {
         return deployableLocations;
     }
-    
+
     /**
      * Determines the type of deployable.
      * 
@@ -247,10 +251,10 @@ public abstract class AbstractTomcatContainerUtil extends
      * @param path The path where the deployable can be found.
      * @param deployableType The type of deployable.
      */
-    private void addDeployable(LocalConfiguration configuration, String path,
-            DeployableType deployableType) {
+    private void addDeployable(final LocalConfiguration configuration,
+            final String path, final DeployableType deployableType) {
         // retrieve deployable file
-        Deployable deployable =
+        final Deployable deployable =
                 new DefaultDeployableFactory().createDeployable("jetty", path,
                         deployableType);
 

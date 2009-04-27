@@ -15,6 +15,8 @@
  */
 package nl.tranquilizedquality.itest;
 
+import static junit.framework.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -82,24 +85,51 @@ public abstract class AbstractDefaultDeploymentTest extends
             if (log.isInfoEnabled()) {
                 log.info("Starting up the container utility...");
             }
-
-            ConfigurableApplicationContext context =
-                    loadContext(new String[] { "itest-context.xml",
-                            "common-itest-context.xml" });
-            CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
-            CONTAINER_UTIL.start();
-
             try {
-                SQL_SCRIPTS = (List<String>) context.getBean("sqlScripts");
-            } catch (NoSuchBeanDefinitionException e) {
-                SQL_SCRIPTS = new ArrayList<String>(0);
-            }
+                /*
+                 * Start up application context.
+                 */
+                final ConfigurableApplicationContext context =
+                        loadContext(new String[] { "itest-context.xml",
+                                "common-itest-context.xml" });
+                CONTAINER_UTIL =
+                        (ContainerUtil) context.getBean("containerUtil");
+                CONTAINER_UTIL.start();
+                
+                /*
+                 * Retrieve available SQL scripts.
+                 */
+                if (log.isInfoEnabled()) {
+                    log.info("Retrieving available SQL scripts...");
+                }
 
-            try {
-                SQL_CLEAN_UP_SCRIPTS =
-                        (List<String>) context.getBean("sqlCleanUpScripts");
-            } catch (NoSuchBeanDefinitionException e) {
-                SQL_CLEAN_UP_SCRIPTS = new ArrayList<String>(0);
+                try {
+                    SQL_SCRIPTS = (List<String>) context.getBean("sqlScripts");
+                } catch (NoSuchBeanDefinitionException e) {
+                    SQL_SCRIPTS = new ArrayList<String>(0);
+                }
+
+                /*
+                 * Retrieve available SQL clean up scripts.
+                 */
+                try {
+                    SQL_CLEAN_UP_SCRIPTS =
+                            (List<String>) context.getBean("sqlCleanUpScripts");
+                } catch (NoSuchBeanDefinitionException e) {
+                    SQL_CLEAN_UP_SCRIPTS = new ArrayList<String>(0);
+                }
+
+                final int numberOfScripts =
+                        SQL_SCRIPTS.size() + SQL_CLEAN_UP_SCRIPTS.size();
+                if (log.isInfoEnabled()) {
+                    log.info(numberOfScripts + " SQL scripts retrieved...");
+                }
+            } catch (BeansException e) {
+                final String msg = "Failed to start up the container utility! - " + e.getMessage();
+                if (log.isErrorEnabled()) {
+                    log.error(msg);
+                }
+                fail(msg);
             }
         }
     }
