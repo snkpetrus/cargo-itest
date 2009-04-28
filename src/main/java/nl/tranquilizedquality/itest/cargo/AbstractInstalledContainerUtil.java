@@ -24,9 +24,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import nl.tranquilizedquality.itest.cargo.exception.ConfigurationException;
 import nl.tranquilizedquality.itest.domain.DeployableLocationConfiguration;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.cargo.container.InstalledLocalContainer;
@@ -167,6 +169,19 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
         final ZipURLInstaller installer =
                 new ZipURLInstaller(remoteLocation, installDir);
         installer.install();
+        
+        final String containerDir = StringUtils.stripEnd(containerFile, ".zip");
+        final File installedDir = new File(containerHome + "..//" + containerDir + "/");
+        final File destenationDir = new File(containerHome);
+        boolean renamed = installedDir.renameTo(destenationDir);
+        
+        if(!renamed) {
+        	final String msg = "Failed to rename container install directory to home directory name!";
+        	if(log.isErrorEnabled()) {
+        		log.error(msg);
+        	}
+        	throw new ConfigurationException(msg);
+        }
 
         /*
          * Setup the system properties.
