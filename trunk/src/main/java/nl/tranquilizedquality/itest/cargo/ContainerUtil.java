@@ -17,63 +17,66 @@
 package nl.tranquilizedquality.itest.cargo;
 
 /**
- * Interface for a container utility. It can configure, start and stop a specific
- * container.
+ * Interface for a container utility. It can configure, start and stop a
+ * specific container.
  * 
  * @author Salomo Petrus (sape)
  * 
  */
 public interface ContainerUtil {
 
-    /**
-     * Starts up the installedLocalContainer and its deployed applications
-     * 
-     * @throws Exception Is thrown when something went wrong during start up.
-     */
-    void start() throws Exception;
+	/**
+	 * Starts up the installedLocalContainer and its deployed applications
+	 * 
+	 * @throws Exception
+	 *             Is thrown when something went wrong during start up.
+	 */
+	void start() throws Exception;
 
-    /**
-     * Stops the installedLocalContainer.
-     */
-    void stop();
+	/**
+	 * Stops the installedLocalContainer.
+	 */
+	void stop();
 
-    /**
-     * Adds a location of a deployable with the according type.
-     * 
-     * @param location The location where to get the deployable.
-     * @param type The type of deployable. This can be one of the following
-     *        three:
-     *        <ol>
-     *        <li>WAR</li>
-     *        <li>EAR</li>
-     *        <li>EJB</li>
-     *        </ol>
-     */
-    void addDeployableLocation(String location, String type);
+	/**
+	 * Adds a location of a deployable with the according type.
+	 * 
+	 * @param location
+	 *            The location where to get the deployable.
+	 * @param type
+	 *            The type of deployable. This can be one of the following
+	 *            three:
+	 *            <ol>
+	 *            <li>WAR</li>
+	 *            <li>EAR</li>
+	 *            <li>EJB</li>
+	 *            </ol>
+	 */
+	void addDeployableLocation(String location, String type);
 
-    /**
-     * Retrieves the port where the container is running on.
-     * 
-     * @return Returns an integer value representing the port the container is
-     *         running on.
-     */
-    Integer getContainerPort();
+	/**
+	 * Retrieves the port where the container is running on.
+	 * 
+	 * @return Returns an integer value representing the port the container is
+	 *         running on.
+	 */
+	Integer getContainerPort();
 
-    /**
-     * Retrieves the directory where shared libraries can be copied to.
-     * 
-     * @return Returns a String representation of the full path to the
-     *         directory.
-     */
-    String getSharedLibDirectory();
+	/**
+	 * Retrieves the directory where shared libraries can be copied to.
+	 * 
+	 * @return Returns a String representation of the full path to the
+	 *         directory.
+	 */
+	String getSharedLibDirectory();
 
-    /**
-     * Retrieves the directory where the configuration files are located from
-     * the specific container.
-     * 
-     * @return Returns a String representation of the full path to the
-     *         directory.
-     */
-    String getConfDirectory();
+	/**
+	 * Retrieves the directory where the configuration files are located from
+	 * the specific container.
+	 * 
+	 * @return Returns a String representation of the full path to the
+	 *         directory.
+	 */
+	String getConfDirectory();
 
 }

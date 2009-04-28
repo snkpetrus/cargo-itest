@@ -27,57 +27,60 @@ import org.springframework.beans.factory.annotation.Required;
  * 
  */
 public class DeployableLocationConfiguration {
-    /** The path where to find the deployable. */
-    private String path;
+	/** The path where to find the deployable. */
+	private String path;
 
-    /** The type of deployable. Can be either WAR, EAR or EJB. */
-    private String type;
+	/** The type of deployable. Can be either WAR, EAR or EJB. */
+	private String type;
 
-    /** The context name of the application. NOTE: IS ONLY APPLICABLE FOR WAR. */
-    private String contextName;
+	/** The context name of the application. NOTE: IS ONLY APPLICABLE FOR WAR. */
+	private String contextName;
 
-    /**
-     * @return the path
-     */
-    public String getPath() {
-        return path;
-    }
+	/**
+	 * @return the path
+	 */
+	public String getPath() {
+		return path;
+	}
 
-    /**
-     * @param path the path to set
-     */
-    @Required
-    public void setPath(String path) {
-        this.path = path;
-    }
+	/**
+	 * @param path
+	 *            the path to set
+	 */
+	@Required
+	public void setPath(String path) {
+		this.path = path;
+	}
 
-    /**
-     * @return the type
-     */
-    public String getType() {
-        return type;
-    }
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
 
-    /**
-     * @param type the type to set
-     */
-    @Required
-    public void setType(String type) {
-        this.type = type;
-    }
+	/**
+	 * @param type
+	 *            the type to set
+	 */
+	@Required
+	public void setType(String type) {
+		this.type = type;
+	}
 
-    /**
-     * @return the contextName
-     */
-    public String getContextName() {
-        return contextName;
-    }
+	/**
+	 * @return the contextName
+	 */
+	public String getContextName() {
+		return contextName;
+	}
 
-    /**
-     * @param contextName the contextName to set
-     */
-    public void setContextName(String contextName) {
-        this.contextName = contextName;
-    }
+	/**
+	 * @param contextName
+	 *            the contextName to set
+	 */
+	public void setContextName(String contextName) {
+		this.contextName = contextName;
+	}
 
 }
