@@ -4,7 +4,14 @@
 		<author email="salomo.petrus@gmail.com">Salomo Petrus</author>
 	</properties>
 	<body>
-		<release version="1.2.0" date="TBD" description="Subsequent release">
+		<release version="1.2.0" date="28-04-2009" description="Bug fix release">
+			<action dev="salomo.petrus" type="fix">
+				Fixed linux issue by renaming the install directory of the downloaded container .ZIP file 
+				to the predefined container home directory. Now it doesn't matter what name the .ZIP file
+				has that contains the container.
+			</action>
+		</release>
+		<release version="1.2.0" date="27-04-2009" description="Subsequent release">
 			<action dev="salomo.petrus" type="add">
 				Added support for the Jetty
 				servlet container.
