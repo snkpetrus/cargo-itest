@@ -42,17 +42,16 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  */
 @RunWith(JUnit4ClassRunner.class)
 public class TestAppJBossDeploymentTest extends AbstractDefaultDeploymentTest {
-	
-    @Test
-    public void testHelloWorld() throws Exception {
-        final WebClient webClient = new WebClient();
-        webClient.setJavaScriptEnabled(false);
 
-        // Get the first page
-        final HtmlPage index =
-                (HtmlPage) webClient.getPage("http://" + host + "/test-app/");
+	@Test
+	public void testHelloWorld() throws Exception {
+		final WebClient webClient = new WebClient();
+		webClient.setJavaScriptEnabled(false);
 
-        assertNotNull(index);
-        assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
-    }
+		// Get the first page
+		final HtmlPage index = (HtmlPage) webClient.getPage("http://" + host + "/test-app/");
+
+		assertNotNull(index);
+		assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
+	}
 }

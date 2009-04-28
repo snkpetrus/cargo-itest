@@ -43,71 +43,67 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  * 
  */
 public class TestAppJettyNoDbDeploymentTest {
-    /** Logger for this class */
-    private static final Log log =
-            LogFactory.getLog(TestAppJettyNoDbDeploymentTest.class);
+	/** Logger for this class */
+	private static final Log log = LogFactory.getLog(TestAppJettyNoDbDeploymentTest.class);
 
-    /** The container utility for starting up a container. */
-    protected static ContainerUtil CONTAINER_UTIL;
+	/** The container utility for starting up a container. */
+	protected static ContainerUtil CONTAINER_UTIL;
 
-    /**
-     * The safety cameras host to test.
-     */
-    protected static String host = "localhost";
+	/**
+	 * The safety cameras host to test.
+	 */
+	protected static String host = "localhost";
 
-    /**
-     * Loads the application context of the container utility.
-     * 
-     * @param locations A string array containing all the files that need to be
-     *        loaded in the application context.
-     * @return Returns the application context.
-     */
-    protected static ConfigurableApplicationContext loadContext(
-            String[] locations) {
-        return new ClassPathXmlApplicationContext(locations);
-    }
+	/**
+	 * Loads the application context of the container utility.
+	 * 
+	 * @param locations
+	 *            A string array containing all the files that need to be loaded
+	 *            in the application context.
+	 * @return Returns the application context.
+	 */
+	protected static ConfigurableApplicationContext loadContext(String[] locations) {
+		return new ClassPathXmlApplicationContext(locations);
+	}
 
-    @BeforeClass
-    public static void runOnce() throws Exception {
-        // The application server need to be locally started only if the
-        // host is localhost
-        if (StringUtils.contains(host, "localhost")
-                || StringUtils.contains(host, "127.0.0.")) {
-            if (log.isInfoEnabled()) {
-                log.info("Starting up the container utility...");
-            }
+	@BeforeClass
+	public static void runOnce() throws Exception {
+		// The application server need to be locally started only if the
+		// host is localhost
+		if (StringUtils.contains(host, "localhost") || StringUtils.contains(host, "127.0.0.")) {
+			if (log.isInfoEnabled()) {
+				log.info("Starting up the container utility...");
+			}
 
-            ConfigurableApplicationContext context =
-                    loadContext(new String[] { "jetty-itest-context.xml",
-                            "common-itest-context.xml" });
-            CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
-            CONTAINER_UTIL.start();
-        }
-    }
+			ConfigurableApplicationContext context = loadContext(new String[] {
+					"jetty-itest-context.xml", "common-itest-context.xml" });
+			CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
+			CONTAINER_UTIL.start();
+		}
+	}
 
-    @AfterClass
-    public static void stop() {
-        if (CONTAINER_UTIL != null) {
-            if (log.isInfoEnabled()) {
-                log.info("Stopping the container utility...");
-            }
-            CONTAINER_UTIL.stop();
-        }
-    }
+	@AfterClass
+	public static void stop() {
+		if (CONTAINER_UTIL != null) {
+			if (log.isInfoEnabled()) {
+				log.info("Stopping the container utility...");
+			}
+			CONTAINER_UTIL.stop();
+		}
+	}
 
-    @Test
-    public void testHelloWorld() throws Exception {
-        final WebClient webClient = new WebClient();
-        webClient.setJavaScriptEnabled(false);
+	@Test
+	public void testHelloWorld() throws Exception {
+		final WebClient webClient = new WebClient();
+		webClient.setJavaScriptEnabled(false);
 
-        final String url =
-                "http://" + host + ":" + CONTAINER_UTIL.getContainerPort()
-                        + "/test-app/";
+		final String url = "http://" + host + ":" + CONTAINER_UTIL.getContainerPort()
+				+ "/test-app/";
 
-        // Get the first page
-        final HtmlPage index = (HtmlPage) webClient.getPage(url);
+		// Get the first page
+		final HtmlPage index = (HtmlPage) webClient.getPage(url);
 
-        assertNotNull(index);
-        assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
-    }
+		assertNotNull(index);
+		assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
+	}
 }

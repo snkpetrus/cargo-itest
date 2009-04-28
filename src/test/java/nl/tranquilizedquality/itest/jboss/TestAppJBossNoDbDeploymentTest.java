@@ -39,19 +39,17 @@ import nl.tranquilizedquality.itest.AbstractDefaultNoDbDeploymentTest;
  * @since 13 feb 2009
  * 
  */
-public class TestAppJBossNoDbDeploymentTest extends
-        AbstractDefaultNoDbDeploymentTest {
+public class TestAppJBossNoDbDeploymentTest extends AbstractDefaultNoDbDeploymentTest {
 
-    @Test
-    public void testHelloWorld() throws Exception {
-        final WebClient webClient = new WebClient();
-        webClient.setJavaScriptEnabled(false);
+	@Test
+	public void testHelloWorld() throws Exception {
+		final WebClient webClient = new WebClient();
+		webClient.setJavaScriptEnabled(false);
 
-        // Get the first page
-        final HtmlPage index =
-                (HtmlPage) webClient.getPage("http://" + host + "/test-app/");
+		// Get the first page
+		final HtmlPage index = (HtmlPage) webClient.getPage("http://" + host + "/test-app/");
 
-        assertNotNull(index);
-        assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
-    }
+		assertNotNull(index);
+		assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
+	}
 }

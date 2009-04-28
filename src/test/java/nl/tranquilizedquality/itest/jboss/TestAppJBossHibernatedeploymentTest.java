@@ -37,7 +37,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  * 
  */
 public class TestAppJBossHibernatedeploymentTest extends AbstractDefaultHibernateDeploymentTest {
-	
+
 	@Test
 	public void testHelloWorld() throws Exception {
 		final WebClient webClient = new WebClient();
@@ -49,5 +49,5 @@ public class TestAppJBossHibernatedeploymentTest extends AbstractDefaultHibernat
 		assertNotNull(index);
 		assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
 	}
-	
+
 }
