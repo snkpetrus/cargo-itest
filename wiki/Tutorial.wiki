@@ -11,7 +11,7 @@ When using maven2 you can simply start by adding the following dependency to you
 <dependency>
 	<groupId>nl.tranquilizedquality</groupId>
 	<artifactId>cargo-itest</artifactId>
-	<version>1.2.0</version>
+	<version>1.2.1</version>
 </dependency>
 }}}
 
