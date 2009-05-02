@@ -14,7 +14,7 @@
 			</list>
 		</property>
 		<property name="containerPort" value="8090" />
-		<property name="remoteLocation" value="http://development/" />
+		<property name="remoteLocation" value="http://cargo-itest.googlecode.com/files/" />
 		<property name="containerFile" value="jetty.zip" />
 	</bean>
 
