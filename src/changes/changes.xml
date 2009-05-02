@@ -4,7 +4,22 @@
 		<author email="salomo.petrus@gmail.com">Salomo Petrus</author>
 	</properties>
 	<body>
-		<release version="1.2.0" date="28-04-2009" description="Bug fix release">
+		<release version="1.2.2" date="02-05-2009" description="Subsequent release">
+			<action dev="salomo.petrus" type="fix">
+				Point the download URL's to the google code website instead so people that check out the code
+				can instantly build it their selves.
+			</action>
+			<action dev="salomo.petrus" type="fix">
+				Changed the postgresql data base used in the test into an in memory one
+				so people that check out the code can instantly build it their selves.
+			</action>
+			<action dev="salomo.petrus" type="fix">
+				Point the maven repository URL's to www.dizizid.com which points to the development server
+				so people that want to contribute can do that much easier by providing their IP address so they
+				are allowed to deploy artifacts on the Nexus maven respository.
+			</action>			
+		</release>	
+		<release version="1.2.1" date="28-04-2009" description="Bug fix release">
 			<action dev="salomo.petrus" type="fix">
 				Fixed linux issue by renaming the install directory of the downloaded container .ZIP file 
 				to the predefined container home directory. Now it doesn't matter what name the .ZIP file

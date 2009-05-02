@@ -15,7 +15,7 @@
 			</list>
 		</property>
 		<property name="containerPort" value="9010" />
-		<property name="remoteLocation" value="http://development/" />
+		<property name="remoteLocation" value="http://cargo-itest.googlecode.com/files/" />
 		<property name="containerFile" value="jonas.zip" />
 	</bean>
 
