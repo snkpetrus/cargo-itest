@@ -153,8 +153,29 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 		/*
 		 * Delete container directory.
 		 */
-		FileUtils.deleteDirectory(new File(containerHome));
-		new File(containerHome).mkdir();
+		try {
+			FileUtils.deleteDirectory(new File(containerHome));
+		}
+		catch (Exception exceptionOnDelete) {
+			if (log.isErrorEnabled()) {
+				log.error("Failed to delete the directory: " + containerHome + ". Details: "
+						+ exceptionOnDelete.getMessage(), exceptionOnDelete);
+			}
+			throw new ConfigurationException("Failed to delete the directory: " + containerHome
+					+ ". Details: " + exceptionOnDelete.getMessage(), exceptionOnDelete);
+		}
+
+		try {
+			new File(containerHome).mkdir();
+		}
+		catch (Exception exceptionOnMkDir) {
+			if (log.isErrorEnabled()) {
+				log.error("Failed to create the directory: " + containerHome + ". Details: "
+						+ exceptionOnMkDir.getMessage(), exceptionOnMkDir);
+			}
+			throw new ConfigurationException("Failed to create the directory: " + containerHome
+					+ ". Details: " + exceptionOnMkDir.getMessage(), exceptionOnMkDir);
+		}
 
 		if (log.isInfoEnabled()) {
 			log.info("Installing " + containerName + "...");
