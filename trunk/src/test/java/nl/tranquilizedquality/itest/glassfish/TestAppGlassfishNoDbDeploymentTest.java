@@ -13,10 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package nl.tranquilizedquality.itest.jonas;
+package nl.tranquilizedquality.itest.glassfish;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+import nl.tranquilizedquality.itest.AbstractDefaultNoDbDeploymentTest;
+import nl.tranquilizedquality.itest.cargo.ContainerUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -30,15 +32,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-import nl.tranquilizedquality.itest.AbstractDefaultNoDbDeploymentTest;
-import nl.tranquilizedquality.itest.cargo.ContainerUtil;
-
 /**
- * @author Salomo Petrus (sape)
- * @since 22 apr 2009
+ * @author Vincenzo Vitale (vita)
+ * @since 20 May 2009
  * 
  */
-public class TestAppJOnasNoDbDeploymentTest {
+public class TestAppGlassfishNoDbDeploymentTest {
 	/** Logger for this class */
 	private static final Log log = LogFactory.getLog(AbstractDefaultNoDbDeploymentTest.class);
 
@@ -71,10 +70,26 @@ public class TestAppJOnasNoDbDeploymentTest {
 				log.info("Starting up the container utility...");
 			}
 
+			// Glassfish configures thousands of configuration files during the
+			// installation process, where the installation directory is
+			// referred. Two different zipped application servers are uploaded
+			// in the googlecode homepage and than the two files are referred in
+			// the different test configurations.
+			final String operatingSystem = System.getProperty("os.name");
+			String testConfigurationFile = "";
+			if (operatingSystem != null && operatingSystem.startsWith("Windows")) {
+				testConfigurationFile = "glassfish-windows-itest-context.xml";
+			}
+			else {
+				testConfigurationFile = "glassfish-linux-itest-context.xml";
+			}
+
 			ConfigurableApplicationContext context = loadContext(new String[] {
-					"jonas-itest-context.xml", "common-itest-context.xml" });
+					testConfigurationFile, "common-itest-context.xml" });
 			CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
 			CONTAINER_UTIL.start();
+
+			Thread.currentThread();
 
 		}
 	}
@@ -90,7 +105,7 @@ public class TestAppJOnasNoDbDeploymentTest {
 	}
 
 	@Test
-	public void testHelloWorld() throws Exception {		
+	public void testHelloWorld() throws Exception {
 		final WebClient webClient = new WebClient();
 		webClient.setJavaScriptEnabled(false);
 
