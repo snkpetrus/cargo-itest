@@ -165,16 +165,23 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 					+ ". Details: " + exceptionOnDelete.getMessage(), exceptionOnDelete);
 		}
 
-		try {
-			new File(containerHome).mkdir();
-		}
-		catch (Exception exceptionOnMkDir) {
-			if (log.isErrorEnabled()) {
-				log.error("Failed to create the directory: " + containerHome + ". Details: "
-						+ exceptionOnMkDir.getMessage(), exceptionOnMkDir);
+		// In windows the renaming causes problem when:
+		// - The zip file has not the same name of the installed directory.
+		// - The ZipURLInstaller fails.
+		final String operatingSystem = System.getProperty("os.name");
+		if (operatingSystem != null && !operatingSystem.startsWith("Windows")) {
+
+			try {
+				new File(containerHome).mkdir();
 			}
-			throw new ConfigurationException("Failed to create the directory: " + containerHome
-					+ ". Details: " + exceptionOnMkDir.getMessage(), exceptionOnMkDir);
+			catch (Exception exceptionOnMkDir) {
+				if (log.isErrorEnabled()) {
+					log.error("Failed to create the directory: " + containerHome + ". Details: "
+							+ exceptionOnMkDir.getMessage(), exceptionOnMkDir);
+				}
+				throw new ConfigurationException("Failed to create the directory: " + containerHome
+						+ ". Details: " + exceptionOnMkDir.getMessage(), exceptionOnMkDir);
+			}
 		}
 
 		if (log.isInfoEnabled()) {
@@ -187,7 +194,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 		 * Download and configure the container.
 		 */
 		final URL remoteLocation = new URL(this.remoteLocation + containerFile);
-		final String installDir = containerHome + "..//";
+		final String installDir = StringUtils.substringBeforeLast(StringUtils.chomp(containerHome, "/"), "/");
 		final ZipURLInstaller installer = new ZipURLInstaller(remoteLocation, installDir);
 		installer.install();
 
