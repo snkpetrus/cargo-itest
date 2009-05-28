@@ -108,7 +108,6 @@
             <artifactId>cargo-core-container-glassfish</artifactId>
             <version>${cargo-core-container-glassfish.version}</version>
         </dependency>
-        <dependency>
 		<dependency>
 			<artifactId>htmlunit</artifactId>
 			<groupId>net.sourceforge.htmlunit</groupId>
