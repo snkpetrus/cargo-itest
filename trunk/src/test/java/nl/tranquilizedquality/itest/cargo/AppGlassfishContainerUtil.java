@@ -21,18 +21,30 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 /**
+ * This is a simple example of how the {@link AbstractGlassfishContainerUtil} could
+ * be used. This test tests a simple test application called 'test-app'.
+ * 
+ * As you can see you don't have to do much to get it to work. You only need to
+ * do the following steps:
+ * <ol>
+ * <li>Extend from {@link AbstractGlassfishContainerUtil}.</li>
+ * <li>Create a context file called <i>itest-context.xml</i> in the root of the
+ * classpath.</li>
+ * <li>Configure the container utility in the <i>itest-context.xml</i>. <b>Make
+ * sure you give your bean the name 'containerUtil'.</b></li>
+ * <li>Depending on the OS get the specific Glassfish application server to be installed.</li>
+ * </ol>
+ * 
+ * After these steps you container utility should be setup correctly and all is
+ * left is to create a unit test that uses the container.
+ * 
  * @author Vincenzo Vitale (vita)
  * @since 22 apr 2009
  * 
  */
 public class AppGlassfishContainerUtil extends AbstractGlassfishContainerUtil {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seenl.tranquilizedquality.itest.cargo.AbstractJOnasContainerUtil#
-	 * setupConfiguration()
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void setupConfiguration() throws Exception {
 		// We need to append the java home value to the env script.
