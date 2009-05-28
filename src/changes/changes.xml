@@ -4,6 +4,14 @@
 		<author email="salomo.petrus@gmail.com">Salomo Petrus</author>
 	</properties>
 	<body>
+		<release version="1.3.0" date="29-05-2009" description="Subsequent release">
+			<action dev="vincenzo.vitale" type="add">
+				Added support for the Glassfish application server.
+			</action>
+			<action dev="vincenzo.vitale" type="fix">
+				Fixed the testapp WAR with to be compatible with JRE 1.5.
+			</action>
+		</release>		
 		<release version="1.2.2" date="02-05-2009" description="Subsequent release">
 			<action dev="salomo.petrus" type="fix">
 				Point the download URL's to the google code website instead so people that check out the code

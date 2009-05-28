@@ -17,7 +17,6 @@ package nl.tranquilizedquality.itest.glassfish;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
-import nl.tranquilizedquality.itest.AbstractDefaultNoDbDeploymentTest;
 import nl.tranquilizedquality.itest.cargo.ContainerUtil;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,13 +32,19 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 /**
+ * This is a simple example how you could create an integration test using the
+ * Glassfish application server.
+ * 
+ * As you can see you need to do some tweeking since the Glassfish application
+ * server has specific distributions for different operating systems.
+ * 
  * @author Vincenzo Vitale (vita)
  * @since 20 May 2009
  * 
  */
 public class TestAppGlassfishNoDbDeploymentTest {
 	/** Logger for this class */
-	private static final Log log = LogFactory.getLog(AbstractDefaultNoDbDeploymentTest.class);
+	private static final Log log = LogFactory.getLog(TestAppGlassfishNoDbDeploymentTest.class);
 
 	/** The container utility for starting up a container. */
 	protected static ContainerUtil CONTAINER_UTIL;
@@ -70,13 +75,16 @@ public class TestAppGlassfishNoDbDeploymentTest {
 				log.info("Starting up the container utility...");
 			}
 
-			// Glassfish configures thousands of configuration files during the
-			// installation process, where the installation directory is
-			// referred. Two different zipped application servers are uploaded
-			// in the googlecode homepage and than the two files are referred in
-			// the different test configurations.
+			/*
+			 * Glassfish configures thousands of configuration files during the
+			 * installation process, where the installation directory is
+			 * referred. Two different zipped application servers are uploaded
+			 * in the googlecode homepage and than the two files are referred in
+			 * the different test configurations.
+			 */
 			final String operatingSystem = System.getProperty("os.name");
 			String testConfigurationFile = "";
+
 			if (operatingSystem != null && operatingSystem.startsWith("Windows")) {
 				testConfigurationFile = "glassfish-windows-itest-context.xml";
 			}
@@ -86,6 +94,7 @@ public class TestAppGlassfishNoDbDeploymentTest {
 
 			ConfigurableApplicationContext context = loadContext(new String[] {
 					testConfigurationFile, "common-itest-context.xml" });
+
 			CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
 			CONTAINER_UTIL.start();
 
