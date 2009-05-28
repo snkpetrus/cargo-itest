@@ -89,8 +89,6 @@ public class TestAppGlassfishNoDbDeploymentTest {
 			CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
 			CONTAINER_UTIL.start();
 
-			Thread.currentThread();
-
 		}
 	}
 
