@@ -14,7 +14,7 @@
 			</list>
 		</property>
 		<!-- An other port to avoid problems with the other tests. -->
-		<property name="containerPort" value="9011" />
+		<property name="containerPort" value="9010" />
 		<property name="remoteLocation" value="http://cargo-itest.googlecode.com/files/" />
 		<property name="containerFile" value="glassfish-windows.zip" />
 	</bean>
