@@ -36,7 +36,7 @@ import org.apache.commons.io.FileUtils;
  * </ol>
  * 
  * After these steps you container utility should be setup correctly and all is
- * left is to create a unit test that uses the container.
+ * left is to create a unit test that uses the container. the 9011 is used.
  * 
  * @author Vincenzo Vitale (vita)
  * @since 22 apr 2009
@@ -44,39 +44,14 @@ import org.apache.commons.io.FileUtils;
  */
 public class AppGlassfishContainerUtil extends AbstractGlassfishContainerUtil {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void setupConfiguration() throws Exception {
-		// We need to append the java home value to the env script.
-		final String operatingSystem = System.getProperty("os.name");
-		File destFile = null;
-		if (operatingSystem != null && operatingSystem.startsWith("Windows")) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @seenl.tranquilizedquality.itest.cargo.AbstractJOnasContainerUtil#
+     * setupConfiguration()
+     */
+    @Override
+    protected void setupConfiguration() throws Exception {
 
-			destFile = new File("C:/WINDOWS/Temp/glassfish/config/asenv.bat");
-
-			List readLines = FileUtils.readLines(destFile);
-			readLines.add("set AS_JAVA=" + System.getProperty("java.home"));
-			FileUtils.writeLines(destFile, readLines);
-
-		}
-		else {
-			destFile = new File("/tmp/glassfish/config/asenv.conf");
-
-			List readLines = FileUtils.readLines(destFile);
-			readLines.add("AS_JAVA=\"" + System.getProperty("java.home") + "\"");
-			FileUtils.writeLines(destFile, readLines);
-
-			// There is a problem in Linux executing the file... probably is a
-			// bug in the glassfish plugin
-
-			// We must use the Runtime call (not really portable) since the
-			// setExecutable method in the File class is only available from
-			// Java 6
-			// File executable = new File("/tmp/glassfish/bin/asadmin");
-			// executable.setExecutable(true);
-			Runtime.getRuntime().exec("chmod 754 " + "/tmp/glassfish/bin/asadmin");
-
-		}
-
-	}
+    }
 }
