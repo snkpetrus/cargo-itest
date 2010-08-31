@@ -18,6 +18,7 @@ package nl.tranquilizedquality.itest.cargo;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -113,13 +114,34 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 	 * fresh container.
 	 */
 	protected void cleanUpContainer() {
+		/*
+		 * Retrieve the operating system and current logged in user to create a
+		 * unique storage location for the container to start up in. This way
+		 * clashing of containers will be kept to the minimum.
+		 */
 		final String operatingSystem = System.getProperty("os.name");
+
+		final StringBuilder builder = new StringBuilder();
+
 		if (operatingSystem != null && operatingSystem.startsWith("Windows")) {
-			containerHome = "C:/WINDOWS/Temp/" + containerName + "/";
+			builder.append("C:/WINDOWS/Temp/");
 		}
 		else {
-			containerHome = "/tmp/" + containerName + "/";
+			builder.append("/tmp/");
 		}
+
+		/*
+		 * Get the time in milllis so concurrent builds using the cargo-itest
+		 * utility can be executed without clashing with eachother.
+		 */
+		final Long timeStamp = Calendar.getInstance().getTimeInMillis();
+
+		builder.append(timeStamp);
+		builder.append("/");
+		builder.append(containerName);
+		builder.append("/");
+
+		containerHome = builder.toString();
 
 		if (log.isInfoEnabled()) {
 			log.info("Container HOME: " + containerHome);
@@ -156,7 +178,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 		try {
 			FileUtils.deleteDirectory(new File(containerHome));
 		}
-		catch (Exception exceptionOnDelete) {
+		catch (final Exception exceptionOnDelete) {
 			if (log.isErrorEnabled()) {
 				log.error("Failed to delete the directory: " + containerHome + ". Details: "
 						+ exceptionOnDelete.getMessage(), exceptionOnDelete);
@@ -174,7 +196,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 			try {
 				new File(containerHome).mkdir();
 			}
-			catch (Exception exceptionOnMkDir) {
+			catch (final Exception exceptionOnMkDir) {
 				if (log.isErrorEnabled()) {
 					log.error("Failed to create the directory: " + containerHome + ". Details: "
 							+ exceptionOnMkDir.getMessage(), exceptionOnMkDir);
@@ -206,7 +228,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 		final String containerDir = StringUtils.stripEnd(containerFile, ".zip");
 		final File installedDir = new File(containerHome + "..//" + containerDir + "/");
 		final File destenationDir = new File(containerHome);
-		boolean renamed = installedDir.renameTo(destenationDir);
+		final boolean renamed = installedDir.renameTo(destenationDir);
 
 		if (!renamed) {
 			final String msg = "Failed to rename container install directory to home directory name!";
@@ -242,7 +264,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 	 * @param configResourcesPath
 	 *            the configResourcesPath to set
 	 */
-	public void setConfigResourcesPath(String configResourcesPath) {
+	public void setConfigResourcesPath(final String configResourcesPath) {
 		this.configResourcesPath = configResourcesPath;
 	}
 
@@ -257,7 +279,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 	 * @param deployableLocations
 	 *            the deployableLocations to set
 	 */
-	public void setDeployableLocations(Map<String, String> deployableLocations) {
+	public void setDeployableLocations(final Map<String, String> deployableLocations) {
 		this.deployableLocations = deployableLocations;
 	}
 
@@ -266,7 +288,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 	 *            the deployable configuration locations that will be set.
 	 */
 	public void setDeployableLocationConfigurations(
-			List<DeployableLocationConfiguration> deployableLocationConfigurations) {
+			final List<DeployableLocationConfiguration> deployableLocationConfigurations) {
 		this.deployableLocationConfigurations = deployableLocationConfigurations;
 	}
 
@@ -282,7 +304,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 	 * @param systemProperties
 	 *            the systemProperties to set
 	 */
-	public void setSystemProperties(Map<String, String> systemProperties) {
+	public void setSystemProperties(final Map<String, String> systemProperties) {
 		this.systemProperties = systemProperties;
 	}
 
@@ -300,12 +322,12 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 	 *            the jvmArguments to set
 	 */
 	@Required
-	public void setJvmArguments(List<String> jvmArguments) {
+	public void setJvmArguments(final List<String> jvmArguments) {
 		this.jvmArguments = new ArrayList<String>(jvmArguments);
 	}
 
 	@Required
-	public void setCargoLogFilePath(String cargoLogFilePath) {
+	public void setCargoLogFilePath(final String cargoLogFilePath) {
 		this.cargoLogFilePath = cargoLogFilePath;
 	}
 
@@ -314,7 +336,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 	 *            the containerPort to set
 	 */
 	@Required
-	public void setContainerPort(Integer containerPort) {
+	public void setContainerPort(final Integer containerPort) {
 		this.containerPort = containerPort;
 	}
 
@@ -323,7 +345,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 	 *            the remoteLocation to set
 	 */
 	@Required
-	public void setRemoteLocation(String remoteLocation) {
+	public void setRemoteLocation(final String remoteLocation) {
 		this.remoteLocation = remoteLocation;
 	}
 
@@ -332,7 +354,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 	 *            the containerFile to set
 	 */
 	@Required
-	public void setContainerFile(String containerFile) {
+	public void setContainerFile(final String containerFile) {
 		this.containerFile = containerFile;
 	}
 
@@ -340,7 +362,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 	 * @param containerName
 	 *            the containerName to set
 	 */
-	protected void setContainerName(String containerName) {
+	protected void setContainerName(final String containerName) {
 		this.containerName = containerName;
 	}
 }
