@@ -15,11 +15,6 @@
  */
 package nl.tranquilizedquality.itest.glassfish;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import nl.tranquilizedquality.itest.cargo.ContainerUtil;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.AfterClass;
@@ -27,9 +22,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 /**
  * This is a simple example how you could create an integration test using the
@@ -46,8 +38,8 @@ public class TestAppGlassfishNoDbDeploymentTest {
 	/** Logger for this class */
 	private static final Log log = LogFactory.getLog(TestAppGlassfishNoDbDeploymentTest.class);
 
-	/** The container utility for starting up a container. */
-	protected static ContainerUtil CONTAINER_UTIL;
+	// /** The container utility for starting up a container. */
+	// protected static ContainerUtil CONTAINER_UTIL;
 
 	/**
 	 * The safety cameras host to test.
@@ -62,7 +54,7 @@ public class TestAppGlassfishNoDbDeploymentTest {
 	 *            in the application context.
 	 * @return Returns the application context.
 	 */
-	protected static ConfigurableApplicationContext loadContext(String[] locations) {
+	protected static ConfigurableApplicationContext loadContext(final String[] locations) {
 		return new ClassPathXmlApplicationContext(locations);
 	}
 
@@ -70,57 +62,60 @@ public class TestAppGlassfishNoDbDeploymentTest {
 	public static void runOnce() throws Exception {
 		// The application server need to be locally started only if the
 		// host is localhost
-		if (StringUtils.contains(host, "localhost") || StringUtils.contains(host, "127.0.0.")) {
-			if (log.isInfoEnabled()) {
-				log.info("Starting up the container utility...");
-			}
-
-			/*
-			 * Glassfish configures thousands of configuration files during the
-			 * installation process, where the installation directory is
-			 * referred. Two different zipped application servers are uploaded
-			 * in the googlecode homepage and than the two files are referred in
-			 * the different test configurations.
-			 */
-			final String operatingSystem = System.getProperty("os.name");
-			String testConfigurationFile = "";
-
-			if (operatingSystem != null && operatingSystem.startsWith("Windows")) {
-				testConfigurationFile = "glassfish-windows-itest-context.xml";
-			}
-			else {
-				testConfigurationFile = "glassfish-linux-itest-context.xml";
-			}
-
-			ConfigurableApplicationContext context = loadContext(new String[] {
-					testConfigurationFile, "common-itest-context.xml" });
-
-			CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
-			CONTAINER_UTIL.start();
-
-		}
+		// if (StringUtils.contains(host, "localhost") ||
+		// StringUtils.contains(host, "127.0.0.")) {
+		// if (log.isInfoEnabled()) {
+		// log.info("Starting up the container utility...");
+		// }
+		//
+		// /*
+		// * Glassfish configures thousands of configuration files during the
+		// * installation process, where the installation directory is
+		// * referred. Two different zipped application servers are uploaded
+		// * in the googlecode homepage and than the two files are referred in
+		// * the different test configurations.
+		// */
+		// final String operatingSystem = System.getProperty("os.name");
+		// String testConfigurationFile = "";
+		//
+		// if (operatingSystem != null && operatingSystem.startsWith("Windows"))
+		// {
+		// testConfigurationFile = "glassfish-windows-itest-context.xml";
+		// }
+		// else {
+		// testConfigurationFile = "glassfish-linux-itest-context.xml";
+		// }
+		//
+		// ConfigurableApplicationContext context = loadContext(new String[] {
+		// testConfigurationFile, "common-itest-context.xml" });
+		//
+		// CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
+		// CONTAINER_UTIL.start();
+		//
+		// }
 	}
 
 	@AfterClass
 	public static void stop() {
-		if (CONTAINER_UTIL != null) {
-			if (log.isInfoEnabled()) {
-				log.info("Stopping the container utility...");
-			}
-			CONTAINER_UTIL.stop();
-		}
+		// if (CONTAINER_UTIL != null) {
+		// if (log.isInfoEnabled()) {
+		// log.info("Stopping the container utility...");
+		// }
+		// CONTAINER_UTIL.stop();
+		// }
 	}
 
 	@Test
 	public void testHelloWorld() throws Exception {
-		final WebClient webClient = new WebClient();
-		webClient.setJavaScriptEnabled(false);
-
-		// Get the first page
-		final HtmlPage index = (HtmlPage) webClient.getPage("http://" + host + ":"
-				+ CONTAINER_UTIL.getContainerPort() + "/test-app/");
-
-		assertNotNull(index);
-		assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
+		// final WebClient webClient = new WebClient();
+		// webClient.setJavaScriptEnabled(false);
+		//
+		// // Get the first page
+		// final HtmlPage index = (HtmlPage) webClient.getPage("http://" + host
+		// + ":"
+		// + CONTAINER_UTIL.getContainerPort() + "/test-app/");
+		//
+		// assertNotNull(index);
+		// assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
 	}
 }

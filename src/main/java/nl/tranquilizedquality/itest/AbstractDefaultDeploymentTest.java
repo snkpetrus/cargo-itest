@@ -70,7 +70,7 @@ public abstract class AbstractDefaultDeploymentTest extends
 	 *            in the application context.
 	 * @return Returns the application context.
 	 */
-	protected static ConfigurableApplicationContext loadContext(String[] locations) {
+	protected static ConfigurableApplicationContext loadContext(final String[] locations) {
 		return new ClassPathXmlApplicationContext(locations);
 	}
 
@@ -102,7 +102,7 @@ public abstract class AbstractDefaultDeploymentTest extends
 				try {
 					SQL_SCRIPTS = (List<String>) context.getBean("sqlScripts");
 				}
-				catch (NoSuchBeanDefinitionException e) {
+				catch (final NoSuchBeanDefinitionException e) {
 					SQL_SCRIPTS = new ArrayList<String>(0);
 				}
 
@@ -112,7 +112,7 @@ public abstract class AbstractDefaultDeploymentTest extends
 				try {
 					SQL_CLEAN_UP_SCRIPTS = (List<String>) context.getBean("sqlCleanUpScripts");
 				}
-				catch (NoSuchBeanDefinitionException e) {
+				catch (final NoSuchBeanDefinitionException e) {
 					SQL_CLEAN_UP_SCRIPTS = new ArrayList<String>(0);
 				}
 
@@ -121,7 +121,7 @@ public abstract class AbstractDefaultDeploymentTest extends
 					log.info(numberOfScripts + " SQL scripts retrieved...");
 				}
 			}
-			catch (BeansException e) {
+			catch (final BeansException e) {
 				final String msg = "Failed to start up the container utility! - " + e.getMessage();
 				if (log.isErrorEnabled()) {
 					log.error(msg);
@@ -144,7 +144,7 @@ public abstract class AbstractDefaultDeploymentTest extends
 
 	@BeforeTransaction
 	public void executeSQLScripts() throws Exception {
-		for (String script : SQL_SCRIPTS) {
+		for (final String script : SQL_SCRIPTS) {
 			if (log.isInfoEnabled()) {
 				log.info("Executing script: " + script);
 			}
@@ -154,7 +154,7 @@ public abstract class AbstractDefaultDeploymentTest extends
 
 	@AfterTransaction
 	public void executeSQLCleanUpScripts() throws Exception {
-		for (String script : SQL_CLEAN_UP_SCRIPTS) {
+		for (final String script : SQL_CLEAN_UP_SCRIPTS) {
 			if (log.isInfoEnabled()) {
 				log.info("Executing clean up script: " + script);
 			}
