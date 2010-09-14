@@ -28,7 +28,6 @@ import java.util.Map;
 import nl.tranquilizedquality.itest.cargo.exception.ConfigurationException;
 import nl.tranquilizedquality.itest.domain.DeployableLocationConfiguration;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -170,21 +169,6 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 	protected void setupContainer() throws Exception {
 		if (log.isInfoEnabled()) {
 			log.info("Cleaning up " + containerName + "...");
-		}
-
-		/*
-		 * Delete container directory.
-		 */
-		try {
-			FileUtils.deleteDirectory(new File(containerHome));
-		}
-		catch (final Exception exceptionOnDelete) {
-			if (log.isErrorEnabled()) {
-				log.error("Failed to delete the directory: " + containerHome + ". Details: "
-						+ exceptionOnDelete.getMessage(), exceptionOnDelete);
-			}
-			throw new ConfigurationException("Failed to delete the directory: " + containerHome
-					+ ". Details: " + exceptionOnDelete.getMessage(), exceptionOnDelete);
 		}
 
 		// In windows the renaming causes problem when:

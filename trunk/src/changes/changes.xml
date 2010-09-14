@@ -4,6 +4,20 @@
 		<author email="salomo.petrus@gmail.com">Salomo Petrus</author>
 	</properties>
 	<body>
+		<release version="1.4.0" date="14-09-2010" description="Subsequent release">
+			<action dev="salomo.petrus" type="add">
+				Added the ability to run integration tests in parallel on the same server by introducing a unique container home. Now a timestamp is used for the directory
+				name.
+			</action>
+			<action dev="salomo.petrus" type="fix">
+				Incorrect conainer name is displayed when a deployable is invalid in Tomcat.
+			</action>
+			<action dev="salomo.petrus" type="add">
+				Added AbstractDefaultTestPart so you can create tests that uses SQL scripts within a TestSuite. Before it wasn't possible since the execution of the SQL
+				scripts didn't happen within a TestSuite that extended one of the abstract deployment tests. By using this testPart you can use a TestSuite that starts the container utility and let the individual
+				test parts execute the SQL scripts and run the tests on the application.
+			</action>
+		</release>
 		<release version="1.3.0" date="29-05-2009" description="Subsequent release">
 			<action dev="vincenzo.vitale" type="add">
 				Added support for the Glassfish application server.
@@ -11,7 +25,7 @@
 			<action dev="vincenzo.vitale" type="fix">
 				Fixed the testapp WAR with to be compatible with JRE 1.5.
 			</action>
-		</release>		
+		</release>
 		<release version="1.2.2" date="02-05-2009" description="Subsequent release">
 			<action dev="salomo.petrus" type="fix">
 				Point the download URL's to the google code website instead so people that check out the code
@@ -23,14 +37,16 @@
 			</action>
 			<action dev="salomo.petrus" type="fix">
 				Point the maven repository URL's to www.dizizid.com which points to the development server
-				so people that want to contribute can do that much easier by providing their IP address so they
+				so people that want to contribute can do that much easier by
+				providing their IP address so they
 				are allowed to deploy artifacts on the Nexus maven respository.
-			</action>			
-		</release>	
+			</action>
+		</release>
 		<release version="1.2.1" date="28-04-2009" description="Bug fix release">
 			<action dev="salomo.petrus" type="fix">
-				Fixed linux issue by renaming the install directory of the downloaded container .ZIP file 
-				to the predefined container home directory. Now it doesn't matter what name the .ZIP file
+				Fixed linux issue by renaming the install directory of the downloaded container .ZIP file
+				to the predefined container home directory. Now it doesn't matter
+				what name the .ZIP file
 				has that contains the container.
 			</action>
 		</release>
