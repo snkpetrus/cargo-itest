@@ -39,12 +39,12 @@
 		<repository>
 			<id>tr-internal</id>
 			<name>Inhouse Repository</name>
-			<url>http://www.dizizid.com/nexus/content/repositories/releases</url>
+			<url>http://development/nexus/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>tr-internal</id>
 			<name>Inhouse Snapshot Repository</name>
-			<url>http://www.dizizid.com/nexus/content/repositories/snapshots</url>
+			<url>http://development/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 		<site>
 			<id>local</id>
@@ -56,7 +56,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>Nexus</id>
-			<url>http://www.dizizid.com/nexus/content/groups/public/</url>
+			<url>http://development/nexus/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -70,7 +70,7 @@
 	<repositories>
 		<repository>
 			<id>Nexus</id>
-			<url>http://www.dizizid.com/nexus/content/groups/public/</url>
+			<url>http://development/nexus/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
