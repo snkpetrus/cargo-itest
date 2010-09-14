@@ -77,6 +77,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 	 *             Is thrown when something goes wrong during the setup of the
 	 *             container.
 	 */
+	@Override
 	protected void setupContainer() throws Exception {
 		/*
 		 * Execute default setup behavior.
@@ -89,6 +90,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 	/**
 	 * Deploys the application to the correct
 	 */
+	@Override
 	protected void deploy() {
 		// create configuration factory
 		final ConfigurationFactory configurationFactory = new DefaultConfigurationFactory();
@@ -97,8 +99,8 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 		final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("tomcat5x", ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome);
 
 		// setup configuration
-		StringBuilder args = new StringBuilder();
-		for (String arg : jvmArguments) {
+		final StringBuilder args = new StringBuilder();
+		for (final String arg : jvmArguments) {
 			args.append(arg);
 			args.append(" ");
 
@@ -135,7 +137,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 		/*
 		 * Iterate over all available deployable location configurations.
 		 */
-		for (DeployableLocationConfiguration config : deployableLocationConfigurations) {
+		for (final DeployableLocationConfiguration config : deployableLocationConfigurations) {
 			final String contextName = config.getContextName();
 			final String type = config.getType();
 			String path = config.getPath();
@@ -154,7 +156,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 					try {
 						FileUtils.copyFile(srcFile, destFile);
 					}
-					catch (IOException e) {
+					catch (final IOException e) {
 						throw new DeployException("Failed to copy WAR file: " + path, e);
 					}
 
@@ -220,13 +222,13 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 		 * Check what kind of deployable it is.
 		 */
 		if ("EAR".equals(type)) {
-			throw new DeployException("Jetty doesn't support EAR files!");
+			throw new DeployException("Tomcat doesn't support EAR files!");
 		}
 		else if ("WAR".equals(type)) {
 			deployableType = DeployableType.WAR;
 		}
 		else if ("EJB".equals(type)) {
-			throw new DeployException("Jetty doesn't support EJB files!");
+			throw new DeployException("Tomcat doesn't support EJB files!");
 		}
 		else {
 			// Default value is WAR file
