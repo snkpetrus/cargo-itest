@@ -130,7 +130,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 		}
 
 		/*
-		 * Get the time in milllis so concurrent builds using the cargo-itest
+		 * Get the time in millis so concurrent builds using the cargo-itest
 		 * utility can be executed without clashing with eachother.
 		 */
 		final Long timeStamp = Calendar.getInstance().getTimeInMillis();
@@ -210,8 +210,14 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 		 * sensitive issues on Linux.
 		 */
 		final String containerDir = StringUtils.stripEnd(containerFile, ".zip");
-		final File installedDir = new File(containerHome + "..//" + containerDir + "/");
+		final File installedDir = new File(installDir + "/" + containerDir + "/");
 		final File destenationDir = new File(containerHome);
+
+		if (log.isInfoEnabled()) {
+			log.info("Renaming: " + installedDir.getPath());
+			log.info("To: " + destenationDir.getPath());
+		}
+
 		final boolean renamed = installedDir.renameTo(destenationDir);
 
 		if (!renamed) {
@@ -219,6 +225,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 			if (log.isErrorEnabled()) {
 				log.error(msg);
 			}
+
 			throw new ConfigurationException(msg);
 		}
 
