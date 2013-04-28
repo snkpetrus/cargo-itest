@@ -41,8 +41,8 @@
 		<spring-mock.version>2.0.8</spring-mock.version>
 		<easymock.version>2.3</easymock.version>
 		<junit.version>4.8.2</junit.version>
-		<cargo.version>1.0</cargo.version>
-		<cargo-core-container-glassfish.version>1.0-alpha-6</cargo-core-container-glassfish.version>
+		<cargo.version>1.4.0</cargo.version>
+		<cargo-core-container-glassfish.version>1.4.0</cargo-core-container-glassfish.version>
 		<htmlunit.version>1.14</htmlunit.version>
 		<jetty.version>6.1.5</jetty.version>
 		<commons-configuration.version>1.5</commons-configuration.version>
@@ -57,6 +57,7 @@
 		<cglib.version>2.2.2</cglib.version>
 		<aspectj-weaver.version>1.6.11</aspectj-weaver.version>
 		<slf4j.version>1.5.6</slf4j.version>
+		<jaxen.version>1.1.4</jaxen.version>
 	</properties>
 
 	<!-- Project dependencies. -->
@@ -182,11 +183,16 @@
 			<artifactId>commons-logging</artifactId>
 			<version>${commons-logging.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>${jaxen.version}</version>
 		</dependency>
 	</dependencies>
 

@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import nl.tranquilizedquality.itest.cargo.exception.ConfigurationException;
 import nl.tranquilizedquality.itest.cargo.exception.DeployException;
@@ -57,6 +57,8 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 
 	/** Logger for this class */
 	private static final Log log = LogFactory.getLog(AbstractTomcatContainerUtil.class);
+
+	protected String tomcatVersion;
 
 	/**
 	 * Default constructor that will detect which OS is used to make sure the
@@ -96,7 +98,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 		final ConfigurationFactory configurationFactory = new DefaultConfigurationFactory();
 
 		// create JBoss configuration
-		final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("tomcat5x", ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome);
+		final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration(tomcatVersion, ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome);
 
 		// setup configuration
 		final StringBuilder args = new StringBuilder();
@@ -174,7 +176,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 		}
 
 		// create installedLocalContainer
-		installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("tomcat5x", ContainerType.INSTALLED, configuration);
+		installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer(tomcatVersion, ContainerType.INSTALLED, configuration);
 
 		// configure installedLocalContainer
 		installedLocalContainer.setHome(containerHome);
@@ -248,8 +250,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 	 * @param deployableType
 	 *            The type of deployable.
 	 */
-	private void addDeployable(final LocalConfiguration configuration, final String path,
-			final DeployableType deployableType) {
+	private void addDeployable(final LocalConfiguration configuration, final String path, final DeployableType deployableType) {
 		// retrieve deployable file
 		final Deployable deployable = new DefaultDeployableFactory().createDeployable("jetty", path, deployableType);
 
@@ -291,4 +292,9 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 	public String getConfDirectory() {
 		return getContainerDirectory("conf/");
 	}
+
+	public void setTomcatVersion(final String tomcatVersion) {
+		this.tomcatVersion = tomcatVersion;
+	}
+
 }

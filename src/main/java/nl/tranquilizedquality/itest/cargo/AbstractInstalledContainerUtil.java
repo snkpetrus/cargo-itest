@@ -182,11 +182,9 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 			}
 			catch (final Exception exceptionOnMkDir) {
 				if (log.isErrorEnabled()) {
-					log.error("Failed to create the directory: " + containerHome + ". Details: "
-							+ exceptionOnMkDir.getMessage(), exceptionOnMkDir);
+					log.error("Failed to create the directory: " + containerHome + ". Details: " + exceptionOnMkDir.getMessage(), exceptionOnMkDir);
 				}
-				throw new ConfigurationException("Failed to create the directory: " + containerHome
-						+ ". Details: " + exceptionOnMkDir.getMessage(), exceptionOnMkDir);
+				throw new ConfigurationException("Failed to create the directory: " + containerHome + ". Details: " + exceptionOnMkDir.getMessage(), exceptionOnMkDir);
 			}
 		}
 
@@ -201,7 +199,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 		 */
 		final URL remoteLocation = new URL(this.remoteLocation + containerFile);
 		final String installDir = StringUtils.substringBeforeLast(StringUtils.chomp(containerHome, "/"), "/");
-		final ZipURLInstaller installer = new ZipURLInstaller(remoteLocation, installDir);
+		final ZipURLInstaller installer = new ZipURLInstaller(remoteLocation, installDir, installDir);
 		installer.install();
 
 		/*
@@ -278,8 +276,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 	 * @param locations
 	 *            the deployable configuration locations that will be set.
 	 */
-	public void setDeployableLocationConfigurations(
-			final List<DeployableLocationConfiguration> deployableLocationConfigurations) {
+	public void setDeployableLocationConfigurations(final List<DeployableLocationConfiguration> deployableLocationConfigurations) {
 		this.deployableLocationConfigurations = deployableLocationConfigurations;
 	}
 

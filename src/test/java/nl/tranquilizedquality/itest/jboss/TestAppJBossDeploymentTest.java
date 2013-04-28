@@ -17,13 +17,12 @@ package nl.tranquilizedquality.itest.jboss;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
-
 import nl.tranquilizedquality.itest.AbstractDefaultDeploymentTest;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
-import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -40,7 +39,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  * @since 11 dec 2008
  * 
  */
-@RunWith(JUnit4ClassRunner.class)
+@RunWith(BlockJUnit4ClassRunner.class)
 public class TestAppJBossDeploymentTest extends AbstractDefaultDeploymentTest {
 
 	@Test
