@@ -22,8 +22,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import nl.tranquilizedquality.itest.cargo.exception.ConfigurationException;
 import nl.tranquilizedquality.itest.cargo.exception.DeployException;
@@ -126,6 +126,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 	 *             Is thrown when something goes wrong during the setup of the
 	 *             container.
 	 */
+	@Override
 	protected void setupContainer() throws Exception {
 		/*
 		 * Execute default setup behavior.
@@ -148,7 +149,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 		}
 		final URL remoteLocation = new URL(this.remoteLocation + containerConfigurationFile);
 		final String installDir = containerHome + "server/";
-		final ZipURLInstaller installer = new ZipURLInstaller(remoteLocation, installDir);
+		final ZipURLInstaller installer = new ZipURLInstaller(remoteLocation, installDir, installDir);
 		installer.install();
 
 		/*
@@ -195,7 +196,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 		final File directory = new File(configResourcesPath);
 		final File[] listFiles = directory.listFiles();
 
-		for (File file : listFiles) {
+		for (final File file : listFiles) {
 			final String name = file.getName();
 
 			if (org.springframework.util.StringUtils.endsWithIgnoreCase(name, suffix)) {
@@ -235,13 +236,14 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 				log.info("Copied file " + fileName + " to " + destFile.getAbsolutePath());
 			}
 		}
-		catch (IOException e) {
+		catch (final IOException e) {
 			if (log.isWarnEnabled()) {
 				log.warn("Failed to copy resource file: " + fileName);
 			}
 		}
 	}
 
+	@Override
 	protected void deploy() {
 		// create configuration factory
 		final ConfigurationFactory configurationFactory = new DefaultConfigurationFactory();
@@ -252,7 +254,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 
 		// setup configuration
 		final StringBuilder args = new StringBuilder();
-		for (String arg : jvmArguments) {
+		for (final String arg : jvmArguments) {
 			args.append(arg);
 			args.append(" ");
 
@@ -266,13 +268,13 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 		/*
 		 * Iterate over all available deployable locations.
 		 */
-		Set<Entry<String, String>> entrySet = deployableLocations.entrySet();
-		Iterator<Entry<String, String>> iterator = entrySet.iterator();
+		final Set<Entry<String, String>> entrySet = deployableLocations.entrySet();
+		final Iterator<Entry<String, String>> iterator = entrySet.iterator();
 
 		while (iterator.hasNext()) {
-			Entry<String, String> entry = iterator.next();
-			String key = entry.getKey();
-			String value = entry.getValue();
+			final Entry<String, String> entry = iterator.next();
+			final String key = entry.getKey();
+			final String value = entry.getValue();
 			DeployableType deployableType = null;
 
 			/*
@@ -289,7 +291,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 		/*
 		 * Iterate over all available deployable location configurations.
 		 */
-		for (DeployableLocationConfiguration config : deployableLocationConfigurations) {
+		for (final DeployableLocationConfiguration config : deployableLocationConfigurations) {
 			final String contextName = config.getContextName();
 			final String type = config.getType();
 			String path = config.getPath();
@@ -308,7 +310,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 					try {
 						FileUtils.copyFile(srcFile, destFile);
 					}
-					catch (IOException e) {
+					catch (final IOException e) {
 						throw new DeployException("Failed to copy WAR file: " + path, e);
 					}
 
@@ -393,10 +395,9 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 	 * @param deployableType
 	 *            The type of deployable.
 	 */
-	private void addDeployable(LocalConfiguration configuration, String path,
-			DeployableType deployableType) {
+	private void addDeployable(final LocalConfiguration configuration, final String path, final DeployableType deployableType) {
 		// retrieve deployable file
-		Deployable deployable = new DefaultDeployableFactory().createDeployable(configurationName, path, deployableType);
+		final Deployable deployable = new DefaultDeployableFactory().createDeployable(configurationName, path, deployableType);
 
 		// add deployable
 		configuration.addDeployable(deployable);
@@ -407,7 +408,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 	 *            the containerConfigurationFile to set
 	 */
 	@Required
-	public void setContainerConfigurationFile(String containerConfigurationFile) {
+	public void setContainerConfigurationFile(final String containerConfigurationFile) {
 		this.containerConfigurationFile = containerConfigurationFile;
 	}
 
@@ -416,7 +417,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 	 *            the configurationName to set
 	 */
 	@Required
-	public void setConfigurationName(String configurationName) {
+	public void setConfigurationName(final String configurationName) {
 		this.configurationName = configurationName;
 	}
 
@@ -425,7 +426,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 	 *            the jnpPort to set
 	 */
 	@Required
-	public void setJnpPort(Integer jnpPort) {
+	public void setJnpPort(final Integer jnpPort) {
 		this.jnpPort = jnpPort;
 	}
 
@@ -471,7 +472,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 	 * @param autoDetect
 	 *            the autoDetect to set
 	 */
-	public void setAutoDetect(boolean autoDetect) {
+	public void setAutoDetect(final boolean autoDetect) {
 		this.autoDetect = autoDetect;
 	}
 
