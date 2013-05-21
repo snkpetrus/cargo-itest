@@ -1,0 +1,132 @@
+<document>
+	<properties>
+		<title>Changes Cargo integration test</title>
+		<author email="salomo.petrus@gmail.com">Salomo Petrus</author>
+	</properties>
+	<body>
+		<release version="1.4.0" date="14-09-2010" description="Subsequent release">
+			<action dev="salomo.petrus" type="add">
+				Added the ability to run integration tests in parallel on the same server by introducing a unique container home. Now a timestamp is used for the directory
+				name.
+			</action>
+			<action dev="salomo.petrus" type="fix">
+				Incorrect conainer name is displayed when a deployable is invalid in Tomcat.
+			</action>
+			<action dev="salomo.petrus" type="add">
+				Added AbstractDefaultTestPart so you can create tests that uses SQL scripts within a TestSuite. Before it wasn't possible since the execution of the SQL
+				scripts didn't happen within a TestSuite that extended one of the abstract deployment tests. By using this testPart you can use a TestSuite that starts the container utility and let the individual
+				test parts execute the SQL scripts and run the tests on the application.
+			</action>
+		</release>
+		<release version="1.3.0" date="29-05-2009" description="Subsequent release">
+			<action dev="vincenzo.vitale" type="add">
+				Added support for the Glassfish application server.
+			</action>
+			<action dev="vincenzo.vitale" type="fix">
+				Fixed the testapp WAR with to be compatible with JRE 1.5.
+			</action>
+		</release>
+		<release version="1.2.2" date="02-05-2009" description="Subsequent release">
+			<action dev="salomo.petrus" type="fix">
+				Point the download URL's to the google code website instead so people that check out the code
+				can instantly build it their selves.
+			</action>
+			<action dev="salomo.petrus" type="fix">
+				Changed the postgresql data base used in the test into an in memory one
+				so people that check out the code can instantly build it their selves.
+			</action>
+			<action dev="salomo.petrus" type="fix">
+				Point the maven repository URL's to www.dizizid.com which points to the development server
+				so people that want to contribute can do that much easier by
+				providing their IP address so they
+				are allowed to deploy artifacts on the Nexus maven respository.
+			</action>
+		</release>
+		<release version="1.2.1" date="28-04-2009" description="Bug fix release">
+			<action dev="salomo.petrus" type="fix">
+				Fixed linux issue by renaming the install directory of the downloaded container .ZIP file
+				to the predefined container home directory. Now it doesn't matter
+				what name the .ZIP file
+				has that contains the container.
+			</action>
+		</release>
+		<release version="1.2.0" date="27-04-2009" description="Subsequent release">
+			<action dev="salomo.petrus" type="add">
+				Added support for the Jetty
+				servlet container.
+			</action>
+			<action dev="salomo.petrus" type="add">
+				Added support for the JOnas
+				application server.
+			</action>
+			<action dev="salomo.petrus" type="add">
+				Added auto detection of
+				configuration files for the JBoss container utility. Now you don't
+				have to write code to copy properties files and data source XML
+				files. These will be picked up directory in a predefined directory.
+			</action>
+		</release>
+		<release version="1.1.1" date="2-04-2009" description="Subsequent release">
+			<action dev="salomo.petrus" type="fix">
+				Removed Java 6 API calls to
+				be compatible with Java 5.
+				The isEmpty() call from the String class
+				is new in Java 6.
+			</action>
+		</release>
+		<release version="1.1.0" date="1-04-2009" description="Subsequent release">
+			<action dev="salomo.petrus" type="add">
+				Added the ability to specify
+				the context name of a WAR that will be deployed.
+			</action>
+			<action dev="salomo.petrus" type="fix">
+				Did some refactoring to avoid
+				null pointer exceptions.
+			</action>
+		</release>
+		<release version="1.0.0" date="13-02-2009" description="Subsequent release">
+			<action dev="salomo.petrus" type="add">
+				Added the ability to easily
+				create an integration test for applications that don't use a
+				database at all.
+			</action>
+			<action dev="salomo.petrus" type="add">
+				Added SQL execution before
+				transaction and after transaction so it's directly available for the
+				web application itself.
+			</action>
+			<action dev="salomo.petrus" type="add">
+				Added database generation by
+				Hibernate session factory so you can use your annotated classes to
+				generate your database.
+			</action>
+			<action dev="salomo.petrus" type="fix">
+				Fixed the stopping of the
+				JBoss container by changing the JNP port to 1299 since cargo is
+				trying to stop it on that port.
+			</action>
+		</release>
+		<release version="0.3" date="30-01-2009" description="Subsequent release">
+			<action dev="salomo.petrus" type="add">
+				Added Apache tomcat container
+				support.
+			</action>
+		</release>
+		<release version="0.2" date="27-01-2009" description="Bug fix release">
+			<action dev="salomo.petrus" type="fix">
+				Some bug fixing.
+			</action>
+		</release>
+		<release version="0.1" date="18-01-2009" description="First release">
+			<action dev="salomo.petrus" type="add">
+				Added the functionality to
+				enable you to deploy multiple WAR, EAR or EJB files for a
+				integration test.
+			</action>
+			<action dev="salomo.petrus" type="add">
+				Added the basic functionality
+				to create a integration test in an easy way that actually works.
+			</action>
+		</release>
+	</body>
+</document>
