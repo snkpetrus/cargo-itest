@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.tranquilizedquality</groupId>
 	<artifactId>cargo-itest</artifactId>
@@ -40,7 +41,7 @@
 		<spring-mock.version>2.0.8</spring-mock.version>
 		<easymock.version>2.3</easymock.version>
 		<junit.version>4.8.2</junit.version>
-		<cargo.version>1.4.0</cargo.version>
+		<cargo.version>1.4.7</cargo.version>
 		<cargo-core-container-glassfish.version>1.4.0</cargo-core-container-glassfish.version>
 		<htmlunit.version>1.14</htmlunit.version>
 		<jetty.version>6.1.5</jetty.version>
