@@ -54,7 +54,7 @@ import org.codehaus.cargo.util.log.Logger;
 public abstract class AbstractJettyContainerUtil extends AbstractInstalledContainerUtil {
 
     /** Logger for this class */
-    private static final Log log = LogFactory.getLog(AbstractJettyContainerUtil.class);
+    private static final Log LOGGER = LogFactory.getLog(AbstractJettyContainerUtil.class);
 
     /** The name of the JOnas configuration to use. */
     protected String configurationName;
@@ -66,7 +66,7 @@ public abstract class AbstractJettyContainerUtil extends AbstractInstalledContai
     public AbstractJettyContainerUtil() {
         setContainerName("Jetty");
 
-        cleanUpContainer();
+        setupContainerHome();
     }
 
     /**
@@ -93,8 +93,8 @@ public abstract class AbstractJettyContainerUtil extends AbstractInstalledContai
      */
     @Override
     protected void deploy() {
-        if (log.isInfoEnabled()) {
-            log.info("Creating configuration..");
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Creating configuration..");
         }
 
         // create configuration factory
@@ -110,15 +110,15 @@ public abstract class AbstractJettyContainerUtil extends AbstractInstalledContai
             args.append(arg);
             args.append(" ");
 
-            if (log.isInfoEnabled()) {
-                log.info("Added JVM argument: " + arg);
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Added JVM argument: " + arg);
             }
         }
         configuration.setProperty(GeneralPropertySet.JVMARGS, args.toString());
         configuration.setProperty(ServletPropertySet.PORT, containerPort.toString());
 
-        if (log.isInfoEnabled()) {
-            log.info("Adding deployables..");
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Adding deployables..");
         }
 
         /*
@@ -182,8 +182,8 @@ public abstract class AbstractJettyContainerUtil extends AbstractInstalledContai
             addDeployable(configuration, path, deployableType);
         }
 
-        if (log.isInfoEnabled()) {
-            log.info("Setup the container..");
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Setup the container..");
         }
 
         // create installedLocalContainer
@@ -199,16 +199,16 @@ public abstract class AbstractJettyContainerUtil extends AbstractInstalledContai
         // set the system properties
         installedLocalContainer.setSystemProperties(systemProperties);
 
-        if (log.isInfoEnabled()) {
-            log.info("Starting Jetty ...");
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Starting Jetty ...");
         }
 
         // startup installedLocalContainer
         installedLocalContainer.start();
 
         // Here you are assured the container is started.
-        if (log.isInfoEnabled()) {
-            log.info("Jetty up and running!");
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Jetty up and running!");
         }
     }
 
@@ -276,8 +276,8 @@ public abstract class AbstractJettyContainerUtil extends AbstractInstalledContai
         final File directory = new File(path);
         if (!directory.exists()) {
             final String msg = dir + " directory does not excist! : " + path;
-            if (log.isErrorEnabled()) {
-                log.error(msg);
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error(msg);
             }
 
             throw new ConfigurationException(msg);
