@@ -44,9 +44,9 @@
 	</scm>
 
 	<properties>
-		<spring.version>3.1.1.RELEASE</spring.version>
+		<spring.version>4.0.2.RELEASE</spring.version>
 		<spring-mock.version>2.0.8</spring-mock.version>
-		<easymock.version>2.3</easymock.version>
+		<easymock.version>3.2</easymock.version>
 		<junit.version>4.8.2</junit.version>
 		<cargo.version>1.4.7</cargo.version>
 		<cargo-core-container-glassfish.version>1.4.0</cargo-core-container-glassfish.version>
@@ -95,6 +95,11 @@
 			<artifactId>spring-tx</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>		
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
