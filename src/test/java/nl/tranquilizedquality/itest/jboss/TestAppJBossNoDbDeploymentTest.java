@@ -15,12 +15,17 @@
  */
 package nl.tranquilizedquality.itest.jboss;
 
-import nl.tranquilizedquality.itest.AbstractDefaultDeploymentTest;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
-import org.junit.Ignore;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
+import nl.tranquilizedquality.itest.AbstractDefaultDeploymentTest;
+import nl.tranquilizedquality.itest.AbstractDefaultNoDbDeploymentTest;
 
 /**
  * This is a simple example how you could create an integration test with the
@@ -34,26 +39,17 @@ import com.gargoylesoftware.htmlunit.WebClient;
  * @since 13 feb 2009
  * 
  */
-public class TestAppJBossNoDbDeploymentTest {// extends
-												// AbstractDefaultNoDbDeploymentTest
-												// {
+public class TestAppJBossNoDbDeploymentTest extends AbstractDefaultNoDbDeploymentTest {
 
-	/**
-	 * FIXME: Not working anymore for some reason.
-	 * 
-	 * @throws Exception
-	 */
 	@Test
-	@Ignore
 	public void testHelloWorld() throws Exception {
 		final WebClient webClient = new WebClient();
 		webClient.setJavaScriptEnabled(false);
 
 		// Get the first page
-		// final HtmlPage index = (HtmlPage) webClient.getPage("http://" + host
-		// + "/test-app/");
-		//
-		// assertNotNull(index);
-		// assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
+		final HtmlPage index = (HtmlPage) webClient.getPage("http://" + host + "/test-app/");
+
+		assertNotNull(index);
+		assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
 	}
 }

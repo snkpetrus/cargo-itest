@@ -9,10 +9,8 @@
 				<entry key="src/test/resources/test-app.war" value="WAR" />
 			</map>
 		</property>
-		<property name="tomcatVersion" value="tomcat7x" />
 		<property name="containerPort" value="8890" />
 		<property name="remoteLocation" value="http://cargo-itest.googlecode.com/files/" />
-		<property name="containerFile" value="apache-tomcat-7.0.28.zip" />
+		<property name="containerFile" value="tomcat.zip" />
 	</bean>
 </beans>
-

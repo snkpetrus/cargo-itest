@@ -17,6 +17,7 @@ package nl.tranquilizedquality.itest.tomcat;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+
 import nl.tranquilizedquality.itest.AbstractDefaultDeploymentTest;
 import nl.tranquilizedquality.itest.cargo.ContainerUtil;
 
@@ -26,8 +27,8 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -43,7 +44,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  * @author Salomo Petrus
  * 
  */
-@RunWith(BlockJUnit4ClassRunner.class)
+@RunWith(JUnit4ClassRunner.class)
 public class TestAppTomcatDeploymentTest {
 	/** Logger for this class */
 	private static final Log log = LogFactory.getLog(TestAppTomcatDeploymentTest.class);
@@ -64,7 +65,7 @@ public class TestAppTomcatDeploymentTest {
 	 *            in the application context.
 	 * @return Returns the application context.
 	 */
-	protected static ConfigurableApplicationContext loadContext(final String[] locations) {
+	protected static ConfigurableApplicationContext loadContext(String[] locations) {
 		return new ClassPathXmlApplicationContext(locations);
 	}
 
@@ -77,7 +78,8 @@ public class TestAppTomcatDeploymentTest {
 				log.info("Starting up the container utility...");
 			}
 
-			final ConfigurableApplicationContext context = loadContext(new String[] { "tomcat-itest-context.xml", "common-itest-context.xml" });
+			ConfigurableApplicationContext context = loadContext(new String[] {
+					"tomcat-itest-context.xml", "common-itest-context.xml" });
 			CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
 			CONTAINER_UTIL.start();
 		}

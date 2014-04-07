@@ -22,16 +22,14 @@ import junit.framework.TestSuite;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.transaction.AfterTransaction;
+import org.springframework.test.context.transaction.BeforeTransaction;
 
 /**
  * AbstractDefaultTestPart is a base class that can be used in a
@@ -130,8 +128,7 @@ public abstract class AbstractDefaultTestPart extends AbstractTransactionalJUnit
 		}
 	}
 
-	@Before
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@BeforeTransaction
 	public void executeSQLScripts() throws Exception {
 		for (final String script : SQL_SCRIPTS) {
 			if (log.isInfoEnabled()) {
@@ -141,8 +138,7 @@ public abstract class AbstractDefaultTestPart extends AbstractTransactionalJUnit
 		}
 	}
 
-	@After
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@AfterTransaction
 	public void executeSQLCleanUpScripts() throws Exception {
 		for (final String script : SQL_CLEAN_UP_SCRIPTS) {
 			if (log.isInfoEnabled()) {

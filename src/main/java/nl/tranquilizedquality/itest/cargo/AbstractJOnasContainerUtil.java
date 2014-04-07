@@ -18,8 +18,8 @@ package nl.tranquilizedquality.itest.cargo;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import nl.tranquilizedquality.itest.cargo.exception.ConfigurationException;
 import nl.tranquilizedquality.itest.cargo.exception.DeployException;
@@ -53,241 +53,244 @@ import org.springframework.beans.factory.annotation.Required;
  * 
  */
 public abstract class AbstractJOnasContainerUtil extends AbstractInstalledContainerUtil {
-    /** Logger for this class */
-    private static final Log LOGGER = LogFactory.getLog(AbstractJOnasContainerUtil.class);
+	/** Logger for this class */
+	private static final Log log = LogFactory.getLog(AbstractJOnasContainerUtil.class);
 
-    /** The name of the JOnas configuration to use. */
-    protected String configurationName;
+	/** The name of the JOnas configuration to use. */
+	protected String configurationName;
 
-    /**
-     * Default constructor that will detect which OS is used to make sure the
-     * JOnas will be downloaded in the correct location.
-     */
-    public AbstractJOnasContainerUtil() {
-        setContainerName("JOnas");
+	/**
+	 * Default constructor that will detect which OS is used to make sure the
+	 * JOnas will be downloaded in the correct location.
+	 */
+	public AbstractJOnasContainerUtil() {
+		setContainerName("JOnas");
 
-        setupContainerHome();
-    }
+		cleanUpContainer();
+	}
 
-    /**
-     * Installs the container and the application configuration. It also sets
-     * some system properties so the container can startup properly. Finally it
-     * sets up additional configuration like jndi.properties files etc.
-     * 
-     * @throws Exception
-     *             Is thrown when something goes wrong during the setup of the
-     *             container.
-     */
-    @Override
-    protected void setupContainer() throws Exception {
-        /*
-         * Execute default setup behavior.
-         */
-        super.setupContainer();
+	/**
+	 * Installs the container and the application configuration. It also sets
+	 * some system properties so the container can startup properly. Finally it
+	 * sets up additional configuration like jndi.properties files etc.
+	 * 
+	 * @throws Exception
+	 *             Is thrown when something goes wrong during the setup of the
+	 *             container.
+	 */
+	protected void setupContainer() throws Exception {
+		/*
+		 * Execute default setup behavior.
+		 */
+		super.setupContainer();
 
-        setupConfiguration();
-    }
+		setupConfiguration();
+	}
 
-    /**
-     * Deploys the application to the correct
-     */
-    @Override
-    protected void deploy() {
-        // create configuration factory
-        final ConfigurationFactory configurationFactory = new DefaultConfigurationFactory();
+	/**
+	 * Deploys the application to the correct
+	 */
+	protected void deploy() {
+		// create configuration factory
+		final ConfigurationFactory configurationFactory = new DefaultConfigurationFactory();
 
-        // create JOnas configuration
-        final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("jonas4x", ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome);
+		// create JOnas configuration
+		final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("jonas4x", ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome);
 
-        // setup configuration
-        final StringBuilder args = new StringBuilder();
-        for (final String arg : jvmArguments) {
-            args.append(arg);
-            args.append(" ");
+		// setup configuration
+		final StringBuilder args = new StringBuilder();
+		for (String arg : jvmArguments) {
+			args.append(arg);
+			args.append(" ");
 
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Added JVM argument: " + arg);
-            }
-        }
-        configuration.setProperty(GeneralPropertySet.JVMARGS, args.toString());
-        configuration.setProperty(ServletPropertySet.PORT, containerPort.toString());
+			if (log.isInfoEnabled()) {
+				log.info("Added JVM argument: " + arg);
+			}
+		}
+		configuration.setProperty(GeneralPropertySet.JVMARGS, args.toString());
+		configuration.setProperty(ServletPropertySet.PORT, containerPort.toString());
 
-        /*
-         * Iterate over all available deployable locations.
-         */
-        final Set<Entry<String, String>> entrySet = deployableLocations.entrySet();
-        final Iterator<Entry<String, String>> iterator = entrySet.iterator();
+		/*
+		 * Iterate over all available deployable locations.
+		 */
+		Set<Entry<String, String>> entrySet = deployableLocations.entrySet();
+		Iterator<Entry<String, String>> iterator = entrySet.iterator();
 
-        while (iterator.hasNext()) {
-            final Entry<String, String> entry = iterator.next();
-            final String key = entry.getKey();
-            final String value = entry.getValue();
-            DeployableType deployableType = null;
+		while (iterator.hasNext()) {
+			final Entry<String, String> entry = iterator.next();
+			final String key = entry.getKey();
+			final String value = entry.getValue();
+			DeployableType deployableType = null;
 
-            /*
-             * Determine the deployable type.
-             */
-            deployableType = determineDeployableType(value);
+			/*
+			 * Determine the deployable type.
+			 */
+			deployableType = determineDeployableType(value);
 
-            /*
-             * Add the deployable.
-             */
-            addDeployable(configuration, key, deployableType);
-        }
+			/*
+			 * Add the deployable.
+			 */
+			addDeployable(configuration, key, deployableType);
+		}
 
-        /*
-         * Iterate over all available deployable location configurations.
-         */
-        for (final DeployableLocationConfiguration config : deployableLocationConfigurations) {
-            final String contextName = config.getContextName();
-            final String type = config.getType();
-            String path = config.getPath();
+		/*
+		 * Iterate over all available deployable location configurations.
+		 */
+		for (DeployableLocationConfiguration config : deployableLocationConfigurations) {
+			final String contextName = config.getContextName();
+			final String type = config.getType();
+			String path = config.getPath();
 
-            /*
-             * Determine deployable type.
-             */
-            DeployableType deployableType = null;
-            if (contextName != null && contextName.length() > 0) {
-                deployableType = determineDeployableType(type);
+			/*
+			 * Determine deployable type.
+			 */
+			DeployableType deployableType = null;
+			if (contextName != null && contextName.length() > 0) {
+				deployableType = determineDeployableType(type);
 
-                if (DeployableType.WAR.equals(deployableType)) {
-                    final File srcFile = new File(path);
-                    final File destFile = new File("target/" + contextName + ".war");
+				if (DeployableType.WAR.equals(deployableType)) {
+					final File srcFile = new File(path);
+					final File destFile = new File("target/" + contextName + ".war");
 
-                    try {
-                        FileUtils.copyFile(srcFile, destFile);
-                    }
-                    catch (final IOException e) {
-                        throw new DeployException("Failed to copy WAR file: " + path, e);
-                    }
+					try {
+						FileUtils.copyFile(srcFile, destFile);
+					}
+					catch (IOException e) {
+						throw new DeployException("Failed to copy WAR file: " + path, e);
+					}
 
-                    path = destFile.getPath();
-                }
-            } else {
-                deployableType = determineDeployableType(type);
-            }
+					path = destFile.getPath();
+				}
+			}
+			else {
+				deployableType = determineDeployableType(type);
+			}
 
-            /*
-             * Add the deployable
-             */
-            addDeployable(configuration, path, deployableType);
-        }
+			/*
+			 * Add the deployable
+			 */
+			addDeployable(configuration, path, deployableType);
+		}
 
-        // create installedLocalContainer
-        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("jonas4x", ContainerType.INSTALLED, configuration);
+		// create installedLocalContainer
+		installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("jonas4x", ContainerType.INSTALLED, configuration);
 
-        // configure installedLocalContainer
-        installedLocalContainer.setHome(containerHome);
-        final Logger fileLogger = new FileLogger(new File(cargoLogFilePath + "cargo.log"), true);
-        fileLogger.setLevel(LogLevel.DEBUG);
-        installedLocalContainer.setLogger(fileLogger);
-        installedLocalContainer.setOutput(cargoLogFilePath + "output.log");
+		// configure installedLocalContainer
+		installedLocalContainer.setHome(containerHome);
+		final Logger fileLogger = new FileLogger(new File(cargoLogFilePath + "cargo.log"), true);
+		fileLogger.setLevel(LogLevel.DEBUG);
+		installedLocalContainer.setLogger(fileLogger);
+		installedLocalContainer.setOutput(cargoLogFilePath + "output.log");
 
-        // set the system properties
-        installedLocalContainer.setSystemProperties(systemProperties);
+		// set the system properties
+		installedLocalContainer.setSystemProperties(systemProperties);
 
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Starting JOnas [" + configurationName + "]...");
-        }
+		if (log.isInfoEnabled()) {
+			log.info("Starting JOnas [" + configurationName + "]...");
+		}
 
-        // startup installedLocalContainer
-        installedLocalContainer.start();
+		// startup installedLocalContainer
+		installedLocalContainer.start();
 
-        // Here you are assured the container is started.
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("JOnas up and running!");
-        }
-    }
+		// Here you are assured the container is started.
+		if (log.isInfoEnabled()) {
+			log.info("JOnas up and running!");
+		}
+	}
 
-    /**
-     * Determines the type of deployable.
-     * 
-     * @param type
-     *            A string representation of the deployable type.
-     * @return Returns a {@link DeployableType} that corresponds to the string
-     *         representation or if none could be found the default value (EAR)
-     *         will be returned.
-     */
-    private DeployableType determineDeployableType(final String type) {
-        DeployableType deployableType;
+	/**
+	 * Determines the type of deployable.
+	 * 
+	 * @param type
+	 *            A string representation of the deployable type.
+	 * @return Returns a {@link DeployableType} that corresponds to the string
+	 *         representation or if none could be found the default value (EAR)
+	 *         will be returned.
+	 */
+	private DeployableType determineDeployableType(final String type) {
+		DeployableType deployableType;
 
-        /*
-         * Check what kind of deployable it is.
-         */
-        if ("EAR".equals(type)) {
-            deployableType = DeployableType.EAR;
-        } else if ("WAR".equals(type)) {
-            deployableType = DeployableType.WAR;
-        } else if ("EJB".equals(type)) {
-            deployableType = DeployableType.EJB;
-        } else {
-            // Default value is EAR file
-            deployableType = DeployableType.EAR;
-        }
+		/*
+		 * Check what kind of deployable it is.
+		 */
+		if ("EAR".equals(type)) {
+			deployableType = DeployableType.EAR;
+		}
+		else if ("WAR".equals(type)) {
+			deployableType = DeployableType.WAR;
+		}
+		else if ("EJB".equals(type)) {
+			deployableType = DeployableType.EJB;
+		}
+		else {
+			// Default value is EAR file
+			deployableType = DeployableType.EAR;
+		}
 
-        return deployableType;
-    }
+		return deployableType;
+	}
 
-    /**
-     * Adds a deployable to the {@link LocalConfiguration}.
-     * 
-     * @param configuration
-     *            The configuration where a deployable can be added to.
-     * @param path
-     *            The path where the deployable can be found.
-     * @param deployableType
-     *            The type of deployable.
-     */
-    private void addDeployable(final LocalConfiguration configuration, final String path, final DeployableType deployableType) {
-        // retrieve deployable file
-        final Deployable deployable = new DefaultDeployableFactory().createDeployable(configurationName, path, deployableType);
+	/**
+	 * Adds a deployable to the {@link LocalConfiguration}.
+	 * 
+	 * @param configuration
+	 *            The configuration where a deployable can be added to.
+	 * @param path
+	 *            The path where the deployable can be found.
+	 * @param deployableType
+	 *            The type of deployable.
+	 */
+	private void addDeployable(LocalConfiguration configuration, String path,
+			DeployableType deployableType) {
+		// retrieve deployable file
+		Deployable deployable = new DefaultDeployableFactory().createDeployable(configurationName, path, deployableType);
 
-        // add deployable
-        configuration.addDeployable(deployable);
-    }
+		// add deployable
+		configuration.addDeployable(deployable);
+	}
 
-    /**
-     * @param configurationName
-     *            the configurationName to set
-     */
-    @Required
-    public void setConfigurationName(final String configurationName) {
-        this.configurationName = configurationName;
-    }
+	/**
+	 * @param configurationName
+	 *            the configurationName to set
+	 */
+	@Required
+	public void setConfigurationName(String configurationName) {
+		this.configurationName = configurationName;
+	}
 
-    /**
-     * Constructs the full path to a specific directory from the configuration.
-     * 
-     * @param dir
-     *            The directory name.
-     * @return Returns a String representation of the full path.
-     */
-    private String getContainerDirectory(final String dir) {
-        final StringBuilder fullPath = new StringBuilder();
-        fullPath.append(this.containerHome);
-        fullPath.append(dir);
+	/**
+	 * Constructs the full path to a specific directory from the configuration.
+	 * 
+	 * @param dir
+	 *            The directory name.
+	 * @return Returns a String representation of the full path.
+	 */
+	private String getContainerDirectory(final String dir) {
+		final StringBuilder fullPath = new StringBuilder();
+		fullPath.append(this.containerHome);
+		fullPath.append(dir);
 
-        final String path = fullPath.toString();
+		final String path = fullPath.toString();
 
-        final File directory = new File(path);
-        if (!directory.exists()) {
-            final String msg = dir + " directory does not excist! : " + path;
-            if (LOGGER.isErrorEnabled()) {
-                LOGGER.error(msg);
-            }
+		final File directory = new File(path);
+		if (!directory.exists()) {
+			final String msg = dir + " directory does not excist! : " + path;
+			if (log.isErrorEnabled()) {
+				log.error(msg);
+			}
 
-            throw new ConfigurationException(msg);
-        }
+			throw new ConfigurationException(msg);
+		}
 
-        return path;
-    }
+		return path;
+	}
 
-    public String getSharedLibDirectory() {
-        return getContainerDirectory("lib/");
-    }
+	public String getSharedLibDirectory() {
+		return getContainerDirectory("lib/");
+	}
 
-    public String getConfDirectory() {
-        return getContainerDirectory("conf/");
-    }
+	public String getConfDirectory() {
+		return getContainerDirectory("conf/");
+	}
 
 }

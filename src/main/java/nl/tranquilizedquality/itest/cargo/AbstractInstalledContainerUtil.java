@@ -28,7 +28,6 @@ import java.util.Map;
 import nl.tranquilizedquality.itest.cargo.exception.ConfigurationException;
 import nl.tranquilizedquality.itest.domain.DeployableLocationConfiguration;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,345 +45,315 @@ import org.springframework.beans.factory.annotation.Required;
  * 
  */
 public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
+	/** Logger for this class */
+	private static final Log log = LogFactory.getLog(AbstractInstalledContainerUtil.class);
 
-    /** Logger for this class */
-    private static final Log LOGGER = LogFactory.getLog(AbstractInstalledContainerUtil.class);
+	/** The name of the container. */
+	private String containerName;
 
-    /** The name of the container. */
-    private String containerName;
+	/** The path where all configuration resource files are */
+	protected String configResourcesPath;
 
-    /** The path where all configuration resource files are */
-    protected String configResourcesPath;
+	/**
+	 * The installedLocalContainer where the server application will be run in.
+	 */
+	protected InstalledLocalContainer installedLocalContainer;
 
-    /**
-     * The installedLocalContainer where the server application will be run in.
-     */
-    protected InstalledLocalContainer installedLocalContainer;
+	/** The JVM arguments to use when starting up the installedLocalContainer */
+	protected List<String> jvmArguments = new ArrayList<String>();
 
-    /** The JVM arguments to use when starting up the installedLocalContainer */
-    protected List<String> jvmArguments = new ArrayList<String>();
+	/**
+	 * The path where the installedLocalContainer server is installed.
+	 */
+	protected String containerHome;
 
-    /**
-     * The path where the installedLocalContainer server is installed.
-     */
-    protected String containerHome;
+	/**
+	 * The port where the container will run on. Use the property
+	 * ${cargo.server.port} to set the port dynamically and set the system
+	 * properties with this value.
+	 */
+	protected Integer containerPort;
 
-    /**
-     * The port where the container will run on. Use the property
-     * ${cargo.server.port} to set the port dynamically and set the system
-     * properties with this value.
-     */
-    protected Integer containerPort;
+	/**
+	 * The path where the Cargo log files will be written to.
+	 */
+	protected String cargoLogFilePath;
 
-    /**
-     * The path where the Cargo LOGGER files will be written to.
-     */
-    protected String cargoLogFilePath;
+	/** The system property that can be set to be used in the JVM. */
+	protected Map<String, String> systemProperties;
 
-    /** The system property that can be set to be used in the JVM. */
-    protected Map<String, String> systemProperties;
+	/** The URL where the container and configuration ZIP files are. */
+	protected String remoteLocation;
 
-    /** The URL where the container and configuration ZIP files are. */
-    protected String remoteLocation;
+	/** The ZIP file of the container to use i.e. jboss-4.0.4.GA.zip. */
+	protected String containerFile;
 
-    /** The ZIP file of the container to use i.e. jboss-4.0.4.GA.zip. */
-    protected String containerFile;
+	/** The deployable locations that will be used in the integration tests. */
+	protected Map<String, String> deployableLocations;
 
-    /** The deployable locations that will be used in the integration tests. */
-    protected Map<String, String> deployableLocations;
+	/**
+	 * The deployable location configurations that will be used in the
+	 * integration tests.
+	 */
+	protected List<DeployableLocationConfiguration> deployableLocationConfigurations;
 
-    /**
-     * The deployable location configurations that will be used in the
-     * integration tests.
-     */
-    protected List<DeployableLocationConfiguration> deployableLocationConfigurations;
+	/**
+	 * Default constructor.
+	 */
+	public AbstractInstalledContainerUtil() {
+		configResourcesPath = "src/test/resources/";
 
-    /**
-     * Determines if the extracted container in the temporary directory of the
-     * OS should be cleaned up after the container was stopped.
-     */
-    private boolean cleanUpAfterContainerStopped = true;
+		systemProperties = new HashMap<String, String>();
+		deployableLocations = new LinkedHashMap<String, String>();
+		deployableLocationConfigurations = new ArrayList<DeployableLocationConfiguration>();
+	}
 
-    /** The root folder where the container will be extracted and started. */
-    private String containerRootFolderName;
+	/**
+	 * Cleans up the container if there is any to make sure we start with a
+	 * fresh container.
+	 */
+	protected void cleanUpContainer() {
+		/*
+		 * Retrieve the operating system and current logged in user to create a
+		 * unique storage location for the container to start up in. This way
+		 * clashing of containers will be kept to the minimum.
+		 */
+		final String operatingSystem = System.getProperty("os.name");
 
-    /**
-     * Default constructor.
-     */
-    public AbstractInstalledContainerUtil() {
-        configResourcesPath = "src/test/resources/";
+		final StringBuilder builder = new StringBuilder();
 
-        systemProperties = new HashMap<String, String>();
-        deployableLocations = new LinkedHashMap<String, String>();
-        deployableLocationConfigurations = new ArrayList<DeployableLocationConfiguration>();
-    }
+		if (operatingSystem != null && operatingSystem.startsWith("Windows")) {
+			builder.append("C:/WINDOWS/Temp/");
+		}
+		else {
+			builder.append("/tmp/");
+		}
 
-    /**
-     * Cleans up the container if there is any to save disk space.
-     */
-    private void cleanUpContainer() {
+		/*
+		 * Get the time in millis so concurrent builds using the cargo-itest
+		 * utility can be executed without clashing with eachother.
+		 */
+		final Long timeStamp = Calendar.getInstance().getTimeInMillis();
 
-        /*
-         * Delete container directory.
-         */
-        try {
-            FileUtils.deleteDirectory(new File(containerRootFolderName));
-        }
-        catch (final Exception exceptionOnDelete) {
-            if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("Failed to delete the directory: " + containerHome + ".", exceptionOnDelete);
-            }
-        }
-    }
+		builder.append(timeStamp);
+		builder.append("/");
+		builder.append(containerName);
+		builder.append("/");
 
-    /**
-     * Sets up the container home directory so the container can be extracted
-     * and started there.
-     */
-    protected void setupContainerHome() {
-        /*
-         * Retrieve the operating system and current logged in user to create a
-         * unique storage location for the container to start up in. This way
-         * clashing of containers will be kept to the minimum.
-         */
-        final String operatingSystem = System.getProperty("os.name");
-        final StringBuilder builder = new StringBuilder();
-        if (operatingSystem != null && operatingSystem.startsWith("Windows")) {
-            builder.append("C:/WINDOWS/Temp/");
-        } else {
-            builder.append("/tmp/");
-        }
+		containerHome = builder.toString();
 
-        /*
-         * Get the time in millis so concurrent builds using the cargo-itest
-         * utility can be executed without clashing with eachother.
-         */
-        final Long timeStamp = Calendar.getInstance().getTimeInMillis();
-        builder.append(timeStamp);
-        builder.append("/");
-        containerRootFolderName = builder.toString();
-        builder.append(containerName);
-        builder.append("/");
-        containerHome = builder.toString();
+		if (log.isInfoEnabled()) {
+			log.info("Container HOME: " + containerHome);
+		}
+	}
 
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Container HOME: " + containerHome);
-        }
-    }
+	/**
+	 * Sets up the configuration needed for the deployable to be able to run
+	 * correctly.
+	 * 
+	 * @throws Exception
+	 *             Is thrown when something went wrong if the configuration
+	 *             setup fails.
+	 */
+	protected abstract void setupConfiguration() throws Exception;
 
-    /**
-     * Sets up the configuration needed for the deployable to be able to run
-     * correctly.
-     * 
-     * @throws Exception
-     *             Is thrown when something went wrong if the configuration
-     *             setup fails.
-     */
-    protected abstract void setupConfiguration() throws Exception;
+	/**
+	 * Installs the container and the application configuration. It also sets
+	 * some system properties so the container can startup properly. Finally it
+	 * sets up additional configuration like jndi.proprties files etc.
+	 * 
+	 * @throws Exception
+	 *             Is thrown when something goes wrong during the setup of the
+	 *             container.
+	 */
+	protected void setupContainer() throws Exception {
+		if (log.isInfoEnabled()) {
+			log.info("Cleaning up " + containerName + "...");
+		}
 
-    /**
-     * Installs the container and the application configuration. It also sets
-     * some system properties so the container can startup properly. Finally it
-     * sets up additional configuration like jndi.proprties files etc.
-     * 
-     * @throws Exception
-     *             Is thrown when something goes wrong during the setup of the
-     *             container.
-     */
-    protected void setupContainer() throws Exception {
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Cleaning up " + containerName + "...");
-        }
+		// In windows the renaming causes problem when:
+		// - The zip file has not the same name of the installed directory.
+		// - The ZipURLInstaller fails.
+		final String operatingSystem = System.getProperty("os.name");
+		if (operatingSystem != null && !operatingSystem.startsWith("Windows")) {
 
-        // In windows the renaming causes problem when:
-        // - The zip file has not the same name of the installed directory.
-        // - The ZipURLInstaller fails.
-        final String operatingSystem = System.getProperty("os.name");
-        if (operatingSystem != null && !operatingSystem.startsWith("Windows")) {
+			try {
+				new File(containerHome).mkdir();
+			}
+			catch (final Exception exceptionOnMkDir) {
+				if (log.isErrorEnabled()) {
+					log.error("Failed to create the directory: " + containerHome + ". Details: "
+							+ exceptionOnMkDir.getMessage(), exceptionOnMkDir);
+				}
+				throw new ConfigurationException("Failed to create the directory: " + containerHome
+						+ ". Details: " + exceptionOnMkDir.getMessage(), exceptionOnMkDir);
+			}
+		}
 
-            try {
-                new File(containerHome).mkdir();
-            }
-            catch (final Exception exceptionOnMkDir) {
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error("Failed to create the directory: " + containerHome + ". Details: " + exceptionOnMkDir.getMessage(), exceptionOnMkDir);
-                }
-                throw new ConfigurationException("Failed to create the directory: " + containerHome + ". Details: " + exceptionOnMkDir.getMessage(), exceptionOnMkDir);
-            }
-        }
+		if (log.isInfoEnabled()) {
+			log.info("Installing " + containerName + "...");
+			log.info("Downloading container from: " + remoteLocation);
+			log.info("Container file: " + containerFile);
+		}
 
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Installing " + containerName + "...");
-            LOGGER.info("Downloading container from: " + remoteLocation);
-            LOGGER.info("Container file: " + containerFile);
-        }
+		/*
+		 * Download and configure the container.
+		 */
+		final URL remoteLocation = new URL(this.remoteLocation + containerFile);
+		final String installDir = StringUtils.substringBeforeLast(StringUtils.chomp(containerHome, "/"), "/");
+		final ZipURLInstaller installer = new ZipURLInstaller(remoteLocation, installDir);
+		installer.install();
 
-        /*
-         * Download and configure the container.
-         */
-        final URL remoteLocation = new URL(this.remoteLocation + containerFile);
-        final String installDir = StringUtils.substringBeforeLast(StringUtils.chomp(containerHome, "/"), "/");
-        final ZipURLInstaller installer = new ZipURLInstaller(remoteLocation, installDir, installDir);
-        installer.install();
+		/*
+		 * Rename the install directory to the container home directory so it
+		 * doesn't matter what the name is of the zip file and avoid case
+		 * sensitive issues on Linux.
+		 */
+		final String containerDir = StringUtils.stripEnd(containerFile, ".zip");
+		final File installedDir = new File(installDir + "/" + containerDir + "/");
+		final File destenationDir = new File(containerHome);
 
-        /*
-         * Rename the install directory to the container home directory so it
-         * doesn't matter what the name is of the zip file and avoid case
-         * sensitive issues on Linux.
-         */
-        final String containerDir = StringUtils.stripEnd(containerFile, ".zip");
-        final File installedDir = new File(installDir + "/" + containerDir + "/");
-        final File destenationDir = new File(containerHome);
+		if (log.isInfoEnabled()) {
+			log.info("Renaming: " + installedDir.getPath());
+			log.info("To: " + destenationDir.getPath());
+		}
 
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Renaming: " + installedDir.getPath());
-            LOGGER.info("To: " + destenationDir.getPath());
-        }
+		final boolean renamed = installedDir.renameTo(destenationDir);
 
-        final boolean renamed = installedDir.renameTo(destenationDir);
+		if (!renamed) {
+			final String msg = "Failed to rename container install directory to home directory name!";
+			if (log.isErrorEnabled()) {
+				log.error(msg);
+			}
 
-        if (!renamed) {
-            final String msg = "Failed to rename container install directory to home directory name!";
-            if (LOGGER.isErrorEnabled()) {
-                LOGGER.error(msg);
-            }
+			throw new ConfigurationException(msg);
+		}
 
-            throw new ConfigurationException(msg);
-        }
+		/*
+		 * Setup the system properties.
+		 */
+		systemProperties.put("cargo.server.port", containerPort.toString());
 
-        /*
-         * Setup the system properties.
-         */
-        systemProperties.put("cargo.server.port", containerPort.toString());
+	}
 
-    }
+	/**
+	 * Deploys the application to the correct
+	 */
+	protected abstract void deploy();
 
-    /**
-     * Deploys the application to the correct
-     */
-    protected abstract void deploy();
+	public void start() throws Exception {
+		setupContainer();
 
-    public void start() throws Exception {
-        setupContainer();
+		deploy();
+	}
 
-        deploy();
-    }
+	public void stop() {
+		installedLocalContainer.stop();
+	}
 
-    public void stop() {
-        installedLocalContainer.stop();
+	/**
+	 * @param configResourcesPath
+	 *            the configResourcesPath to set
+	 */
+	public void setConfigResourcesPath(final String configResourcesPath) {
+		this.configResourcesPath = configResourcesPath;
+	}
 
-        if (cleanUpAfterContainerStopped) {
-            cleanUpContainer();
-        }
-    }
+	/**
+	 * @return the configResourcesPath
+	 */
+	public String getConfigResourcesPath() {
+		return configResourcesPath;
+	}
 
-    /**
-     * @param configResourcesPath
-     *            the configResourcesPath to set
-     */
-    public void setConfigResourcesPath(final String configResourcesPath) {
-        this.configResourcesPath = configResourcesPath;
-    }
+	/**
+	 * @param deployableLocations
+	 *            the deployableLocations to set
+	 */
+	public void setDeployableLocations(final Map<String, String> deployableLocations) {
+		this.deployableLocations = deployableLocations;
+	}
 
-    /**
-     * @return the configResourcesPath
-     */
-    public String getConfigResourcesPath() {
-        return configResourcesPath;
-    }
+	/**
+	 * @param locations
+	 *            the deployable configuration locations that will be set.
+	 */
+	public void setDeployableLocationConfigurations(
+			final List<DeployableLocationConfiguration> deployableLocationConfigurations) {
+		this.deployableLocationConfigurations = deployableLocationConfigurations;
+	}
 
-    /**
-     * @param deployableLocations
-     *            the deployableLocations to set
-     */
-    public void setDeployableLocations(final Map<String, String> deployableLocations) {
-        this.deployableLocations = deployableLocations;
-    }
+	public void addDeployableLocation(final String location, final String type) {
+		this.deployableLocations.put(type, location);
+	}
 
-    /**
-     * @param locations
-     *            the deployable configuration locations that will be set.
-     */
-    public void setDeployableLocationConfigurations(final List<DeployableLocationConfiguration> deployableLocationConfigurations) {
-        this.deployableLocationConfigurations = deployableLocationConfigurations;
-    }
+	public Integer getContainerPort() {
+		return containerPort;
+	}
 
-    public void addDeployableLocation(final String location, final String type) {
-        this.deployableLocations.put(type, location);
-    }
+	/**
+	 * @param systemProperties
+	 *            the systemProperties to set
+	 */
+	public void setSystemProperties(final Map<String, String> systemProperties) {
+		this.systemProperties = systemProperties;
+	}
 
-    public Integer getContainerPort() {
-        return containerPort;
-    }
+	/**
+	 * Retrieves the JVM arguments
+	 * 
+	 * @return Returns a unmodifiable list containing the current JVM arguments.
+	 */
+	public List<String> getJvmArguments() {
+		return Collections.unmodifiableList(jvmArguments);
+	}
 
-    /**
-     * @param systemProperties
-     *            the systemProperties to set
-     */
-    public void setSystemProperties(final Map<String, String> systemProperties) {
-        this.systemProperties = systemProperties;
-    }
+	/**
+	 * @param jvmArguments
+	 *            the jvmArguments to set
+	 */
+	@Required
+	public void setJvmArguments(final List<String> jvmArguments) {
+		this.jvmArguments = new ArrayList<String>(jvmArguments);
+	}
 
-    /**
-     * Retrieves the JVM arguments
-     * 
-     * @return Returns a unmodifiable list containing the current JVM arguments.
-     */
-    public List<String> getJvmArguments() {
-        return Collections.unmodifiableList(jvmArguments);
-    }
+	@Required
+	public void setCargoLogFilePath(final String cargoLogFilePath) {
+		this.cargoLogFilePath = cargoLogFilePath;
+	}
 
-    /**
-     * @param jvmArguments
-     *            the jvmArguments to set
-     */
-    @Required
-    public void setJvmArguments(final List<String> jvmArguments) {
-        this.jvmArguments = new ArrayList<String>(jvmArguments);
-    }
+	/**
+	 * @param containerPort
+	 *            the containerPort to set
+	 */
+	@Required
+	public void setContainerPort(final Integer containerPort) {
+		this.containerPort = containerPort;
+	}
 
-    @Required
-    public void setCargoLogFilePath(final String cargoLogFilePath) {
-        this.cargoLogFilePath = cargoLogFilePath;
-    }
+	/**
+	 * @param remoteLocation
+	 *            the remoteLocation to set
+	 */
+	@Required
+	public void setRemoteLocation(final String remoteLocation) {
+		this.remoteLocation = remoteLocation;
+	}
 
-    /**
-     * @param containerPort
-     *            the containerPort to set
-     */
-    @Required
-    public void setContainerPort(final Integer containerPort) {
-        this.containerPort = containerPort;
-    }
+	/**
+	 * @param containerFile
+	 *            the containerFile to set
+	 */
+	@Required
+	public void setContainerFile(final String containerFile) {
+		this.containerFile = containerFile;
+	}
 
-    /**
-     * @param remoteLocation
-     *            the remoteLocation to set
-     */
-    @Required
-    public void setRemoteLocation(final String remoteLocation) {
-        this.remoteLocation = remoteLocation;
-    }
-
-    /**
-     * @param containerFile
-     *            the containerFile to set
-     */
-    @Required
-    public void setContainerFile(final String containerFile) {
-        this.containerFile = containerFile;
-    }
-
-    public void setCleanUpAfterContainerStopped(final boolean cleanUpAfterContainerStopped) {
-        this.cleanUpAfterContainerStopped = cleanUpAfterContainerStopped;
-    }
-
-    /**
-     * @param containerName
-     *            the containerName to set
-     */
-    protected void setContainerName(final String containerName) {
-        this.containerName = containerName;
-    }
-
+	/**
+	 * @param containerName
+	 *            the containerName to set
+	 */
+	protected void setContainerName(final String containerName) {
+		this.containerName = containerName;
+	}
 }

@@ -33,111 +33,115 @@ import javax.persistence.Version;
 @Entity
 @Table(name = "PERSON")
 public class Person {
+	/**
+	 * Eclipse generated serial version.
+	 */
+	private static final long serialVersionUID = 7729021284111415175L;
 
-    /**
-     * Key identifier.
-     */
-    private Long id;
+	/**
+	 * Key identifier.
+	 */
+	private Long id;
 
-    /**
-     * Hibernate version field.
-     */
-    private Integer version;
+	/**
+	 * Hibernate version field.
+	 */
+	private Integer version;
 
-    /**
-     * First name of the person.
-     */
-    private String firstName;
+	/**
+	 * First name of the person.
+	 */
+	private String firstName;
 
-    /**
-     * Last name of the person.
-     */
-    private String lastName;
+	/**
+	 * Last name of the person.
+	 */
+	private String lastName;
 
-    /**
-     * The email address of the person.
-     */
-    private String email;
+	/**
+	 * The email address of the person.
+	 */
+	private String email;
 
-    /**
-     * @return the id
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
+	/**
+	 * @return the id
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
+		return id;
+	}
 
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(final Long id) {
-        this.id = id;
-    }
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    /**
-     * @return the version
-     */
-    @Version
-    @Column(name = "VERSION")
-    public Integer getVersion() {
-        return version;
-    }
+	/**
+	 * @return the version
+	 */
+	@Version
+	@Column(name = "VERSION")
+	public Integer getVersion() {
+		return version;
+	}
 
-    /**
-     * @param version
-     *            the version to set
-     */
-    public void setVersion(final Integer version) {
-        this.version = version;
-    }
+	/**
+	 * @param version
+	 *            the version to set
+	 */
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 
-    /**
-     * @return the firstName
-     */
-    @Column(name = "FIRST_NAME")
-    public String getFirstName() {
-        return firstName;
-    }
+	/**
+	 * @return the firstName
+	 */
+	@Column(name = "FIRST_NAME")
+	public String getFirstName() {
+		return firstName;
+	}
 
-    /**
-     * @param firstName
-     *            the firstName to set
-     */
-    public void setFirstName(final String firstName) {
-        this.firstName = firstName;
-    }
+	/**
+	 * @param firstName
+	 *            the firstName to set
+	 */
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-    /**
-     * @return the lastName
-     */
-    @Column(name = "LAST_NAME")
-    public String getLastName() {
-        return lastName;
-    }
+	/**
+	 * @return the lastName
+	 */
+	@Column(name = "LAST_NAME")
+	public String getLastName() {
+		return lastName;
+	}
 
-    /**
-     * @param lastName
-     *            the lastName to set
-     */
-    public void setLastName(final String lastName) {
-        this.lastName = lastName;
-    }
+	/**
+	 * @param lastName
+	 *            the lastName to set
+	 */
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 
-    /**
-     * @return the email
-     */
-    public String getEmail() {
-        return email;
-    }
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
 
-    /**
-     * @param email
-     *            the email to set
-     */
-    public void setEmail(final String email) {
-        this.email = email;
-    }
+	/**
+	 * @param email
+	 *            the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 }
