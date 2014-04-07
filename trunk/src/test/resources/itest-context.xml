@@ -22,7 +22,7 @@
 		</property>
 		<property name="containerPort" value="8890" />
 		<property name="jnpPort" value="1299" />
-		<property name="remoteLocation" value="http://cargo-itest.googlecode.com/files/" />
+		<property name="remoteLocation" value="http://www.tr-quality.com/cargo-itest/" />
 		<property name="containerFile" value="jboss.zip" />
 		<property name="containerConfigurationFile" value="test-app.zip" />
 	</bean>
