@@ -27,6 +27,14 @@
 			</roles>
 		</developer>
 		<developer>
+			<name>Enric Ballo</name>
+			<id>e-ballo</id>
+			<email>enric.ballo@gmail.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>		
+		<developer>
 			<name>Vincenzo Vitale</name>
 			<id>vita</id>
 			<email>vincenzo.vitale@gmail.com</email>
