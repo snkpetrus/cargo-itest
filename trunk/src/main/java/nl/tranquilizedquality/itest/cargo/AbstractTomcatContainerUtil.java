@@ -108,6 +108,9 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
          */
         super.setupContainer();
 
+        systemProperties.put(TomcatPropertySet.AJP_PORT, ajpPort.toString());
+        systemProperties.put(GeneralPropertySet.RMI_PORT, rmiPort.toString());
+
         setupConfiguration();
     }
 
@@ -144,9 +147,6 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
         configuration.setProperty(ServletPropertySet.PORT, containerPort.toString());
         configuration.setProperty(TomcatPropertySet.AJP_PORT, ajpPort.toString());
         configuration.setProperty(GeneralPropertySet.RMI_PORT, rmiPort.toString());
-
-        systemProperties.put(TomcatPropertySet.AJP_PORT, ajpPort.toString());
-        systemProperties.put(GeneralPropertySet.RMI_PORT, rmiPort.toString());
 
         /*
          * Iterate over all available deployable locations.
