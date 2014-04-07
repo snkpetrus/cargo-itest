@@ -4,20 +4,30 @@
 		<author email="salomo.petrus@gmail.com">Salomo Petrus</author>
 	</properties>
 	<body>
-		<release version="1.5.0" date="07-04-2014" description="Subsequent release">
+		<release version="1.5.0-M3" date="07-04-2014" description="Subsequent release">
 			<action dev="salomo.petrus" type="add">
 				Added support for automated removal of deployment directory to save disk space.
 			</action>
 			<action dev="enric.ballo" type="fix">
 				Added configurable JPA and shutdown port so multiple builds can run at the same time on the same server.
 			</action>
+		</release>
+		<release version="1.5.0-M2" date="07-03-2014" description="Subsequent release">
 			<action dev="salomo.petrus" type="update">
 				Upgraded to latest cargo framework.
 			</action>
 			<action dev="salomo.petrus" type="update">
 				Upgraded to spring framework 4.
-			</action>						
-		</release>	
+			</action>
+		</release>
+		<release version="1.5.0-M1" date="21-05-2013" description="Subsequent release">
+			<action dev="salomo.petrus" type="update">
+				Upgraded to Hibernate 4
+			</action>
+			<action dev="salomo.petrus" type="update">
+				Upgraded to spring framework 4.
+			</action>
+		</release>			
 		<release version="1.4.0" date="14-09-2010" description="Subsequent release">
 			<action dev="salomo.petrus" type="add">
 				Added the ability to run integration tests in parallel on the same server by introducing a unique container home. Now a timestamp is used for the directory
