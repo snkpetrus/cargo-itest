@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import nl.tranquilizedquality.itest.cargo.exception.ConfigurationException;
 import nl.tranquilizedquality.itest.cargo.exception.DeployException;
@@ -37,6 +37,7 @@ import org.codehaus.cargo.container.deployable.Deployable;
 import org.codehaus.cargo.container.deployable.DeployableType;
 import org.codehaus.cargo.container.property.GeneralPropertySet;
 import org.codehaus.cargo.container.property.ServletPropertySet;
+import org.codehaus.cargo.container.tomcat.TomcatPropertySet;
 import org.codehaus.cargo.generic.DefaultContainerFactory;
 import org.codehaus.cargo.generic.configuration.ConfigurationFactory;
 import org.codehaus.cargo.generic.configuration.DefaultConfigurationFactory;
@@ -44,6 +45,7 @@ import org.codehaus.cargo.generic.deployable.DefaultDeployableFactory;
 import org.codehaus.cargo.util.log.FileLogger;
 import org.codehaus.cargo.util.log.LogLevel;
 import org.codehaus.cargo.util.log.Logger;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  * AbstractTomcatContainerUtil is an implementation of {@link ContainerUtil}
@@ -51,12 +53,33 @@ import org.codehaus.cargo.util.log.Logger;
  * the Tomcat servlet container.
  * 
  * @author Salomo Petrus
+ * @author Enric Ballo
  * 
  */
-public abstract class AbstractTomcatContainerUtil extends AbstractInstalledContainerUtil {
+public abstract class AbstractTomcatContainerUtil extends
+		AbstractInstalledContainerUtil {
 
 	/** Logger for this class */
-	private static final Log log = LogFactory.getLog(AbstractTomcatContainerUtil.class);
+	private static final Log log = LogFactory
+			.getLog(AbstractTomcatContainerUtil.class);
+
+	/**
+	 * The AJP (Apache JServ Protocol) port may be used by a web server (such as
+	 * the Apache httpd server) to communicate with Tomcat. This port is also
+	 * used if you set up a load-balanced server. Use the property
+	 * ${cargo.server.ajp.port} to set the port dynamically and set the system
+	 * properties with this value.
+	 * 
+	 * Default value for Tomcat: 8009
+	 */
+	protected Integer ajpPort;
+	
+	/**
+	 * The port to use when communicating with this server, for example to start and stop it
+	 * 
+	 * Default value for Tomcat: 8005
+	 */
+	protected Integer rmiPort;
 
 	/**
 	 * Default constructor that will detect which OS is used to make sure the
@@ -96,7 +119,9 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 		final ConfigurationFactory configurationFactory = new DefaultConfigurationFactory();
 
 		// create JBoss configuration
-		final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("tomcat5x", ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome);
+		final LocalConfiguration configuration = (LocalConfiguration) configurationFactory
+				.createConfiguration("tomcat5x", ContainerType.INSTALLED,
+						ConfigurationType.EXISTING, containerHome);
 
 		// setup configuration
 		final StringBuilder args = new StringBuilder();
@@ -108,13 +133,24 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 				log.info("Added JVM argument: " + arg);
 			}
 		}
+		
+		if (log.isDebugEnabled()) {
+			log.debug("== CONFIGURATION PROPERTIES ==");
+			log.debug("CONTAINER PORT : " + containerPort);
+			log.debug("AJP PORT       : " + ajpPort);
+			log.debug("RMI PORT       : " + rmiPort);
+		}
+
 		configuration.setProperty(GeneralPropertySet.JVMARGS, args.toString());
 		configuration.setProperty(ServletPropertySet.PORT, containerPort.toString());
+		configuration.setProperty(TomcatPropertySet.AJP_PORT, ajpPort.toString());
+		configuration.setProperty(GeneralPropertySet.RMI_PORT, rmiPort.toString());
 
 		/*
 		 * Iterate over all available deployable locations.
 		 */
-		final Set<Entry<String, String>> entrySet = deployableLocations.entrySet();
+		final Set<Entry<String, String>> entrySet = deployableLocations
+				.entrySet();
 		final Iterator<Entry<String, String>> iterator = entrySet.iterator();
 
 		while (iterator.hasNext()) {
@@ -151,19 +187,19 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 
 				if (DeployableType.WAR.equals(deployableType)) {
 					final File srcFile = new File(path);
-					final File destFile = new File("target/" + contextName + ".war");
+					final File destFile = new File("target/" + contextName
+							+ ".war");
 
 					try {
 						FileUtils.copyFile(srcFile, destFile);
-					}
-					catch (final IOException e) {
-						throw new DeployException("Failed to copy WAR file: " + path, e);
+					} catch (final IOException e) {
+						throw new DeployException("Failed to copy WAR file: "
+								+ path, e);
 					}
 
 					path = destFile.getPath();
 				}
-			}
-			else {
+			} else {
 				deployableType = determineDeployableType(type);
 			}
 
@@ -174,11 +210,14 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 		}
 
 		// create installedLocalContainer
-		installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("tomcat5x", ContainerType.INSTALLED, configuration);
+		installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory()
+				.createContainer("tomcat5x", ContainerType.INSTALLED,
+						configuration);
 
 		// configure installedLocalContainer
 		installedLocalContainer.setHome(containerHome);
-		final Logger fileLogger = new FileLogger(new File(cargoLogFilePath + "cargo.log"), true);
+		final Logger fileLogger = new FileLogger(new File(cargoLogFilePath
+				+ "cargo.log"), true);
 		fileLogger.setLevel(LogLevel.DEBUG);
 		installedLocalContainer.setLogger(fileLogger);
 		installedLocalContainer.setOutput(cargoLogFilePath + "output.log");
@@ -223,14 +262,11 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 		 */
 		if ("EAR".equals(type)) {
 			throw new DeployException("Tomcat doesn't support EAR files!");
-		}
-		else if ("WAR".equals(type)) {
+		} else if ("WAR".equals(type)) {
 			deployableType = DeployableType.WAR;
-		}
-		else if ("EJB".equals(type)) {
+		} else if ("EJB".equals(type)) {
 			throw new DeployException("Tomcat doesn't support EJB files!");
-		}
-		else {
+		} else {
 			// Default value is WAR file
 			deployableType = DeployableType.WAR;
 		}
@@ -248,10 +284,11 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 	 * @param deployableType
 	 *            The type of deployable.
 	 */
-	private void addDeployable(final LocalConfiguration configuration, final String path,
-			final DeployableType deployableType) {
+	private void addDeployable(final LocalConfiguration configuration,
+			final String path, final DeployableType deployableType) {
 		// retrieve deployable file
-		final Deployable deployable = new DefaultDeployableFactory().createDeployable("jetty", path, deployableType);
+		final Deployable deployable = new DefaultDeployableFactory()
+				.createDeployable("jetty", path, deployableType);
 
 		// add deployable
 		configuration.addDeployable(deployable);
@@ -291,4 +328,23 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 	public String getConfDirectory() {
 		return getContainerDirectory("conf/");
 	}
+
+	public Integer getAjpPort() {
+		return ajpPort;
+	}
+	
+	@Required
+	public void setAjpPort(Integer ajpPort) {
+		this.ajpPort = ajpPort;
+	}
+
+	public Integer getRmiPort() {
+		return rmiPort;
+	}
+
+	@Required
+	public void setRmiPort(Integer rmiPort) {
+		this.rmiPort = rmiPort;
+	}
+	
 }
