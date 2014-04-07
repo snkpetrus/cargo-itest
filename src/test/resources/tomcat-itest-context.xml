@@ -11,7 +11,7 @@
 		</property>
 		<property name="tomcatVersion" value="tomcat7x" />
 		<property name="containerPort" value="8890" />
-		<property name="ajpPort" value="8109" />
+		<property name="ajpPort" value="8809" />
 		<property name="rmiPort" value="8805" />
 		<property name="remoteLocation" value="http://www.tr-quality.com/cargo-itest/" />
 		<property name="containerFile" value="apache-tomcat-7.0.28.zip" />
