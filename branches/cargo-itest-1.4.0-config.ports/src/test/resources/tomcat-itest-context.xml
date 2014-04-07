@@ -10,7 +10,9 @@
 			</map>
 		</property>
 		<property name="containerPort" value="8890" />
+		<property name="ajpPort" value="8109" />
+		<property name="rmiPort" value="8005" />
 		<property name="remoteLocation" value="http://cargo-itest.googlecode.com/files/" />
-		<property name="containerFile" value="tomcat.zip" />
+		<property name="containerFile" value="apache-tomcat-6.0.29.config.ports.zip" />
 	</bean>
 </beans>
