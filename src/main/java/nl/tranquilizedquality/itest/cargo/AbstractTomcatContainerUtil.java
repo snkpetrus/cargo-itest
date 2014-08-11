@@ -1,12 +1,12 @@
 /*
  * Copyright 2009 Salomo Petrus
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -51,10 +51,10 @@ import org.springframework.beans.factory.annotation.Required;
  * AbstractTomcatContainerUtil is an implementation of {@link ContainerUtil}
  * which managaes a Tomcat servlet container. It can configure, start and stop
  * the Tomcat servlet container.
- * 
+ *
  * @author Salomo Petrus
  * @author Enric Ballo
- * 
+ *
  */
 public abstract class AbstractTomcatContainerUtil extends AbstractInstalledContainerUtil {
 
@@ -67,7 +67,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
      * used if you set up a load-balanced server. Use the property
      * ${cargo.server.ajp.port} to set the port dynamically and set the system
      * properties with this value.
-     * 
+     *
      * Default value for Tomcat: 8009
      */
     protected Integer ajpPort;
@@ -75,7 +75,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
     /**
      * The port to use when communicating with this server, for example to start
      * and stop it
-     * 
+     *
      * Default value for Tomcat: 8005
      */
     protected Integer rmiPort;
@@ -96,7 +96,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
      * Installs the container and the application configuration. It also sets
      * some system properties so the container can startup properly. Finally it
      * sets up additional configuration like jndi.proprties files etc.
-     * 
+     *
      * @throws Exception
      *             Is thrown when something goes wrong during the setup of the
      *             container.
@@ -195,11 +195,6 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
                         throw new DeployException("Failed to copy WAR file: " + path, e);
                     }
 
-                    try {
-                        FileUtils.copyFile(srcFile, destFile);
-                    } catch (final IOException e) {
-                        throw new DeployException("Failed to copy WAR file: " + path, e);
-                    }
                     path = destFile.getPath();
                 }
             } else {
@@ -251,7 +246,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 
     /**
      * Determines the type of deployable.
-     * 
+     *
      * @param type
      *            A string representation of the deployable type.
      * @return Returns a {@link DeployableType} that corresponds to the string
@@ -279,7 +274,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 
     /**
      * Adds a deployable to the {@link LocalConfiguration}.
-     * 
+     *
      * @param configuration
      *            The configuration where a deployable can be added to.
      * @param path
@@ -297,7 +292,7 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
 
     /**
      * Constructs the full path to a specific directory from the configuration.
-     * 
+     *
      * @param dir
      *            The directory name.
      * @return Returns a String representation of the full path.
