@@ -44,7 +44,7 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
  *
  */
 public abstract class AbstractDefaultDeploymentTest extends
-AbstractTransactionalJUnit4SpringContextTests {
+        AbstractTransactionalJUnit4SpringContextTests {
     /** Logger for this class */
     private static final Log LOGGER = LogFactory.getLog(AbstractDefaultDeploymentTest.class);
 
@@ -123,7 +123,7 @@ AbstractTransactionalJUnit4SpringContextTests {
             } catch (final BeansException e) {
                 final String msg = "Failed to start up the container utility! - " + e.getMessage();
                 if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error(msg);
+                    LOGGER.error(msg, e);
                 }
                 fail(msg);
             }
