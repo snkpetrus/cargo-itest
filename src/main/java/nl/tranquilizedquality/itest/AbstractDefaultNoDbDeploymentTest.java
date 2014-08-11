@@ -1,12 +1,12 @@
 /*
  * Copyright 2009 Salomo Petrus
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -32,10 +32,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * class will safe you some work and gets you up and running pretty quick. This
  * default test is mainly used for applications that don't use any database at
  * all.
- * 
+ *
  * @author Salomo Petrus (sape)
  * @since 13 feb 2009
- * 
+ *
  */
 public abstract class AbstractDefaultNoDbDeploymentTest {
     /** Logger for this class */
@@ -56,13 +56,13 @@ public abstract class AbstractDefaultNoDbDeploymentTest {
 
     /**
      * Loads the application context of the container utility.
-     * 
+     *
      * @param locations
      *            A string array containing all the files that need to be loaded
      *            in the application context.
      * @return Returns the application context.
      */
-    protected static ConfigurableApplicationContext loadContext(String[] locations) {
+    protected static ConfigurableApplicationContext loadContext(final String[] locations) {
         return new ClassPathXmlApplicationContext(locations);
     }
 
@@ -81,10 +81,10 @@ public abstract class AbstractDefaultNoDbDeploymentTest {
 
                 CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
                 CONTAINER_UTIL.start();
-            } catch (BeansException e) {
+            } catch (final BeansException e) {
                 final String msg = "Failed to start up the container utility! - " + e.getMessage();
                 if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error(msg);
+                    LOGGER.error(msg, e);
                 }
                 fail(msg);
             }

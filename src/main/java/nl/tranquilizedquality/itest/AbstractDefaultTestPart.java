@@ -119,10 +119,9 @@ public abstract class AbstractDefaultTestPart extends AbstractTransactionalJUnit
                     LOGGER.info(numberOfScripts + " SQL scripts retrieved...");
                 }
             } catch (final BeansException e) {
-                final String msg = "Failed to start up the application context! - "
-                        + e.getMessage();
+                final String msg = "Failed to start up the application context!";
                 if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error(msg);
+                    LOGGER.error(msg, e);
                 }
                 fail(msg);
             }
