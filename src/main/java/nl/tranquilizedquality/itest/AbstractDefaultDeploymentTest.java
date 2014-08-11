@@ -131,7 +131,7 @@ AbstractTransactionalJUnit4SpringContextTests {
     }
 
     @AfterClass
-    public static void stop() throws Exception {
+    public static void stop() {
         if (StringUtils.contains(host, "localhost") || StringUtils.contains(host, "127.0.0.")) {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Stopping the container utility...");
@@ -142,7 +142,7 @@ AbstractTransactionalJUnit4SpringContextTests {
     }
 
     @Before
-    public void executeSQLScripts() throws Exception {
+    public void executeSQLScripts() {
         for (final String script : SQL_SCRIPTS) {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Executing script: " + script);
@@ -152,7 +152,7 @@ AbstractTransactionalJUnit4SpringContextTests {
     }
 
     @After
-    public void executeSQLCleanUpScripts() throws Exception {
+    public void executeSQLCleanUpScripts() {
         for (final String script : SQL_CLEAN_UP_SCRIPTS) {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Executing clean up script: " + script);
