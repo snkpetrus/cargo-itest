@@ -38,68 +38,67 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * 
  */
 public abstract class AbstractDefaultNoDbDeploymentTest {
-	/** Logger for this class */
-	private static final Log log = LogFactory.getLog(AbstractDefaultNoDbDeploymentTest.class);
+    /** Logger for this class */
+    private static final Log LOGGER = LogFactory.getLog(AbstractDefaultNoDbDeploymentTest.class);
 
-	/** The container utility for starting up a container. */
-	protected static ContainerUtil CONTAINER_UTIL;
+    /** The container utility for starting up a container. */
+    protected static ContainerUtil CONTAINER_UTIL;
 
-	/**
-	 * The safety cameras host to test.
-	 */
-	protected static String host = "localhost:8890";
+    /**
+     * The safety cameras host to test.
+     */
+    protected static String host = "localhost:8890";
 
-	/**
-	 * The name of the context file for the itest beans.
-	 */
-	protected static String ITEST_CONTEXT_FILENAME = "itest-context.xml";
+    /**
+     * The name of the context file for the itest beans.
+     */
+    protected static String ITEST_CONTEXT_FILENAME = "itest-context.xml";
 
-	/**
-	 * Loads the application context of the container utility.
-	 * 
-	 * @param locations
-	 *            A string array containing all the files that need to be loaded
-	 *            in the application context.
-	 * @return Returns the application context.
-	 */
-	protected static ConfigurableApplicationContext loadContext(String[] locations) {
-		return new ClassPathXmlApplicationContext(locations);
-	}
+    /**
+     * Loads the application context of the container utility.
+     * 
+     * @param locations
+     *            A string array containing all the files that need to be loaded
+     *            in the application context.
+     * @return Returns the application context.
+     */
+    protected static ConfigurableApplicationContext loadContext(String[] locations) {
+        return new ClassPathXmlApplicationContext(locations);
+    }
 
-	@BeforeClass
-	public static void runOnce() throws Exception {
-		// The application server need to be locally started only if the
-		// host is localhost
-		if (StringUtils.contains(host, "localhost") || StringUtils.contains(host, "127.0.0.")) {
-			if (log.isInfoEnabled()) {
-				log.info("Starting up the container utility...");
-			}
+    @BeforeClass
+    public static void runOnce() throws Exception {
+        // The application server need to be locally started only if the
+        // host is localhost
+        if (StringUtils.contains(host, "localhost") || StringUtils.contains(host, "127.0.0.")) {
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Starting up the container utility...");
+            }
 
-			try {
-				final ConfigurableApplicationContext context = loadContext(new String[] {
-						ITEST_CONTEXT_FILENAME, "common-itest-context.xml" });
+            try {
+                final ConfigurableApplicationContext context = loadContext(new String[] {
+                        ITEST_CONTEXT_FILENAME, "common-itest-context.xml" });
 
-				CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
-				CONTAINER_UTIL.start();
-			}
-			catch (BeansException e) {
-				final String msg = "Failed to start up the container utility! - " + e.getMessage();
-				if (log.isErrorEnabled()) {
-					log.error(msg);
-				}
-				fail(msg);
-			}
-		}
-	}
+                CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
+                CONTAINER_UTIL.start();
+            } catch (BeansException e) {
+                final String msg = "Failed to start up the container utility! - " + e.getMessage();
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error(msg);
+                }
+                fail(msg);
+            }
+        }
+    }
 
-	@AfterClass
-	public static void stop() {
-		if (CONTAINER_UTIL != null) {
-			if (log.isInfoEnabled()) {
-				log.info("Stopping the container utility...");
-			}
-			CONTAINER_UTIL.stop();
-		}
-	}
+    @AfterClass
+    public static void stop() {
+        if (CONTAINER_UTIL != null) {
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Stopping the container utility...");
+            }
+            CONTAINER_UTIL.stop();
+        }
+    }
 
 }

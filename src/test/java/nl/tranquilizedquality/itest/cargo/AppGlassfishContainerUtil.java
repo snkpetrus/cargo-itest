@@ -21,8 +21,8 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 /**
- * This is a simple example of how the {@link AbstractGlassfishContainerUtil} could
- * be used. This test tests a simple test application called 'test-app'.
+ * This is a simple example of how the {@link AbstractGlassfishContainerUtil}
+ * could be used. This test tests a simple test application called 'test-app'.
  * 
  * As you can see you don't have to do much to get it to work. You only need to
  * do the following steps:
@@ -32,7 +32,8 @@ import org.apache.commons.io.FileUtils;
  * classpath.</li>
  * <li>Configure the container utility in the <i>itest-context.xml</i>. <b>Make
  * sure you give your bean the name 'containerUtil'.</b></li>
- * <li>Depending on the OS get the specific Glassfish application server to be installed.</li>
+ * <li>Depending on the OS get the specific Glassfish application server to be
+ * installed.</li>
  * </ol>
  * 
  * After these steps you container utility should be setup correctly and all is

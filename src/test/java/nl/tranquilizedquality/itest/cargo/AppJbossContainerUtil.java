@@ -45,16 +45,16 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class AppJbossContainerUtil extends AbstractJBossContainerUtil {
-	/** Logger for this class */
-	private static final Log log = LogFactory.getLog(AppJbossContainerUtil.class);
+    /** Logger for this class */
+    private static final Log log = LogFactory.getLog(AppJbossContainerUtil.class);
 
-	@Override
-	protected void setupConfiguration() throws Exception {
+    @Override
+    protected void setupConfiguration() throws Exception {
 
-		if (log.isInfoEnabled()) {
-			log.info("No custom configuration!");
-		}
+        if (log.isInfoEnabled()) {
+            log.info("No custom configuration!");
+        }
 
-	}
+    }
 
 }

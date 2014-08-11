@@ -38,7 +38,8 @@ public class ConfigurationException extends RuntimeException {
     /**
      * Constructor where you can specify the error message.
      * 
-     * @param msg The error message that will be used.
+     * @param msg
+     *            The error message that will be used.
      */
     public ConfigurationException(String msg) {
         super(msg);
@@ -48,8 +49,10 @@ public class ConfigurationException extends RuntimeException {
      * Constructor where you can specify the error message and the cause of this
      * exception.
      * 
-     * @param msg The error message that will be used.
-     * @param cause The {@link Throwable} that caused this exception.
+     * @param msg
+     *            The error message that will be used.
+     * @param cause
+     *            The {@link Throwable} that caused this exception.
      */
     public ConfigurationException(String msg, Throwable cause) {
         super(msg, cause);

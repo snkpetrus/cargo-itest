@@ -99,8 +99,9 @@ public abstract class AbstractGlassfishContainerUtil extends AbstractInstalledCo
         final ConfigurationFactory configurationFactory = new DefaultConfigurationFactory();
 
         // create Glassfish configuration
-        final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("glassfish2", ContainerType.INSTALLED, ConfigurationType.STANDALONE, containerHome
-                + "cargo-conf/");
+        final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("glassfish2",
+                ContainerType.INSTALLED, ConfigurationType.STANDALONE, containerHome
+                        + "cargo-conf/");
 
         // setup configuration
         final StringBuilder args = new StringBuilder();
@@ -159,8 +160,7 @@ public abstract class AbstractGlassfishContainerUtil extends AbstractInstalledCo
 
                     try {
                         FileUtils.copyFile(srcFile, destFile);
-                    }
-                    catch (final IOException e) {
+                    } catch (final IOException e) {
                         throw new DeployException("Failed to copy WAR file: " + path, e);
                     }
 
@@ -177,7 +177,8 @@ public abstract class AbstractGlassfishContainerUtil extends AbstractInstalledCo
         }
 
         // create installedLocalContainer
-        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("glassfish2", ContainerType.INSTALLED, configuration);
+        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("glassfish2",
+                ContainerType.INSTALLED, configuration);
 
         // configure installedLocalContainer
         installedLocalContainer.setHome(containerHome);
@@ -190,8 +191,7 @@ public abstract class AbstractGlassfishContainerUtil extends AbstractInstalledCo
         installedLocalContainer.setSystemProperties(systemProperties);
         try {
             completeGlassfishConfiguration();
-        }
-        catch (final IOException e) {
+        } catch (final IOException e) {
             throw new DeployException("Failed to complete the Glassfish configuration while setting the env files", e);
         }
 

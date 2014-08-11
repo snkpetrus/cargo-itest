@@ -43,26 +43,26 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class AppTomcatContainerUtil extends AbstractTomcatContainerUtil {
 
-	/** Logger for this class */
-	private static final Log log = LogFactory.getLog(AppTomcatContainerUtil.class);
+    /** Logger for this class */
+    private static final Log log = LogFactory.getLog(AppTomcatContainerUtil.class);
 
-	/** The path where all configuration resource files are */
-	private String configResourcesPath;
+    /** The path where all configuration resource files are */
+    private String configResourcesPath;
 
-	@Override
-	protected void setupConfiguration() throws Exception {
-		if (log.isInfoEnabled()) {
-			log.info("No configuration to do in " + configResourcesPath);
-		}
-	}
+    @Override
+    protected void setupConfiguration() throws Exception {
+        if (log.isInfoEnabled()) {
+            log.info("No configuration to do in " + configResourcesPath);
+        }
+    }
 
-	/**
-	 * @param configResourcesPath
-	 *            the configResourcesPath to set
-	 */
-	@Required
-	public void setConfigResourcesPath(String configResourcesPath) {
-		this.configResourcesPath = configResourcesPath;
-	}
+    /**
+     * @param configResourcesPath
+     *            the configResourcesPath to set
+     */
+    @Required
+    public void setConfigResourcesPath(String configResourcesPath) {
+        this.configResourcesPath = configResourcesPath;
+    }
 
 }

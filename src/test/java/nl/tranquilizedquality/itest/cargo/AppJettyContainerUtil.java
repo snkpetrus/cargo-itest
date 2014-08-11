@@ -43,16 +43,16 @@ package nl.tranquilizedquality.itest.cargo;
  */
 public class AppJettyContainerUtil extends AbstractJettyContainerUtil {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seenl.tranquilizedquality.itest.cargo.AbstractInstalledContainerUtil#
-	 * setupConfiguration()
-	 */
-	@Override
-	protected void setupConfiguration() throws Exception {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @seenl.tranquilizedquality.itest.cargo.AbstractInstalledContainerUtil#
+     * setupConfiguration()
+     */
+    @Override
+    protected void setupConfiguration() throws Exception {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

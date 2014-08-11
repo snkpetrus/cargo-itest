@@ -34,26 +34,26 @@ import com.gargoylesoftware.htmlunit.WebClient;
  * 
  */
 public class TestAppJBossHibernatedeploymentTest {// extends
-													// AbstractDefaultHibernateDeploymentTest
-													// {
+                                                  // AbstractDefaultHibernateDeploymentTest
+                                                  // {
 
-	/**
-	 * FIXME: Not working anymore for some reason.
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	@Ignore
-	public void testHelloWorld() throws Exception {
-		final WebClient webClient = new WebClient();
-		webClient.setJavaScriptEnabled(false);
+    /**
+     * FIXME: Not working anymore for some reason.
+     * 
+     * @throws Exception
+     */
+    @Test
+    @Ignore
+    public void testHelloWorld() throws Exception {
+        final WebClient webClient = new WebClient();
+        webClient.setJavaScriptEnabled(false);
 
-		// Get the first page
-		// final HtmlPage index = (HtmlPage) webClient.getPage("http://" + host
-		// + "/test-app/");
-		//
-		// assertNotNull(index);
-		// assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
-	}
+        // Get the first page
+        // final HtmlPage index = (HtmlPage) webClient.getPage("http://" + host
+        // + "/test-app/");
+        //
+        // assertNotNull(index);
+        // assertTrue(StringUtils.contains(index.asText(), "hello INDEX"));
+    }
 
 }
