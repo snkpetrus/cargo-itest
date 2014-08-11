@@ -18,6 +18,7 @@ package nl.tranquilizedquality.itest.cargo;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -122,12 +123,9 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
      * some system properties so the container can startup properly. Finally it
      * sets up additional configuration like jndi.proprties files etc.
      *
-     * @throws Exception
-     *             Is thrown when something goes wrong during the setup of the
-     *             container.
      */
     @Override
-    protected void setupContainer() throws Exception {
+    protected void setupContainer() {
         /*
          * Execute default setup behavior.
          */
@@ -147,10 +145,14 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Installing [" + configurationName + "] configuration...");
         }
-        final URL remoteLocation = new URL(this.remoteLocation + containerConfigurationFile);
-        final String installDir = containerHome + "server/";
-        final ZipURLInstaller installer = new ZipURLInstaller(remoteLocation, installDir, installDir);
-        installer.install();
+        try {
+            final URL remoteLocation = new URL(this.remoteLocation + containerConfigurationFile);
+            final String installDir = containerHome + "server/";
+            final ZipURLInstaller installer = new ZipURLInstaller(remoteLocation, installDir, installDir);
+            installer.install();
+        } catch (final MalformedURLException e) {
+            throw new DeployException("Failed to download container!", e);
+        }
 
         /*
          * Setup the system properties.
@@ -250,7 +252,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
         // create JBoss configuration
         final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("jboss4x",
                 ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome
-                + "server/" + configurationName);
+                        + "server/" + configurationName);
 
         // setup configuration
         final StringBuilder args = new StringBuilder();
