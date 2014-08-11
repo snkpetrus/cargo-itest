@@ -235,8 +235,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Copied file " + fileName + " to " + destFile.getAbsolutePath());
             }
-        }
-        catch (final IOException e) {
+        } catch (final IOException e) {
             if (LOGGER.isWarnEnabled()) {
                 LOGGER.warn("Failed to copy resource file: " + fileName);
             }
@@ -249,8 +248,9 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
         final ConfigurationFactory configurationFactory = new DefaultConfigurationFactory();
 
         // create JBoss configuration
-        final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("jboss4x", ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome
-                + "server/" + configurationName);
+        final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("jboss4x",
+                ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome
+                        + "server/" + configurationName);
 
         // setup configuration
         final StringBuilder args = new StringBuilder();
@@ -309,8 +309,7 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
 
                     try {
                         FileUtils.copyFile(srcFile, destFile);
-                    }
-                    catch (final IOException e) {
+                    } catch (final IOException e) {
                         throw new DeployException("Failed to copy WAR file: " + path, e);
                     }
 
@@ -327,7 +326,8 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
         }
 
         // create installedLocalContainer
-        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("jboss4x", ContainerType.INSTALLED, configuration);
+        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("jboss4x",
+                ContainerType.INSTALLED, configuration);
 
         // configure installedLocalContainer
         installedLocalContainer.setHome(containerHome);

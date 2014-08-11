@@ -75,7 +75,8 @@ public class TestAppJettyNoDbDeploymentTest {
                 log.info("Starting up the container utility...");
             }
 
-            final ConfigurableApplicationContext context = loadContext(new String[] { "jetty-itest-context.xml", "common-itest-context.xml" });
+            final ConfigurableApplicationContext context = loadContext(new String[] {"jetty-itest-context.xml",
+                    "common-itest-context.xml" });
             CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
             CONTAINER_UTIL.start();
         }

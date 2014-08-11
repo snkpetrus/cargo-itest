@@ -129,8 +129,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
          */
         try {
             FileUtils.deleteDirectory(new File(containerRootFolderName));
-        }
-        catch (final Exception exceptionOnDelete) {
+        } catch (final Exception exceptionOnDelete) {
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error("Failed to delete the directory: " + containerHome + ".", exceptionOnDelete);
             }
@@ -204,12 +203,14 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 
             try {
                 new File(containerHome).mkdir();
-            }
-            catch (final Exception exceptionOnMkDir) {
+            } catch (final Exception exceptionOnMkDir) {
                 if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error("Failed to create the directory: " + containerHome + ". Details: " + exceptionOnMkDir.getMessage(), exceptionOnMkDir);
+                    LOGGER.error(
+                            "Failed to create the directory: " + containerHome + ". Details: " + exceptionOnMkDir.getMessage(),
+                            exceptionOnMkDir);
                 }
-                throw new ConfigurationException("Failed to create the directory: " + containerHome + ". Details: " + exceptionOnMkDir.getMessage(), exceptionOnMkDir);
+                throw new ConfigurationException("Failed to create the directory: " + containerHome + ". Details: "
+                        + exceptionOnMkDir.getMessage(), exceptionOnMkDir);
             }
         }
 

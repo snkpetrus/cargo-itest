@@ -34,8 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:common-hibernate-db-context.xml",
-		"classpath:itest-annotated-classes-context.xml" })
+@ContextConfiguration(locations = {"classpath:common-hibernate-db-context.xml",
+        "classpath:itest-annotated-classes-context.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
 public abstract class AbstractDefaultHibernateDeploymentTest extends AbstractDefaultDeploymentTest {

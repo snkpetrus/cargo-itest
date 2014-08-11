@@ -97,7 +97,8 @@ public abstract class AbstractJOnasContainerUtil extends AbstractInstalledContai
         final ConfigurationFactory configurationFactory = new DefaultConfigurationFactory();
 
         // create JOnas configuration
-        final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("jonas4x", ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome);
+        final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("jonas4x",
+                ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome);
 
         // setup configuration
         final StringBuilder args = new StringBuilder();
@@ -156,8 +157,7 @@ public abstract class AbstractJOnasContainerUtil extends AbstractInstalledContai
 
                     try {
                         FileUtils.copyFile(srcFile, destFile);
-                    }
-                    catch (final IOException e) {
+                    } catch (final IOException e) {
                         throw new DeployException("Failed to copy WAR file: " + path, e);
                     }
 
@@ -174,7 +174,8 @@ public abstract class AbstractJOnasContainerUtil extends AbstractInstalledContai
         }
 
         // create installedLocalContainer
-        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("jonas4x", ContainerType.INSTALLED, configuration);
+        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("jonas4x",
+                ContainerType.INSTALLED, configuration);
 
         // configure installedLocalContainer
         installedLocalContainer.setHome(containerHome);

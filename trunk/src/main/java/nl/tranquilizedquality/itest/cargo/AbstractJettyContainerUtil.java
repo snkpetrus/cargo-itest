@@ -101,8 +101,9 @@ public abstract class AbstractJettyContainerUtil extends AbstractInstalledContai
         final ConfigurationFactory configurationFactory = new DefaultConfigurationFactory();
 
         // create JBoss configuration
-        final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("jetty6x", ContainerType.INSTALLED, ConfigurationType.STANDALONE, containerHome
-                + "cargo-conf/");
+        final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("jetty6x",
+                ContainerType.INSTALLED, ConfigurationType.STANDALONE, containerHome
+                        + "cargo-conf/");
 
         // setup configuration
         final StringBuilder args = new StringBuilder();
@@ -165,8 +166,7 @@ public abstract class AbstractJettyContainerUtil extends AbstractInstalledContai
 
                     try {
                         FileUtils.copyFile(srcFile, destFile);
-                    }
-                    catch (final IOException e) {
+                    } catch (final IOException e) {
                         throw new DeployException("Failed to copy WAR file: " + path, e);
                     }
 
@@ -187,7 +187,8 @@ public abstract class AbstractJettyContainerUtil extends AbstractInstalledContai
         }
 
         // create installedLocalContainer
-        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("jetty6x", ContainerType.INSTALLED, configuration);
+        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("jetty6x",
+                ContainerType.INSTALLED, configuration);
 
         // configure installedLocalContainer
         installedLocalContainer.setHome(containerHome);

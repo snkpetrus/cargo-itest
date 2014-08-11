@@ -22,16 +22,16 @@ package nl.tranquilizedquality.itest.cargo;
  */
 public class AppJOnasCantainerUtil extends AbstractJOnasContainerUtil {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seenl.tranquilizedquality.itest.cargo.AbstractJOnasContainerUtil#
-	 * setupConfiguration()
-	 */
-	@Override
-	protected void setupConfiguration() throws Exception {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @seenl.tranquilizedquality.itest.cargo.AbstractJOnasContainerUtil#
+     * setupConfiguration()
+     */
+    @Override
+    protected void setupConfiguration() throws Exception {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

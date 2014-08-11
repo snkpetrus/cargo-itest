@@ -123,7 +123,8 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
         final ConfigurationFactory configurationFactory = new DefaultConfigurationFactory();
 
         // create JBoss configuration
-        final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration(tomcatVersion, ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome);
+        final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration(tomcatVersion,
+                ContainerType.INSTALLED, ConfigurationType.EXISTING, containerHome);
 
         // setup configuration
         final StringBuilder args = new StringBuilder();
@@ -190,15 +191,13 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
                     final File destFile = new File("target/" + contextName + ".war");
                     try {
                         FileUtils.copyFile(srcFile, destFile);
-                    }
-                    catch (final IOException e) {
+                    } catch (final IOException e) {
                         throw new DeployException("Failed to copy WAR file: " + path, e);
                     }
 
                     try {
                         FileUtils.copyFile(srcFile, destFile);
-                    }
-                    catch (final IOException e) {
+                    } catch (final IOException e) {
                         throw new DeployException("Failed to copy WAR file: " + path, e);
                     }
                     path = destFile.getPath();
@@ -214,10 +213,12 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
         }
 
         // create installedLocalContainer
-        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("tomcat5x", ContainerType.INSTALLED, configuration);
+        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("tomcat5x",
+                ContainerType.INSTALLED, configuration);
 
         // create installedLocalContainer
-        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer(tomcatVersion, ContainerType.INSTALLED, configuration);
+        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer(tomcatVersion,
+                ContainerType.INSTALLED, configuration);
         // configure installedLocalContainer
         installedLocalContainer.setHome(containerHome);
         final Logger fileLogger = new FileLogger(new File(cargoLogFilePath + "cargo.log"), true);
