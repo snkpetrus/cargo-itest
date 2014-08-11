@@ -67,7 +67,7 @@ public abstract class AbstractDefaultNoDbDeploymentTest {
     }
 
     @BeforeClass
-    public static void runOnce() throws Exception {
+    public static void runOnce() {
         // The application server need to be locally started only if the
         // host is localhost
         if (StringUtils.contains(host, "localhost") || StringUtils.contains(host, "127.0.0.")) {

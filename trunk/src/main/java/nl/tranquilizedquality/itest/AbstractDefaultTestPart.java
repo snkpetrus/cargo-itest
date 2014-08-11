@@ -75,7 +75,7 @@ public abstract class AbstractDefaultTestPart extends AbstractTransactionalJUnit
 
     @SuppressWarnings("unchecked")
     @BeforeClass
-    public static void runOnce() throws Exception {
+    public static void runOnce() {
         /*
          * The application server need to be locally started only if the host is
          * localhost
@@ -130,7 +130,7 @@ public abstract class AbstractDefaultTestPart extends AbstractTransactionalJUnit
 
     @Before
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void executeSQLScripts() throws Exception {
+    public void executeSQLScripts() {
         for (final String script : SQL_SCRIPTS) {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Executing script: " + script);
@@ -141,7 +141,7 @@ public abstract class AbstractDefaultTestPart extends AbstractTransactionalJUnit
 
     @After
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void executeSQLCleanUpScripts() throws Exception {
+    public void executeSQLCleanUpScripts() {
         for (final String script : SQL_CLEAN_UP_SCRIPTS) {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Executing clean up script: " + script);
