@@ -44,7 +44,7 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
  *
  */
 public abstract class AbstractDefaultDeploymentTest extends
-        AbstractTransactionalJUnit4SpringContextTests {
+AbstractTransactionalJUnit4SpringContextTests {
     /** Logger for this class */
     private static final Log LOGGER = LogFactory.getLog(AbstractDefaultDeploymentTest.class);
 
@@ -76,7 +76,7 @@ public abstract class AbstractDefaultDeploymentTest extends
 
     @SuppressWarnings("unchecked")
     @BeforeClass
-    public static void runOnce() throws Exception {
+    public static void runOnce() {
         // The application server need to be locally started only if the
         // host is localhost
         if (StringUtils.contains(host, "localhost") || StringUtils.contains(host, "127.0.0.")) {

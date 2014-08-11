@@ -1,12 +1,12 @@
 /*
  * Copyright 2009 Salomo Petrus
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -47,10 +47,10 @@ import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Implementation of a {@link ContainerUtil} for the JOnas application server.
- * 
+ *
  * @author Salomo Petrus (sape)
  * @since 22 apr 2009
- * 
+ *
  */
 public abstract class AbstractJOnasContainerUtil extends AbstractInstalledContainerUtil {
     /** Logger for this class */
@@ -73,13 +73,9 @@ public abstract class AbstractJOnasContainerUtil extends AbstractInstalledContai
      * Installs the container and the application configuration. It also sets
      * some system properties so the container can startup properly. Finally it
      * sets up additional configuration like jndi.properties files etc.
-     * 
-     * @throws Exception
-     *             Is thrown when something goes wrong during the setup of the
-     *             container.
      */
     @Override
-    protected void setupContainer() throws Exception {
+    protected void setupContainer() {
         /*
          * Execute default setup behavior.
          */
@@ -202,7 +198,7 @@ public abstract class AbstractJOnasContainerUtil extends AbstractInstalledContai
 
     /**
      * Determines the type of deployable.
-     * 
+     *
      * @param type
      *            A string representation of the deployable type.
      * @return Returns a {@link DeployableType} that corresponds to the string
@@ -231,7 +227,7 @@ public abstract class AbstractJOnasContainerUtil extends AbstractInstalledContai
 
     /**
      * Adds a deployable to the {@link LocalConfiguration}.
-     * 
+     *
      * @param configuration
      *            The configuration where a deployable can be added to.
      * @param path
@@ -258,7 +254,7 @@ public abstract class AbstractJOnasContainerUtil extends AbstractInstalledContai
 
     /**
      * Constructs the full path to a specific directory from the configuration.
-     * 
+     *
      * @param dir
      *            The directory name.
      * @return Returns a String representation of the full path.

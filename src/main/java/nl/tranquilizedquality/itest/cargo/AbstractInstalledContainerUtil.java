@@ -1,12 +1,12 @@
 /*
  * Copyright 2009 Salomo Petrus
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -16,6 +16,7 @@
 package nl.tranquilizedquality.itest.cargo;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import nl.tranquilizedquality.itest.cargo.exception.ConfigurationException;
+import nl.tranquilizedquality.itest.cargo.exception.DeployException;
 import nl.tranquilizedquality.itest.domain.DeployableLocationConfiguration;
 
 import org.apache.commons.io.FileUtils;
@@ -40,10 +42,10 @@ import org.springframework.beans.factory.annotation.Required;
  * Base container class where every container should extend from. It contains
  * all the basic stuff which every container utility should have like cleaning
  * up the container before doing a fresh run.
- * 
+ *
  * @author Salomo Petrus (sape)
  * @since 23 apr 2009
- * 
+ *
  */
 public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 
@@ -174,23 +176,15 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
     /**
      * Sets up the configuration needed for the deployable to be able to run
      * correctly.
-     * 
-     * @throws Exception
-     *             Is thrown when something went wrong if the configuration
-     *             setup fails.
      */
-    protected abstract void setupConfiguration() throws Exception;
+    protected abstract void setupConfiguration();
 
     /**
      * Installs the container and the application configuration. It also sets
      * some system properties so the container can startup properly. Finally it
      * sets up additional configuration like jndi.proprties files etc.
-     * 
-     * @throws Exception
-     *             Is thrown when something goes wrong during the setup of the
-     *             container.
      */
-    protected void setupContainer() throws Exception {
+    protected void setupContainer() {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Cleaning up " + containerName + "...");
         }
@@ -223,10 +217,15 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
         /*
          * Download and configure the container.
          */
-        final URL remoteLocationUrl = new URL(this.remoteLocation + containerFile);
-        final String installDir = StringUtils.substringBeforeLast(StringUtils.chomp(containerHome, "/"), "/");
-        final ZipURLInstaller installer = new ZipURLInstaller(remoteLocationUrl, installDir, installDir);
-        installer.install();
+        String installDir;
+        try {
+            final URL remoteLocationUrl = new URL(this.remoteLocation + containerFile);
+            installDir = StringUtils.substringBeforeLast(StringUtils.chomp(containerHome, "/"), "/");
+            final ZipURLInstaller installer = new ZipURLInstaller(remoteLocationUrl, installDir, installDir);
+            installer.install();
+        } catch (final MalformedURLException e) {
+            throw new DeployException("Failed to download container!", e);
+        }
 
         /*
          * Rename the install directory to the container home directory so it
@@ -265,7 +264,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
      */
     protected abstract void deploy();
 
-    public void start() throws Exception {
+    public void start() {
         setupContainer();
 
         deploy();
@@ -328,7 +327,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 
     /**
      * Retrieves the JVM arguments
-     * 
+     *
      * @return Returns a unmodifiable list containing the current JVM arguments.
      */
     public List<String> getJvmArguments() {

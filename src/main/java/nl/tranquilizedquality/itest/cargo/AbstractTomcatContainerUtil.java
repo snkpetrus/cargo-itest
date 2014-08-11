@@ -96,13 +96,9 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
      * Installs the container and the application configuration. It also sets
      * some system properties so the container can startup properly. Finally it
      * sets up additional configuration like jndi.proprties files etc.
-     *
-     * @throws Exception
-     *             Is thrown when something goes wrong during the setup of the
-     *             container.
      */
     @Override
-    protected void setupContainer() throws Exception {
+    protected void setupContainer() {
         /*
          * Execute default setup behavior.
          */

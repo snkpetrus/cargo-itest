@@ -1,12 +1,12 @@
 /*
  * Copyright 2009 Salomo Petrus
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -19,19 +19,16 @@ package nl.tranquilizedquality.itest.cargo;
 /**
  * Interface for a container utility. It can configure, start and stop a
  * specific container.
- * 
+ *
  * @author Salomo Petrus (sape)
- * 
+ *
  */
 public interface ContainerUtil {
 
     /**
      * Starts up the installedLocalContainer and its deployed applications
-     * 
-     * @throws Exception
-     *             Is thrown when something went wrong during start up.
      */
-    void start() throws Exception;
+    void start();
 
     /**
      * Stops the installedLocalContainer.
@@ -40,7 +37,7 @@ public interface ContainerUtil {
 
     /**
      * Adds a location of a deployable with the according type.
-     * 
+     *
      * @param location
      *            The location where to get the deployable.
      * @param type
@@ -56,7 +53,7 @@ public interface ContainerUtil {
 
     /**
      * Retrieves the port where the container is running on.
-     * 
+     *
      * @return Returns an integer value representing the port the container is
      *         running on.
      */
@@ -64,7 +61,7 @@ public interface ContainerUtil {
 
     /**
      * Retrieves the directory where shared libraries can be copied to.
-     * 
+     *
      * @return Returns a String representation of the full path to the
      *         directory.
      */
@@ -73,7 +70,7 @@ public interface ContainerUtil {
     /**
      * Retrieves the directory where the configuration files are located from
      * the specific container.
-     * 
+     *
      * @return Returns a String representation of the full path to the
      *         directory.
      */
