@@ -38,6 +38,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  * @since 22 apr 2009
  *
  */
+@Ignore
 public class TestAppJOnasNoDbDeploymentTest {
     /** Logger for this class */
     private static final Log log = LogFactory.getLog(AbstractDefaultNoDbDeploymentTest.class);
