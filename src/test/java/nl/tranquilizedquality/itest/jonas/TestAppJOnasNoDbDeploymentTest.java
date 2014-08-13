@@ -1,12 +1,12 @@
 /*
  * Copyright 2009 Salomo Petrus
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -17,12 +17,15 @@ package nl.tranquilizedquality.itest.jonas;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+import nl.tranquilizedquality.itest.AbstractDefaultNoDbDeploymentTest;
+import nl.tranquilizedquality.itest.cargo.ContainerUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -30,13 +33,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-import nl.tranquilizedquality.itest.AbstractDefaultNoDbDeploymentTest;
-import nl.tranquilizedquality.itest.cargo.ContainerUtil;
-
 /**
  * @author Salomo Petrus (sape)
  * @since 22 apr 2009
- * 
+ *
  */
 public class TestAppJOnasNoDbDeploymentTest {
     /** Logger for this class */
@@ -52,13 +52,13 @@ public class TestAppJOnasNoDbDeploymentTest {
 
     /**
      * Loads the application context of the container utility.
-     * 
+     *
      * @param locations
      *            A string array containing all the files that need to be loaded
      *            in the application context.
      * @return Returns the application context.
      */
-    protected static ConfigurableApplicationContext loadContext(String[] locations) {
+    protected static ConfigurableApplicationContext loadContext(final String[] locations) {
         return new ClassPathXmlApplicationContext(locations);
     }
 
@@ -71,7 +71,7 @@ public class TestAppJOnasNoDbDeploymentTest {
                 log.info("Starting up the container utility...");
             }
 
-            ConfigurableApplicationContext context = loadContext(new String[] {
+            final ConfigurableApplicationContext context = loadContext(new String[] {
                     "jonas-itest-context.xml", "common-itest-context.xml" });
             CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
             CONTAINER_UTIL.start();
@@ -90,6 +90,7 @@ public class TestAppJOnasNoDbDeploymentTest {
     }
 
     @Test
+    @Ignore
     public void testHelloWorld() throws Exception {
         final WebClient webClient = new WebClient();
         webClient.setJavaScriptEnabled(false);
