@@ -43,8 +43,8 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
  * @since 11 dec 2008
  *
  */
-public abstract class AbstractDefaultDeploymentTest extends
-AbstractTransactionalJUnit4SpringContextTests {
+public abstract class AbstractDefaultDeploymentTest extends AbstractTransactionalJUnit4SpringContextTests {
+
     /** Logger for this class */
     private static final Log LOGGER = LogFactory.getLog(AbstractDefaultDeploymentTest.class);
 
