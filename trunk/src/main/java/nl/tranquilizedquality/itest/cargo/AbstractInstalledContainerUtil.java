@@ -37,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.codehaus.cargo.container.InstalledLocalContainer;
 import org.codehaus.cargo.container.installer.ZipURLInstaller;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * Base container class where every container should extend from. It contains
@@ -81,6 +82,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
     /**
      * The path where the Cargo LOGGER files will be written to.
      */
+    @Value("target/")
     protected String cargoLogFilePath;
 
     /** The system property that can be set to be used in the JVM. */
