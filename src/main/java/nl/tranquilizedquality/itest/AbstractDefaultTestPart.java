@@ -12,12 +12,14 @@
  */
 package nl.tranquilizedquality.itest;
 
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestSuite;
+import nl.tranquilizedquality.itest.configuration.DatasourceConfiguration;
+import nl.tranquilizedquality.itest.configuration.SQLScriptsConfiguration;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -25,11 +27,15 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +50,10 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 14 sep 2010
  *
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {DatasourceConfiguration.class, SQLScriptsConfiguration.class })
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+@Transactional
 public abstract class AbstractDefaultTestPart extends AbstractTransactionalJUnit4SpringContextTests {
 
     /** Logger for this class */

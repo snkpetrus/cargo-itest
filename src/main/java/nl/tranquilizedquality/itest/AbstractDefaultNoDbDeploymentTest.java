@@ -15,17 +15,16 @@
  */
 package nl.tranquilizedquality.itest;
 
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.fail;
 import nl.tranquilizedquality.itest.cargo.ContainerUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * This is the base class of a simple integration test. Extending from this
@@ -38,6 +37,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  *
  */
 public abstract class AbstractDefaultNoDbDeploymentTest {
+
     /** Logger for this class */
     private static final Log LOGGER = LogFactory.getLog(AbstractDefaultNoDbDeploymentTest.class);
 
@@ -50,38 +50,49 @@ public abstract class AbstractDefaultNoDbDeploymentTest {
     protected static String host = "localhost:8890";
 
     /**
-     * The name of the context file for the itest beans.
+     * Array with all configuration classes that should be used for starting up
+     * the application context.
      */
-    protected static String ITEST_CONTEXT_FILENAME = "itest-context.xml";
+    protected static Class<?>[] CONFIGURATION_CLASSES;
 
     /**
-     * Loads the application context of the container utility.
-     *
-     * @param locations
-     *            A string array containing all the files that need to be loaded
-     *            in the application context.
-     * @return Returns the application context.
+     * The spring application context where the container utility will be loaded
+     * in.
      */
-    protected static ConfigurableApplicationContext loadContext(final String[] locations) {
-        return new ClassPathXmlApplicationContext(locations);
+    protected static ConfigurableApplicationContext CONTEXT;
+
+    /**
+     * Determines if the tests are being run on localhost or not.
+     *
+     * @return Returns true if the test are running on localhost otherwise it
+     *         returns false.
+     */
+    public static boolean isRunningOnLocalHost() {
+        return StringUtils.contains(host, "localhost") || StringUtils.contains(host, "127.0.0.");
     }
 
-    @BeforeClass
-    public static void runOnce() {
+    /**
+     * Starts up the container utility. This needs to be called in a static
+     * method that is annotated with @BeforeClass so the container will be
+     * started only once.
+     */
+    public static void startupContainer() {
+
         // The application server need to be locally started only if the
         // host is localhost
-        if (StringUtils.contains(host, "localhost") || StringUtils.contains(host, "127.0.0.")) {
+        if (isRunningOnLocalHost()) {
+
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Starting up the container utility...");
             }
 
             try {
-                final ConfigurableApplicationContext context = loadContext(new String[] {
-                        ITEST_CONTEXT_FILENAME, "common-itest-context.xml" });
+                CONTEXT = new AnnotationConfigApplicationContext(CONFIGURATION_CLASSES);
 
-                CONTAINER_UTIL = (ContainerUtil) context.getBean("containerUtil");
+                CONTAINER_UTIL = (ContainerUtil) CONTEXT.getBean("containerUtil");
                 CONTAINER_UTIL.start();
             } catch (final BeansException e) {
+
                 final String msg = "Failed to start up the container utility! - " + e.getMessage();
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(msg, e);
@@ -91,6 +102,9 @@ public abstract class AbstractDefaultNoDbDeploymentTest {
         }
     }
 
+    /**
+     * Stops the container utility and closed the application context.
+     */
     @AfterClass
     public static void stop() {
         if (CONTAINER_UTIL != null) {
@@ -98,6 +112,10 @@ public abstract class AbstractDefaultNoDbDeploymentTest {
                 LOGGER.info("Stopping the container utility...");
             }
             CONTAINER_UTIL.stop();
+        }
+
+        if (CONTEXT != null) {
+            CONTEXT.close();
         }
     }
 
