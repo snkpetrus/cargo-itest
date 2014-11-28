@@ -39,10 +39,12 @@ public class TomcatContainerUtilConfiguration extends AbstractContainerConfigura
         final AppTomcatContainerUtil container = new AppTomcatContainerUtil();
         container.setContainerPort(8890);
         container.setRemoteLocation("http://www.tr-quality.com/cargo-itest/");
-        container.setContainerFile("apache-tomcat-7.0.28.zip");
+        container.setContainerFile("apache-tomcat-7.0.57.zip");
+        // container.setRemoteLocation("D:\\Development\\Servers\\apache-tomcat-7.0.57\\");
         container.setRmiPort(8805);
         container.setAjpPort(8809);
         container.setTomcatVersion("tomcat7x");
+        container.setCleanUpAfterContainerStopped(true);
 
         final DeployableLocationConfiguration testApp = new DeployableLocationConfiguration();
         testApp.setContextName("test-app");

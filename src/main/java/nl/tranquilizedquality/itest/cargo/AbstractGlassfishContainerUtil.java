@@ -98,7 +98,7 @@ public abstract class AbstractGlassfishContainerUtil extends AbstractInstalledCo
         // create Glassfish configuration
         final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("glassfish2",
                 ContainerType.INSTALLED, ConfigurationType.STANDALONE, containerHome
-                + "cargo-conf/");
+                        + "cargo-conf/");
 
         // setup configuration
         final StringBuilder args = new StringBuilder();
@@ -330,10 +330,12 @@ public abstract class AbstractGlassfishContainerUtil extends AbstractInstalledCo
         return path;
     }
 
+    @Override
     public String getSharedLibDirectory() {
         return getContainerDirectory("lib/");
     }
 
+    @Override
     public String getConfDirectory() {
         return getContainerDirectory("conf/");
     }

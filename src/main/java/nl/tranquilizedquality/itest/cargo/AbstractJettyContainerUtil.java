@@ -99,7 +99,7 @@ public abstract class AbstractJettyContainerUtil extends AbstractInstalledContai
         // create JBoss configuration
         final LocalConfiguration configuration = (LocalConfiguration) configurationFactory.createConfiguration("jetty6x",
                 ContainerType.INSTALLED, ConfigurationType.STANDALONE, containerHome
-                + "cargo-conf/");
+                        + "cargo-conf/");
 
         // setup configuration
         final StringBuilder args = new StringBuilder();
@@ -283,10 +283,12 @@ public abstract class AbstractJettyContainerUtil extends AbstractInstalledContai
         return path;
     }
 
+    @Override
     public String getSharedLibDirectory() {
         return getContainerDirectory("lib/");
     }
 
+    @Override
     public String getConfDirectory() {
         return getContainerDirectory("etc/");
     }
