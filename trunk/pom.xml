@@ -3,7 +3,7 @@
 	<groupId>nl.tranquilizedquality</groupId>
 	<artifactId>cargo-itest</artifactId>
 	<name>Integration test utility project</name>
-	<version>1.5.0-M3</version>
+	<version>1.5.0-M4-SNAPSHOT</version>
 	<description>Utility classes that can be used easily create integration tests using the cargo framework.</description>
 	<url>http://cargo-itest.googlecode.com</url>
 	<licenses>
@@ -46,9 +46,9 @@
 
 	<!-- Source control configuration -->
 	<scm>
-		<connection>scm:svn:https://cargo-itest.googlecode.com/svn/tags/cargo-itest-1.5.0-M3</connection>
-		<developerConnection>scm:svn:https://cargo-itest.googlecode.com/svn/tags/cargo-itest-1.5.0-M3</developerConnection>
-		<url>https://cargo-itest.googlecode.com/svn/tags/cargo-itest-1.5.0-M3</url>
+		<connection>scm:svn:https://cargo-itest.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://cargo-itest.googlecode.com/svn/trunk</developerConnection>
+		<url>https://cargo-itest.googlecode.com/svn/trunk</url>
 	</scm>
 
 	<properties>
