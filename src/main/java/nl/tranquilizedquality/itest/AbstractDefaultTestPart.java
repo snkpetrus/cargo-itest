@@ -12,26 +12,18 @@
  */
 package nl.tranquilizedquality.itest;
 
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.TestSuite;
 import nl.tranquilizedquality.itest.configuration.DatasourceConfiguration;
 import nl.tranquilizedquality.itest.configuration.SQLScriptsConfiguration;
+import nl.tranquilizedquality.itest.domain.SQLScripts;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -59,11 +51,12 @@ public abstract class AbstractDefaultTestPart extends AbstractTransactionalJUnit
     /** Logger for this class */
     private static final Log LOGGER = LogFactory.getLog(AbstractDefaultTestPart.class);
 
-    /** List of SQL scripts that will be executed before every test. */
-    protected static List<String> SQL_SCRIPTS;
-
-    /** List of SQL scripts that will be executed after every test. */
-    protected static List<String> SQL_CLEAN_UP_SCRIPTS;
+    /**
+     * SQL scripts bean that contains lists of SQL scripts that should be
+     * executed before and after a test.
+     */
+    @Autowired(required = false)
+    private SQLScripts sqlScripts;
 
     /**
      * The host to test.
@@ -71,92 +64,46 @@ public abstract class AbstractDefaultTestPart extends AbstractTransactionalJUnit
     protected static String host = "localhost:8890";
 
     /**
-     * Loads the application context with the ability to load SQL scripts that
-     * need to be executed.
+     * Determines if the tests are being run on localhost or not.
      *
-     * @param locations
-     *            A string array containing all the files that need to be loaded
-     *            in the application context.
-     * @return Returns the application context.
+     * @return Returns true if the test are running on localhost otherwise it
+     *         returns false.
      */
-    protected static ConfigurableApplicationContext loadContext(final String[] locations) {
-        return new ClassPathXmlApplicationContext(locations);
+    public static boolean isRunningOnLocalHost() {
+        return StringUtils.contains(host, "localhost") || StringUtils.contains(host, "127.0.0.");
     }
 
-    @SuppressWarnings("unchecked")
-    @BeforeClass
-    public static void runOnce() {
-        /*
-         * The application server need to be locally started only if the host is
-         * localhost
-         */
-        if (StringUtils.contains(host, "localhost") || StringUtils.contains(host, "127.0.0.")) {
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Starting up the application context...");
-            }
-            try {
-                /*
-                 * Start up application context.
-                 */
-                final ConfigurableApplicationContext context = loadContext(new String[] {"itest-sql-script-context.xml" });
-
-                /*
-                 * Retrieve available SQL scripts.
-                 */
-                if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info("Retrieving available SQL scripts...");
-                }
-
-                try {
-                    SQL_SCRIPTS = (List<String>) context.getBean("sqlScripts");
-                } catch (final NoSuchBeanDefinitionException e) {
-                    LOGGER.trace("No SQL scripts found!", e);
-                    SQL_SCRIPTS = new ArrayList<String>(0);
-                }
-
-                /*
-                 * Retrieve available SQL clean up scripts.
-                 */
-                try {
-                    SQL_CLEAN_UP_SCRIPTS = (List<String>) context.getBean("sqlCleanUpScripts");
-                } catch (final NoSuchBeanDefinitionException e) {
-                    LOGGER.trace("No clean up SQL scripts found!", e);
-                    SQL_CLEAN_UP_SCRIPTS = new ArrayList<String>(0);
-                }
-
-                final int numberOfScripts = SQL_SCRIPTS.size() + SQL_CLEAN_UP_SCRIPTS.size();
-                if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info(numberOfScripts + " SQL scripts retrieved...");
-                }
-            } catch (final BeansException e) {
-                final String msg = "Failed to start up the application context!";
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error(msg, e);
-                }
-                fail(msg);
-            }
-        }
-    }
-
+    /**
+     * Executes the SQL scripts if they are defined.
+     */
     @Before
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void executeSQLScripts() {
-        for (final String script : SQL_SCRIPTS) {
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Executing script: " + script);
+
+        if (this.sqlScripts != null) {
+            for (final String script : this.sqlScripts.getSetupScripts()) {
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("Executing script: " + script);
+                }
+                executeSqlScript(script, false);
             }
-            executeSqlScript(script, false);
         }
     }
 
+    /**
+     * Executes the SQL clean up scripts if they are defined.
+     */
     @After
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void executeSQLCleanUpScripts() {
-        for (final String script : SQL_CLEAN_UP_SCRIPTS) {
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Executing clean up script: " + script);
+
+        if (this.sqlScripts != null) {
+            for (final String script : this.sqlScripts.getCleanUpScripts()) {
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("Executing clean up script: " + script);
+                }
+                executeSqlScript(script, false);
             }
-            executeSqlScript(script, false);
         }
     }
 
