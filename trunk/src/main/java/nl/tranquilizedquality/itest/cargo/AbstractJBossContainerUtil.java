@@ -458,10 +458,12 @@ public abstract class AbstractJBossContainerUtil extends AbstractInstalledContai
         return path;
     }
 
+    @Override
     public String getSharedLibDirectory() {
         return getContainerDirectory("lib/");
     }
 
+    @Override
     public String getConfDirectory() {
         return getContainerDirectory("conf/");
     }

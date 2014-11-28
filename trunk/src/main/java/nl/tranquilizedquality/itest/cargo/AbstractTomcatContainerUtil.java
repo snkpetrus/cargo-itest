@@ -204,10 +204,6 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
         }
 
         // create installedLocalContainer
-        installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer("tomcat5x",
-                ContainerType.INSTALLED, configuration);
-
-        // create installedLocalContainer
         installedLocalContainer = (InstalledLocalContainer) new DefaultContainerFactory().createContainer(tomcatVersion,
                 ContainerType.INSTALLED, configuration);
         // configure installedLocalContainer
@@ -313,10 +309,12 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
         return path;
     }
 
+    @Override
     public String getSharedLibDirectory() {
         return getContainerDirectory("lib/");
     }
 
+    @Override
     public String getConfDirectory() {
         return getContainerDirectory("conf/");
     }

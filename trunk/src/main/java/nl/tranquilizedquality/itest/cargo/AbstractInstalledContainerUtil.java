@@ -30,6 +30,7 @@ import nl.tranquilizedquality.itest.cargo.exception.ConfigurationException;
 import nl.tranquilizedquality.itest.cargo.exception.DeployException;
 import nl.tranquilizedquality.itest.domain.DeployableLocationConfiguration;
 
+import org.apache.ant.compress.taskdefs.Unzip;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -219,39 +220,48 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
         /*
          * Download and configure the container.
          */
-        String installDir;
-        try {
-            final URL remoteLocationUrl = new URL(this.remoteLocation + containerFile);
-            installDir = StringUtils.substringBeforeLast(StringUtils.chomp(containerHome, "/"), "/");
-            final ZipURLInstaller installer = new ZipURLInstaller(remoteLocationUrl, installDir, installDir);
-            installer.install();
-        } catch (final MalformedURLException e) {
-            throw new DeployException("Failed to download container!", e);
-        }
+        final String installDir = StringUtils.substringBeforeLast(StringUtils.chomp(containerHome, "/"), "/");
+        if (StringUtils.contains(this.remoteLocation, "http")) {
 
-        /*
-         * Rename the install directory to the container home directory so it
-         * doesn't matter what the name is of the zip file and avoid case
-         * sensitive issues on Linux.
-         */
-        final String containerDir = StringUtils.stripEnd(containerFile, ".zip");
-        final File installedDir = new File(installDir + "/" + containerDir + "/");
-        final File destenationDir = new File(containerHome);
-
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Renaming: " + installedDir.getPath());
-            LOGGER.info("To: " + destenationDir.getPath());
-        }
-
-        final boolean renamed = installedDir.renameTo(destenationDir);
-
-        if (!renamed) {
-            final String msg = "Failed to rename container install directory to home directory name!";
-            if (LOGGER.isErrorEnabled()) {
-                LOGGER.error(msg);
+            try {
+                final URL remoteLocationUrl = new URL(this.remoteLocation + containerFile);
+                final ZipURLInstaller installer = new ZipURLInstaller(remoteLocationUrl, installDir, installDir);
+                installer.install();
+            } catch (final MalformedURLException e) {
+                throw new DeployException("Failed to download container!", e);
             }
 
-            throw new ConfigurationException(msg);
+            /*
+             * Rename the install directory to the container home directory so
+             * it doesn't matter what the name is of the zip file and avoid case
+             * sensitive issues on Linux.
+             */
+            final String containerDir = StringUtils.stripEnd(containerFile, ".zip");
+            final File installedDir = new File(installDir + "/" + containerDir + "/");
+            final File destenationDir = new File(containerHome);
+
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Renaming: " + installedDir.getPath());
+                LOGGER.info("To: " + destenationDir.getPath());
+            }
+
+            final boolean renamed = installedDir.renameTo(destenationDir);
+
+            if (!renamed) {
+                final String msg = "Failed to rename container install directory to home directory name!";
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error(msg);
+                }
+
+                throw new ConfigurationException(msg);
+            }
+
+        } else {
+
+            final Unzip unzipper = new Unzip();
+            unzipper.setSrc(new File(this.remoteLocation + containerFile));
+            unzipper.setDest(new File(containerHome));
+            unzipper.execute();
         }
 
         /*
@@ -266,12 +276,14 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
      */
     protected abstract void deploy();
 
+    @Override
     public void start() {
         setupContainer();
 
         deploy();
     }
 
+    @Override
     public void stop() {
         installedLocalContainer.stop();
 
@@ -311,10 +323,12 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
         this.deployableLocationConfigurations = deployableLocationConfigurations;
     }
 
+    @Override
     public void addDeployableLocation(final String location, final String type) {
         this.deployableLocations.put(type, location);
     }
 
+    @Override
     public Integer getContainerPort() {
         return containerPort;
     }
