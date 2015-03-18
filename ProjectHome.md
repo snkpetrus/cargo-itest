@@ -1,0 +1,47 @@
+# Introduction #
+This utility enables you to easily create an integration test with as less configuration possible. It even provides you with a default test that can be used out of the box:
+  1. AbstractDefaultDeploymentTest
+  1. AbstractDefaultHibernateDeploymentTest
+  1. AbstractDefaultNoDbDeployment
+
+Container support:
+  1. Tomcat
+  1. JBoss
+  1. Jetty
+  1. Jonas
+  1. Glassfish
+
+Check out the source code to see the examples in src/test/java. You can find example container utilities and simple integration tests using the abstract deployment tests mentioned above in the src/test/java folder.
+
+Some main features:
+  * **Integration**: Run the same tests with whatever build tool out there like Ant, Maven etc. and even within your IDE.
+  * **Configurable container port**: You can easily configure on which port the container will run.
+  * **Easy SQL script execution**: This can be done by just configuring it in you spring context file.
+  * **Multiple container support**: It currently supports Tomcat, Jetty, JOnas & JBoss.
+  * **Easy to extend**: You can create your own container utility if the container you are using is not supported yet.
+  * **Configurable context names**: For WAR applications by default the context name will be the name of the WAR. This is most of the time not what you want so the utility also provides the flexibility to set the context name.
+
+# Maven2 #
+
+You can add the following to your Maven pom file:
+```
+<dependency>
+	<groupId>nl.tranquilizedquality</groupId>
+	<artifactId>cargo-itest</artifactId>
+	<version>1.4.0</version>
+</dependency>
+```
+
+Also add the following repository to your maven proxy or to your pom file:
+http://cargo-itest.googlecode.com/svn/maven-repo/
+
+Change history can be found [here](http://www.tr-quality.nl/cargo-itest/changes-report.html)
+
+The whole maven site can be found [here](http://www.tr-quality.nl/cargo-itest/)
+
+
+# Tutorial #
+
+You can find a 5 minute tutorial [here](http://code.google.com/p/cargo-itest/wiki/Tutorial).
+
+If you have any questions or remarks you can contact me on salomo.petrus@gmail.com
