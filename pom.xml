@@ -4,7 +4,7 @@
 	<groupId>nl.tranquilizedquality</groupId>
 	<artifactId>cargo-itest</artifactId>
 	<name>Integration test utility project</name>
-	<version>1.5.0-M5-SNAPSHOT</version>
+	<version>1.5.0-M5</version>
 	<description>Utility classes that can be used easily create integration tests using the cargo framework.</description>
 	<url>http://cargo-itest.googlecode.com</url>
 	<licenses>
