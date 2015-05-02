@@ -213,6 +213,10 @@ public abstract class AbstractTomcatContainerUtil extends AbstractInstalledConta
         installedLocalContainer.setLogger(fileLogger);
         installedLocalContainer.setOutput(cargoLogFilePath + "output.log");
 
+        if (deployTimeOut != null) {
+            installedLocalContainer.setTimeout(deployTimeOut);
+        }
+
         // set the system properties
         installedLocalContainer.setSystemProperties(systemProperties);
 

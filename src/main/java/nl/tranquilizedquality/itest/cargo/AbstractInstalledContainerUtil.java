@@ -104,6 +104,9 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
      */
     protected List<DeployableLocationConfiguration> deployableLocationConfigurations;
 
+    /** The time the startup of a container may take before cargo times out. */
+    protected Long deployTimeOut;
+
     /**
      * Determines if the extracted container in the temporary directory of the
      * OS should be cleaned up after the container was stopped.
@@ -118,6 +121,7 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
      */
     public AbstractInstalledContainerUtil() {
         configResourcesPath = "src/test/resources/";
+        deployTimeOut = 300000L;
 
         systemProperties = new HashMap<String, String>();
         deployableLocations = new LinkedHashMap<String, String>();
@@ -393,6 +397,14 @@ public abstract class AbstractInstalledContainerUtil implements ContainerUtil {
 
     public void setCleanUpAfterContainerStopped(final boolean cleanUpAfterContainerStopped) {
         this.cleanUpAfterContainerStopped = cleanUpAfterContainerStopped;
+    }
+
+    /**
+     * @param deployTimeOut
+     *            the deployTimeOut to set
+     */
+    public void setDeployTimeOut(final Long deployTimeOut) {
+        this.deployTimeOut = deployTimeOut;
     }
 
     /**

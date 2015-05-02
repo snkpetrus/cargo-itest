@@ -193,6 +193,10 @@ public abstract class AbstractJettyContainerUtil extends AbstractInstalledContai
         installedLocalContainer.setLogger(fileLogger);
         installedLocalContainer.setOutput(cargoLogFilePath + "output.log");
 
+        if (deployTimeOut != null) {
+            installedLocalContainer.setTimeout(deployTimeOut);
+        }
+
         // set the system properties
         installedLocalContainer.setSystemProperties(systemProperties);
 
