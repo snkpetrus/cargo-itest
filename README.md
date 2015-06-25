@@ -31,7 +31,5 @@ You can add the following to your Maven pom file:
        <version>1.4.0</version>
 </dependency>
 ```
-Also add the following repository to your maven proxy or to your pom file:
-http://cargo-itest.googlecode.com/svn/maven-repo/
 
 If you have any questions or remarks you can contact me on salomo.petrus@gmail.com
